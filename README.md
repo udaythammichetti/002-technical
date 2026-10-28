@@ -40,7 +40,6 @@ Each desk keeps its own board cache until you hit **Refresh** or **Clear all**.
 Requires Python 3.11+ and Node.js (only needed the first time, to build the UI).
 
 ```bash
-cd /Users/uday/Algo_Trading/002_technical   # or your clone path
 python3 -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
