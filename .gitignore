@@ -8,3 +8,4 @@ web/dist/
 *.egg-info/
 .streamlit/secrets.toml
 data/spurts_history/*.json
+!data/spurts_history/.gitkeep

@@ -1,16 +1,23 @@
-# React + Vite
+# Signal Desk UI
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+React + Vite front end for [Signal Desk](../README.md) (Volume · Technical · Lab · Chart · Spurts).
 
-Currently, two official plugins are available:
+## Scripts
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+```bash
+npm install
+npm run dev      # http://127.0.0.1:5173 — proxies /api → :8797
+npm run build    # writes dist/ for the Python server
+npm run preview  # preview production build
+npm run lint
+```
 
-## React Compiler
+Start `python -u server.py` (or `./launch.sh`) in the repo root so `/api` has a backend.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Stack
 
-## Expanding the Oxlint configuration
+- React 19 + Zustand
+- Vite 8
+- Oxlint
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+See the root [README](../README.md) for desks, Book universes, and API notes.
