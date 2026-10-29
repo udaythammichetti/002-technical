@@ -4,16 +4,27 @@ import { displayStock, fmtNum, fmtVol } from '../utils'
 import StockLink from './StockLink'
 
 const COLS = [
-  { key: 'rank', label: 'Rank', type: 'num' },
-  { key: 'exchange', label: 'Exch', type: 'text' },
-  { key: 'nse', label: 'Stock', type: 'text' },
-  { key: 'change_pct', label: 'Chg %', type: 'num' },
-  { key: 'vol_x', label: 'Vol×', type: 'num' },
-  { key: 'volume', label: 'Volume', type: 'num' },
-  { key: 'avg_volume', label: 'Avg', type: 'num' },
-  { key: 'ltp', label: 'LTP', type: 'num' },
-  { key: 'turnover', label: 'Turnover', type: 'num' },
-  { key: 'score', label: 'Score', type: 'num' },
+  { key: 'rank', label: 'Rank', type: 'num', title: '1 = highest Vol× in this tab. Hover shows the rank on the full NSE+BSE list' },
+  { key: 'exchange', label: 'Exch', type: 'text', title: 'NSE Volume Gainers or BSE Spurt-in-Volume' },
+  { key: 'nse', label: 'Stock', type: 'text', title: 'Symbol' },
+  { key: 'change_pct', label: 'Chg %', type: 'num', title: 'Live price change when a quote is available' },
+  {
+    key: 'vol_x',
+    label: 'Vol×',
+    type: 'num',
+    title: 'NSE: today ÷ 1-week average · BSE: today ÷ 2-week average · official list, not the live quote',
+  },
+  {
+    key: 'vol_x_2w',
+    label: '2W×',
+    type: 'num',
+    title: 'NSE today ÷ 2-week average. BSE publishes one 2-week multiple, so this matches Vol×',
+  },
+  { key: 'volume', label: 'Volume', type: 'num', title: 'Exchange session volume (shares)' },
+  { key: 'avg_volume', label: 'Avg', type: 'num', title: 'NSE 1-week average · BSE 2-week average' },
+  { key: 'ltp', label: 'LTP', type: 'num', title: 'Last price · live quote when the feed answers' },
+  { key: 'turnover', label: 'Turnover', type: 'num', title: 'NSE in ₹ lakh · BSE in ₹ crore' },
+  { key: 'score', label: 'Score', type: 'num', title: '−100…+100. Log Vol×, capped near 200×, plus a small price adjustment. Rank still follows Vol×' },
 ]
 
 function sortValue(row, col) {
@@ -44,6 +55,13 @@ export default function SpurtsTable({ rows }) {
   const sortDir = useDesk((s) => s.sortDir)
   const setSort = useDesk((s) => s.setSort)
 
+  const volRank = useMemo(() => {
+    const order = rows.slice().sort((a, b) => (b.vol_x || 0) - (a.vol_x || 0) || String(a.nse || '').localeCompare(String(b.nse || '')))
+    const map = new Map()
+    order.forEach((row, index) => map.set(row, index + 1))
+    return map
+  }, [rows])
+
   const sorted = useMemo(() => {
     const col = COLS.find((c) => c.key === sortKey) || COLS.find((c) => c.key === 'vol_x')
     const dir = sortDir === 'asc' ? 1 : -1
@@ -69,6 +87,7 @@ export default function SpurtsTable({ rows }) {
                 <button
                   type="button"
                   className={'sort-btn' + (sortKey === col.key ? ' is-on' : '')}
+                  title={col.title || `Sort by ${col.label}`}
                   onClick={() => setSort(col.key, col.type)}
                 >
                   {col.label}
@@ -81,15 +100,15 @@ export default function SpurtsTable({ rows }) {
         <tbody>
           {sorted.map((row) => {
             const cls =
-              (row.vol_x || 0) >= 3
-                ? 'is-bullish'
-                : (row.change_pct || 0) < 0
-                  ? 'is-bearish'
-                  : ''
+              row.change_pct == null || row.change_pct === 0
+                ? ''
+                : row.change_pct > 0
+                  ? 'is-bullish'
+                  : 'is-bearish'
             const key = `${row.exchange}-${row.nse || row.id || row.scrip || row.rank}`
             return (
               <tr key={key} className={cls}>
-                <td>{row.rank ?? '—'}</td>
+                <td title={row.rank != null ? `Book rank ${row.rank}` : undefined}>{volRank.get(row) ?? row.rank ?? '—'}</td>
                 <td>{row.exchange || '—'}</td>
                 <StockLink row={row} as="cell" showName short />
                 <td className={row.change_pct == null ? '' : row.change_pct >= 0 ? 'up' : 'down'}>
@@ -98,6 +117,11 @@ export default function SpurtsTable({ rows }) {
                     : '—'}
                 </td>
                 <Metric value={row.vol_x} tone={(row.vol_x || 0) >= 3 ? 'up' : ''} digits={2} />
+                <Metric
+                  value={row.exchange === 'BSE' ? null : row.vol_x_2w}
+                  tone={(row.vol_x_2w || 0) >= 3 ? 'up' : ''}
+                  digits={2}
+                />
                 <td>{row.volume != null ? fmtVol(row.volume) : '—'}</td>
                 <td>{row.avg_volume != null ? fmtVol(row.avg_volume) : '—'}</td>
                 <td>{row.ltp != null ? fmtNum(row.ltp) : '—'}</td>

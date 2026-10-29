@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from 'react'
 import { DESKS } from '../constants'
 import { useDesk } from '../store'
 import { shortCompany } from '../utils'
-import { DESK_ICONS, PlayIcon } from './Icons'
+import { DESK_ICONS, MarkIcon, PlayIcon } from './Icons'
 
 export default function TopBar() {
   const desk = useDesk((s) => s.desk)
+  const setDesk = useDesk((s) => s.setDesk)
   const mode = useDesk((s) => s.mode)
   const symbol = useDesk((s) => s.symbol)
   const query = useDesk((s) => s.query)
@@ -21,8 +22,6 @@ export default function TopBar() {
   const inputRef = useRef(null)
   const searchWrap = useRef(null)
   const [focused, setFocused] = useState(false)
-  const meta = DESKS.find((d) => d.id === desk) || DESKS[0]
-  const Icon = DESK_ICONS[desk]
   const session = board?.session || sources?.session
   const sessionOpen = session?.state === 'open'
   const selectedQuery =
@@ -55,11 +54,11 @@ export default function TopBar() {
 
   return (
     <header className="topbar">
-      <h1 className="wordmark">
+      <h1 className="wordmark" title="Signal Desk">
         <span className="wordmark-ico" aria-hidden="true">
-          <Icon />
+          <MarkIcon />
         </span>
-        <span className="wordmark-title">{meta.label}</span>
+        <span className="wordmark-title">Signal Desk</span>
         {session ? (
           <span
             className={'session-dot' + (sessionOpen ? ' open' : '')}
@@ -69,6 +68,26 @@ export default function TopBar() {
           </span>
         ) : null}
       </h1>
+
+      <nav className="desk-nav" aria-label="Desks">
+        {DESKS.map((d) => {
+          const Icon = DESK_ICONS[d.id]
+          return (
+            <button
+              key={d.id}
+              type="button"
+              className={'desk-nav-link' + (desk === d.id ? ' is-on' : '')}
+              aria-current={desk === d.id ? 'page' : undefined}
+              aria-label={d.label}
+              title={d.title || d.label}
+              onClick={() => setDesk(d.id)}
+            >
+              <Icon />
+              <span>{d.label}</span>
+            </button>
+          )
+        })}
+      </nav>
 
       <div className="topbar-actions">
         <div className="topbar-search" ref={searchWrap}>

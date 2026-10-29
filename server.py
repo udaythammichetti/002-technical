@@ -16,6 +16,7 @@ Not a forecast or investment advice.
 
 from __future__ import annotations
 
+import gzip
 import json
 import math
 import re
@@ -43,6 +44,14 @@ UA = (
 )
 
 # Moneycontrol resolutions. 4h is aggregated from 60-minute bars.
+#
+# Periods are ChartSchool bar-counts on the active resolution
+# (RSI 14 on 1D = 14 days; on 1W = 14 weeks; on 15m = 14×15m).
+# Refs: StockCharts ChartSchool — RVOL default 50 · CMF 20 · MFI 14 ·
+# Force Index EMA 13 · EMV SMA 14 · RSI 14 · MACD 12/26/9 · SMA 20/50.
+#
+# avg_window  → CMF / Lab·Chart base / UV-DV / OBVΔ (CMF default 20)
+# rvol_window → RVOL / VolZ (ChartSchool RVOL default 50)
 TIMEFRAMES = {
     "15m": {
         "label": "15 Min",
@@ -50,6 +59,7 @@ TIMEFRAMES = {
         "lookback_days": 7,
         "countback": 220,
         "avg_window": 20,
+        "rvol_window": 50,
     },
     "1h": {
         "label": "1 Hour",
@@ -57,71 +67,164 @@ TIMEFRAMES = {
         "lookback_days": 20,
         "countback": 220,
         "avg_window": 20,
+        "rvol_window": 50,
     },
     "4h": {
         "label": "4 Hours",
         "resolution": "60",
         "lookback_days": 35,
         "countback": 320,
-        "avg_window": 16,
+        "avg_window": 20,
+        "rvol_window": 50,
         "aggregate": 4,
     },
     "1d": {
         "label": "1 Day",
         "resolution": "1D",
-        "lookback_days": 140,
-        "countback": 140,
+        "lookback_days": 160,
+        "countback": 160,
+        # Chart 6-month read: 126 sessions. Other desks keep countback 160.
+        "chart_countback": 126,
         "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 126,
+        "chart_fib_swing": 126,
     },
+    # Chart daily mid-depths — Yahoo 2y / 5y fetch, then trim to ≈2/3/4/5 trading years.
+    "1d2": {
+        "label": "1 Day · 2Y",
+        "resolution": "1D",
+        "lookback_days": 800,
+        "countback": 504,
+        "chart_countback": 504,
+        "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 504,
+        "chart_fib_swing": 504,
+    },
+    "1d3": {
+        "label": "1 Day · 3Y",
+        "resolution": "1D",
+        "lookback_days": 1200,
+        "countback": 756,
+        "chart_countback": 756,
+        "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 756,
+        "chart_fib_swing": 756,
+    },
+    "1d4": {
+        "label": "1 Day · 4Y",
+        "resolution": "1D",
+        "lookback_days": 1600,
+        "countback": 1008,
+        "chart_countback": 1008,
+        "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 1008,
+        "chart_fib_swing": 1008,
+    },
+    "1d5": {
+        "label": "1 Day · 5Y",
+        "resolution": "1D",
+        "lookback_days": 2000,
+        "countback": 1260,
+        "chart_countback": 1260,
+        "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 1260,
+        "chart_fib_swing": 1260,
+    },
+    # Chart daily full history — Yahoo 10y daily (~2.4k bars; Yahoo range=max is sparse on .NS).
+    "1df": {
+        "label": "1 Day · Full",
+        "resolution": "1D",
+        "lookback_days": 4000,
+        "countback": 2520,
+        "chart_countback": 2520,
+        "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 2520,
+        "chart_fib_swing": 2520,
+    },
+    # Weekly bars (~5y fetch · ≤160 weeks) — ChartSchool counts are in weeks.
     "1w": {
-        "label": "1 Week",
+        "label": "1 Week · 104",
         "resolution": "1W",
         "lookback_days": 900,
-        "countback": 120,
-        "avg_window": 12,
+        "countback": 104,
+        "chart_countback": 104,
+        "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 104,
+        "chart_fib_swing": 104,
     },
+    # Monthly bars (Yahoo max · ≤80 months) — ChartSchool counts are in months.
     "1m": {
-        "label": "1 Month",
+        "label": "1 Month · 60",
         "resolution": "1M",
         "lookback_days": 2200,
-        "countback": 48,
-        "avg_window": 6,
+        "countback": 60,
+        "chart_countback": 60,
+        "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 60,
+        "chart_fib_swing": 60,
     },
-    # Swing/long frames use daily (or denser) bars so Lab/Chart/Tech have enough history.
+    # Long chips: same daily ChartSchool periods as 1D; more history for patterns.
     "3m": {
         "label": "3 Months",
         "resolution": "1D",
-        "lookback_days": 130,
-        "countback": 100,
+        "lookback_days": 160,
+        "countback": 120,
         "avg_window": 20,
+        "rvol_window": 50,
+        # Yahoo 3mo daily is ~64 sessions. Lookbacks match that, not a 90-bar default.
+        "chart_sr_look": 60,
+        "chart_fib_swing": 60,
+        "chart_countback": 60,
     },
     "6m": {
         "label": "6 Months",
         "resolution": "1D",
-        "lookback_days": 220,
-        "countback": 160,
+        "lookback_days": 240,
+        "countback": 180,
         "avg_window": 20,
+        "rvol_window": 50,
     },
     "1y": {
         "label": "1 Year",
         "resolution": "1D",
         "lookback_days": 420,
         "countback": 280,
+        # Chart read: ≈1 trading year of daily bars.
+        "chart_countback": 252,
         "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 252,
+        "chart_fib_swing": 252,
     },
     "5y": {
-        "label": "5 Years",
+        "label": "5 Years · Week",
         "resolution": "1W",
         "lookback_days": 2000,
-        "countback": 280,
+        "countback": 260,
+        "chart_countback": 260,
         "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 260,
+        "chart_fib_swing": 260,
     },
     "max": {
-        "label": "Entire",
+        "label": "Max · Week",
         "resolution": "1W",
         "lookback_days": 12000,
         "countback": 520,
+        "chart_countback": 520,
         "avg_window": 20,
+        "rvol_window": 50,
+        "chart_sr_look": 520,
+        "chart_fib_swing": 520,
     },
 }
 
@@ -258,6 +361,124 @@ _cache: dict[tuple, tuple[float, dict]] = {}
 _probe_cache: tuple[float, dict] | None = None
 _universe_cache: dict[str, list[dict]] = {}
 
+# Live scan progress (client polls /api/scan-progress?job=… while board request runs).
+_scan_jobs_lock = threading.Lock()
+_scan_jobs: dict[str, dict] = {}
+
+
+def _scan_job_id(raw: str | None) -> str | None:
+    job = re.sub(r"[^A-Za-z0-9_-]", "", str(raw or "").strip())[:64]
+    return job or None
+
+
+def _scan_job_start(job_id: str | None, *, total: int, phase: str, label: str = "") -> None:
+    jid = _scan_job_id(job_id)
+    if not jid:
+        return
+    total_n = max(0, int(total or 0))
+    with _scan_jobs_lock:
+        _scan_jobs[jid] = {
+            "job": jid,
+            "state": "running",
+            "phase": phase or "scan",
+            "label": label or "",
+            "done": 0,
+            "total": total_n,
+            "pct": 0.0,
+            "updated": time.time(),
+        }
+
+
+def _scan_job_tick(
+    job_id: str | None,
+    *,
+    done: int | None = None,
+    inc: int = 0,
+    total: int | None = None,
+    phase: str | None = None,
+    label: str | None = None,
+) -> None:
+    jid = _scan_job_id(job_id)
+    if not jid:
+        return
+    with _scan_jobs_lock:
+        job = _scan_jobs.get(jid)
+        if not job:
+            return
+        if total is not None:
+            job["total"] = max(0, int(total))
+        if done is not None:
+            job["done"] = max(0, int(done))
+        elif inc:
+            job["done"] = max(0, int(job.get("done") or 0) + int(inc))
+        if phase:
+            job["phase"] = phase
+        if label is not None:
+            job["label"] = label
+        tot = int(job.get("total") or 0)
+        d = int(job.get("done") or 0)
+        job["pct"] = round(min(100.0, (100.0 * d / tot) if tot else 0.0), 1)
+        job["state"] = "running"
+        job["updated"] = time.time()
+
+
+def _scan_job_finish(job_id: str | None, *, ok: bool = True, error: str | None = None) -> None:
+    jid = _scan_job_id(job_id)
+    if not jid:
+        return
+    with _scan_jobs_lock:
+        job = _scan_jobs.get(jid) or {
+            "job": jid,
+            "done": 0,
+            "total": 0,
+            "phase": "done",
+            "label": "",
+        }
+        if ok:
+            tot = int(job.get("total") or 0)
+            if tot and int(job.get("done") or 0) < tot:
+                job["done"] = tot
+            job["pct"] = 100.0
+            job["state"] = "done"
+            job["phase"] = "done"
+        else:
+            job["state"] = "error"
+            job["phase"] = "error"
+            job["error"] = error or "Scan failed"
+        job["updated"] = time.time()
+        _scan_jobs[jid] = job
+
+
+def get_scan_progress(job_id: str | None) -> dict:
+    jid = _scan_job_id(job_id)
+    if not jid:
+        return {"state": "idle", "done": 0, "total": 0, "pct": 0, "phase": "", "label": ""}
+    with _scan_jobs_lock:
+        job = _scan_jobs.get(jid)
+        if not job:
+            return {
+                "job": jid,
+                "state": "pending",
+                "done": 0,
+                "total": 0,
+                "pct": 0,
+                "phase": "starting",
+                "label": "",
+            }
+        return dict(job)
+
+
+def _as_completed_progress(futures, job_id: str | None = None, *, phase: str = "scan"):
+    """Yield completed futures while ticking scan progress."""
+    items = list(futures)
+    total = len(items)
+    _scan_job_tick(job_id, done=0, total=total, phase=phase)
+    done = 0
+    for fut in as_completed(items):
+        done += 1
+        _scan_job_tick(job_id, done=done, total=total, phase=phase)
+        yield fut
+
 
 def _load_universe(universe_id: str) -> list[dict]:
     universe_id = (universe_id or "nifty50").lower()
@@ -370,14 +591,28 @@ def _universe_full_size(universe_id: str) -> int:
     return len(_load_universe(uid))
 
 
-def _merge_quote_remainder(enriched: list[dict], quote_rows: list[dict]) -> list[dict]:
-    """Keep full-history shortlist + remaining quote-level names for large books."""
+def _merge_quote_remainder(
+    enriched: list[dict],
+    quote_rows: list[dict],
+    tf_id: str | None = None,
+) -> list[dict]:
+    """Keep full-history shortlist + remaining quote-level names for large books.
+
+    Quote RVOL uses live DVolAvg20 (daily) — only merge onto daily boards so
+    intraday / weekly / monthly scans are not polluted with TF-blind scores.
+    """
+    if tf_id:
+        res = TIMEFRAMES.get(_normalize_tf(tf_id), {}).get("resolution")
+        if res != "1D":
+            return list(enriched)
     seen = {row.get("id") for row in enriched if row.get("id")}
     out = list(enriched)
     for row in quote_rows:
         rid = row.get("id")
         if rid and rid not in seen:
-            out.append(row)
+            tagged = dict(row)
+            tagged["quote_only"] = True
+            out.append(tagged)
             seen.add(rid)
     return out
 
@@ -418,7 +653,9 @@ def _ist_stamp() -> str:
     )
 
 
-_yahoo_slots = threading.Semaphore(6)
+_yahoo_slots = threading.Semaphore(12)
+_yahoo_hist_lock = threading.Lock()
+_yahoo_hist: dict[tuple, dict] = {}
 _yahoo_local = threading.local()
 _yahoo_session = None
 _mc_blocked: bool | None = None
@@ -428,10 +665,15 @@ _mc_history_slow = False
 
 # Moneycontrol resolution → Yahoo chart interval/range.
 YAHOO_TF = {
-    "15m": ("15m", "5d"),
-    "1h": ("60m", "1mo"),
-    "4h": ("60m", "3mo"),
+    "15m": ("15m", "60d"),  # ~200+ fifteen-minute bars so SMA50/200 can compute
+    "1h": ("60m", "3mo"),
+    "4h": ("60m", "1y"),  # 4h is aggregated from 60m; 200×4h needs about a year
     "1d": ("1d", "1y"),
+    "1d2": ("1d", "2y"),
+    "1d3": ("1d", "5y"),  # Yahoo has no 3y — fetch 5y, trim to ~780
+    "1d4": ("1d", "5y"),  # Yahoo has no 4y — fetch 5y, trim to ~1040
+    "1d5": ("1d", "5y"),
+    "1df": ("1d", "10y"),  # full daily depth (Yahoo max is thin on .NS)
     "1w": ("1wk", "5y"),
     "1m": ("1mo", "max"),
     "3m": ("1d", "3mo"),
@@ -468,6 +710,22 @@ def _normalize_tf(tf_id: str | None) -> str:
         "6mo": "6m",
         "12m": "1y",
         "year": "1y",
+        "1d_full": "1df",
+        "1dfull": "1df",
+        "dfull": "1df",
+        "daily_full": "1df",
+        "1d_2y": "1d2",
+        "1d2y": "1d2",
+        "daily_2y": "1d2",
+        "1d_3y": "1d3",
+        "1d3y": "1d3",
+        "daily_3y": "1d3",
+        "1d_4y": "1d4",
+        "1d4y": "1d4",
+        "daily_4y": "1d4",
+        "1d_5y": "1d5",
+        "1d5y": "1d5",
+        "daily_5y": "1d5",
     }
     raw = aliases.get(raw, raw)
     return raw if raw in TIMEFRAMES else "1d"
@@ -503,21 +761,24 @@ def _yahoo_http() -> object:
 
 def _yahoo_get_json(url: str, timeout: float = 12) -> dict | list:
     session = _yahoo_http()
-    with _yahoo_slots:
-        response = session.get(
-            url,
-            headers={
-                "User-Agent": UA,
-                "Accept": "application/json,text/plain,*/*",
-                "Accept-Language": "en-IN,en;q=0.9",
-                "Referer": "https://finance.yahoo.com/",
-            },
-            impersonate="chrome131",
-            timeout=timeout,
-        )
-    if response.status_code >= 400:
-        raise RuntimeError(f"Yahoo HTTP {response.status_code}")
-    return response.json()
+    headers = {
+        "User-Agent": UA,
+        "Accept": "application/json,text/plain,*/*",
+        "Accept-Language": "en-IN,en;q=0.9",
+        "Referer": "https://finance.yahoo.com/",
+    }
+    last_status = 0
+    for attempt in range(3):
+        with _yahoo_slots:
+            response = session.get(url, headers=headers, impersonate="chrome131", timeout=timeout)
+        last_status = response.status_code
+        if response.status_code in {429, 500, 502, 503, 504}:
+            time.sleep(0.45 * (attempt + 1))
+            continue
+        if response.status_code >= 400:
+            raise RuntimeError(f"Yahoo HTTP {response.status_code}")
+        return response.json()
+    raise RuntimeError(f"Yahoo HTTP {last_status or 'retry'}")
 
 
 def _yahoo_ticker(nse: str, exchange: str = "NSE") -> str:
@@ -782,6 +1043,11 @@ def _history_yahoo(
     if not ticker:
         return {"s": "error"}
     interval, span = YAHOO_TF.get(tf_id, ("1d", "1y"))
+    cache_key = (ticker, interval, span)
+    with _yahoo_hist_lock:
+        cached = _yahoo_hist.get(cache_key)
+    if cached is not None:
+        return cached
     url = (
         "https://query1.finance.yahoo.com/v8/finance/chart/"
         f"{quote(ticker, safe='^.')}?interval={quote(interval)}&range={quote(span)}"
@@ -792,7 +1058,7 @@ def _history_yahoo(
         return {"s": "error"}
     quote_block = ((result.get("indicators") or {}).get("quote") or [None])[0] or {}
     times = result.get("timestamp") or []
-    return {
+    payload_out = {
         "s": "ok",
         "t": times,
         "o": quote_block.get("open") or [],
@@ -802,8 +1068,10 @@ def _history_yahoo(
         "v": quote_block.get("volume") or [],
         "_source": "yahoo",
         "_ticker": ticker,
-        "_meta": result.get("meta") or {},
     }
+    with _yahoo_hist_lock:
+        _yahoo_hist[cache_key] = payload_out
+    return payload_out
 
 
 def _history(
@@ -1017,20 +1285,86 @@ def _aggregate_bars(bars: list[dict], group: int) -> list[dict]:
     return out
 
 
-# Timeframe contract (all desks except Spurts): periods are bar-counts on the
-# active TF's resolution. RSI(14) on 1d = 14 days; on 1w = 14 weeks; on 15m = 14×15m.
-# ChartSchool: indicators apply on any chart timeframe the same way.
+def _trim_swing_period_stub(bars: list[dict], resolution: str) -> list[dict]:
+    """Drop Yahoo/MC live stubs wrongly appended to weekly/monthly series.
+
+    Completed 1W/1M bars share a period-boundary clock (typically 18:30 UTC).
+    Feeds often append a mid-period quote bar (wall-clock 'now' + that day's volume),
+    which crushes Swing RVOL (e.g. today-only vol ÷ average full week/month).
+    """
+    if resolution not in {"1W", "1M"} or len(bars) < 3:
+        return bars
+    prev = datetime.fromtimestamp(int(bars[-2]["ts"]), tz=timezone.utc)
+    last = datetime.fromtimestamp(int(bars[-1]["ts"]), tz=timezone.utc)
+    if (last.hour, last.minute) == (prev.hour, prev.minute):
+        return bars
+    gap_last = int(bars[-1]["ts"]) - int(bars[-2]["ts"])
+    gap_prev = int(bars[-2]["ts"]) - int(bars[-3]["ts"])
+    # Stub usually has mismatched TOD; also shorter spacing than a full period.
+    if gap_prev > 0 and gap_last < gap_prev * 0.85:
+        return bars[:-1]
+    # Monthly stub can sit ~28d after month-start yet still be a daily quote — TOD wins.
+    if (last.hour, last.minute) != (prev.hour, prev.minute):
+        return bars[:-1]
+    return bars
+
+
+# ChartSchool: Volume periods = bar counts on the selected interval's resolution.
+# Example: RVOL(50) on 1D = 50 daily bars; on 15m = 50×15m bars; on 1W = 50 weeks.
 TF_CONTRACT = (
-    "Periods count bars of the selected timeframe "
-    "(N = avg_window). Example: RSI(14) on 1 Day = 14 daily bars; "
-    "on 1 Week = 14 weekly bars. 3m/6m/1y load daily bars so trend studies "
-    "have enough history."
+    "Volume lookbacks are ChartSchool bar-counts on the selected interval: "
+    "RVOL(50) · CMF(20) · MFI(14) · Force EMA(13) · EMV SMA(14) · "
+    "VolOsc(5/20) · Chaikin Osc(3/10) · PVO(12/26/9). "
+    "Same numbers on every TF — a 'bar' is that interval (15m / 1H / 1D / 1W / 1M). "
+    "Long chips (3M/6M/1Y) keep daily bars + the same lookbacks with more history."
 )
+
+# Classic ChartSchool defaults (bar counts — not calendar days).
+CS_RVOL = 50
+CS_CMF = 20
+CS_MFI = 14
+CS_FORCE = 13
+CS_EMV = 14
+CS_VO_SHORT = 5
+CS_VO_LONG = 20
+CS_CHAIKIN_FAST = 3
+CS_CHAIKIN_SLOW = 10
+CS_PVO_FAST = 12
+CS_PVO_SLOW = 26
+CS_PVO_SIG = 9
+CS_RSI = 14
+CS_EMA = 20
+CS_MACD_FAST = 12
+CS_MACD_SLOW = 26
+CS_MACD_SIG = 9
+CS_SMA_FAST = 20
+CS_SMA_SLOW = 50
+CS_SMA_LONG = 200  # ChartSchool Golden / Death Cross with SMA50
+CS_STOCH = 14
+CS_STOCH_SLOW = 3  # ChartSchool Full Stochastic slowing / %D
+CS_CCI = 20
+CS_ROC = 12
+CS_ADX = 14
+CS_ATR = 14
+CS_BB = 20
+CS_BB_DEV = 2.0
+CS_AROON = 25  # ChartSchool Aroon default
+# PPO uses same Appel lengths as MACD (ChartSchool PPO 12/26/9)
+
+
+def _tf_study_windows(tf_id: str) -> dict[str, int]:
+    """CMF/base + RVOL windows for this TF (ChartSchool defaults, adapted later)."""
+    tf = TIMEFRAMES[_normalize_tf(tf_id)]
+    return {
+        "avg_window": int(tf.get("avg_window") or CS_CMF),
+        "rvol_window": int(tf.get("rvol_window") or CS_RVOL),
+    }
 
 
 def _tf_meta(tf_id: str) -> dict:
     tid = _normalize_tf(tf_id)
     tf = TIMEFRAMES[tid]
+    wins = _tf_study_windows(tid)
     res = tf["resolution"]
     res_label = {
         "15": "15-minute bars",
@@ -1039,14 +1373,126 @@ def _tf_meta(tf_id: str) -> dict:
         "1W": "weekly bars",
         "1M": "monthly bars",
     }.get(res, res)
+    # Volume desk lookbacks for this interval (bar counts on resolution).
+    volume = {
+        "rvol": wins["rvol_window"],
+        "vol_z": wins["rvol_window"],
+        "cmf": wins["avg_window"],
+        "uv_dv": wins["avg_window"],
+        "obv_delta": wins["avg_window"],
+        "ad_delta": wins["avg_window"],
+        "mfi": CS_MFI,
+        "force": CS_FORCE,
+        "emv": CS_EMV,
+        "vol_osc": f"{CS_VO_SHORT}/{CS_VO_LONG}",
+        "chaikin": f"{CS_CHAIKIN_FAST}/{CS_CHAIKIN_SLOW}",
+        "pvo": f"{CS_PVO_FAST}/{CS_PVO_SLOW}/{CS_PVO_SIG}",
+        "donchian": wins["avg_window"],
+        "spread": wins["avg_window"],
+        "spike_rvol": 1.5,
+        "spike_vol_z": 2.0,
+    }
     return {
         "id": tid,
         "label": tf["label"],
         "resolution": res,
         "resolution_label": res_label,
-        "avg_window": int(tf["avg_window"]),
+        "avg_window": wins["avg_window"],
+        "rvol_window": wins["rvol_window"],
         "countback": int(tf["countback"]),
         "contract": TF_CONTRACT,
+        "volume": volume,
+        "tech": {
+            "rsi": CS_RSI,
+            "macd": f"{CS_MACD_FAST}/{CS_MACD_SLOW}/{CS_MACD_SIG}",
+            "ppo": f"{CS_MACD_FAST}/{CS_MACD_SLOW}/{CS_MACD_SIG}",
+            "sma": f"{CS_SMA_FAST}/{CS_SMA_SLOW}",
+            "sma200": f"{CS_SMA_SLOW}/{CS_SMA_LONG}",
+            "ema": CS_EMA,
+            "bb": f"{CS_BB},{CS_BB_DEV:g}",
+            "stoch": f"{CS_STOCH}/{CS_STOCH_SLOW}/{CS_STOCH_SLOW}",
+            "cci": CS_CCI,
+            "willr": CS_STOCH,
+            "adx": CS_ADX,
+            "aroon": CS_AROON,
+            "roc": CS_ROC,
+            "atr": CS_ATR,
+        },
+        # Lab (sci) — ChartSchool bar-counts on selected resolution.
+        "lab": {
+            "donchian": wins["avg_window"],
+            "cmf": wins["avg_window"],
+            "obv": wins["avg_window"],
+            "rvol": wins["rvol_window"],
+            "bb": f"{wins['avg_window']},{CS_BB_DEV:g}",
+            "atr": CS_ATR,
+            "break_rvol": 1.5,
+            "coil_range_pct": 12,
+        },
+        # Chart Analysis — ChartSchool S/R · trend · gap · Fib on selected bars.
+        "chart": {
+            "sr": wins["avg_window"],
+            "sr_look": int(tf.get("chart_sr_look") or 90),
+            "rvol": wins["rvol_window"],
+            "gap_rvol": 1.4,
+            "near_pct": 1.25,
+            "trend_touches": 3,
+            "fib_swing": int(
+                tf.get("chart_fib_swing") or max(50, wins["avg_window"] * 3)
+            ),
+            "zone_pct": 0.4,
+            "history_bars": int(tf.get("chart_countback") or tf.get("countback") or 0) or None,
+            "resolution": res,
+            "read": tf.get("label") or tid,
+        },
+        "chartschool": {
+            "rvol": CS_RVOL,
+            "cmf": CS_CMF,
+            "mfi": CS_MFI,
+            "force": CS_FORCE,
+            "emv": CS_EMV,
+            "vol_osc": f"{CS_VO_SHORT}/{CS_VO_LONG}",
+            "chaikin": f"{CS_CHAIKIN_FAST}/{CS_CHAIKIN_SLOW}",
+            "pvo": f"{CS_PVO_FAST}/{CS_PVO_SLOW}/{CS_PVO_SIG}",
+            "rsi": CS_RSI,
+            "macd": f"{CS_MACD_FAST}/{CS_MACD_SLOW}/{CS_MACD_SIG}",
+            "ppo": f"{CS_MACD_FAST}/{CS_MACD_SLOW}/{CS_MACD_SIG}",
+            "sma": f"{CS_SMA_FAST}/{CS_SMA_SLOW}",
+            "sma200": f"{CS_SMA_SLOW}/{CS_SMA_LONG}",
+            "ema": CS_EMA,
+            "bb": f"{CS_BB},{CS_BB_DEV:g}",
+            "stoch": f"{CS_STOCH}/{CS_STOCH_SLOW}/{CS_STOCH_SLOW}",
+            "adx": CS_ADX,
+            "aroon": CS_AROON,
+            "roc": CS_ROC,
+            "atr": CS_ATR,
+        },
+    }
+
+
+def _tech_period_prefs(_tf_id: str | None = None) -> dict[str, int]:
+    """ChartSchool classic tech periods (bar counts on active resolution).
+
+    Same numbers on every chip — a bar is 15m / 1H / 1D / 1W / 1M of the selection.
+    Long 3M–1Y use daily bars; 5Y/Max use weekly bars.
+    """
+    return {
+        "rsi": CS_RSI,
+        "ema": CS_EMA,
+        "fast": CS_MACD_FAST,
+        "slow": CS_MACD_SLOW,
+        "sig": CS_MACD_SIG,
+        "sma_f": CS_SMA_FAST,
+        "sma_s": CS_SMA_SLOW,
+        "sma_l": CS_SMA_LONG,
+        "bb": CS_BB,
+        "stoch": CS_STOCH,
+        "stoch_slow": CS_STOCH_SLOW,
+        "cci": CS_CCI,
+        "roc": CS_ROC,
+        "adx": CS_ADX,
+        "atr": CS_ATR,
+        "aroon": CS_AROON,
     }
 
 
@@ -1054,29 +1500,94 @@ def _tf_meta(tf_id: str) -> dict:
 # Refs: StockCharts OBV / CMF / MFI / A/D · relative volume practice.
 FORMULAS = {
     "timeframe": TF_CONTRACT,
-    "rvol": "RVOL = V_t ÷ SMA(V, N) over prior N bars of the active TF",
+    "history": (
+        "Recent listings / short series: every desk shrinks ChartSchool periods to available bars. "
+        "history=thin (<8 bars) · partial (windows truncated) · full (preferred lookbacks fit). "
+        "Score/KPIs use only what the series can support — never invent 50/200-day math on 10 bars."
+    ),
+    "rvol": (
+        "RVOL = V_t ÷ SMA(V, prior 50 bars of the selected chip) — "
+        "ChartSchool classic RVOL (current bar excluded from the average). "
+        "Intraday: 15m→50×15m bars · 1H→50×60m · 4H→50×4h (from 60m aggregates). "
+        "Swing: 1D→50 days · 1W→50 weeks · 1M→50 months. "
+        "Long: 3M/6M/1Y use daily bars so RVOL = same as 1D (50 days); "
+        "5Y/Max use weekly bars so RVOL = 50 weeks. "
+        "Not time-of-day RVOL (RVOL-TOD)."
+    ),
+    "vol_z": (
+        "VolZ = (V_t − μ) / σ over the same prior 50 bars as RVOL — "
+        "≥2σ = spike (with RVOL ≥ 1.5×)"
+    ),
     "obv": "OBV_t = OBV_{t−1} + V_t if C↑; −V_t if C↓ (Granville / ChartSchool OBV)",
-    "obv_delta": "OBVΔ = OBV_t − OBV_{t−N} (rising = accumulation)",
-    "volume_ratio": "UV/DV = Σ volume on up bars ÷ Σ volume on down bars over N bars",
+    "obv_delta": (
+        "OBVΔ = OBV_t − OBV_{t−20} on selected-interval bars "
+        "(CMF window; rising = accumulation)"
+    ),
+    "volume_ratio": (
+        "UV/DV = Σ up-bar volume ÷ Σ down-bar volume over last 20 bars "
+        "(incl. current; ChartSchool CMF window)"
+    ),
     "ad": "A/D += ((C−L)−(H−C))/(H−L) × V  (Chaikin Accumulation/Distribution)",
-    "cmf": "CMF(N) = Σ MFV_N ÷ Σ V_N ; MFV = A/D multiplier × V (Chaikin / ChartSchool)",
-    "mfi": "MFI = 100 − 100/(1 + pos_MF ÷ neg_MF) over ~14 bars (ChartSchool MFI)",
+    "cmf": (
+        "CMF(20) = Σ MFV_20 ÷ Σ V_20 on selected-interval bars; "
+        "MFV = ((C−L)−(H−C))/(H−L)×V (Chaikin / ChartSchool)"
+    ),
+    "mfi": (
+        "MFI(14) = 100 − 100/(1 + pos_MF ÷ neg_MF) over 14 bars "
+        "(ChartSchool Money Flow Index / volume-weighted RSI)"
+    ),
     "vpt": "VPT += V × (C − C_prev) / C_prev (Volume Price Trend)",
-    "bullish": "Bullish when bias score ≥ +30 (price up + volume confirmation)",
-    "bearish": "Bearish when bias score ≤ −30 (price down + volume confirmation)",
+    "force": (
+        "Force(1)=(C−C_prev)×V ; Force(13)=EMA of FI(1) seeded with SMA of first 13 "
+        "(Elder / ChartSchool)"
+    ),
+    "emv": (
+        "EMV(1)=DistanceMoved÷BoxRatio ; EMV(14)=SMA of EMV(1) "
+        "(Arms / ChartSchool Ease of Movement)"
+    ),
+    "vol_osc": (
+        "VolOsc% = 100 × (SMA(V,5) − SMA(V,20)) ÷ SMA(V,20) on consecutive bars "
+        "(ChartSchool Volume Oscillator)"
+    ),
+    "chaikin": (
+        "Chaikin Osc = EMA(ADL,3) − EMA(ADL,10) — Marc Chaikin / ChartSchool; "
+        ">0 buying pressure momentum, <0 selling"
+    ),
+    "pvo": (
+        "PVO = 100 × (EMA(V,12) − EMA(V,26)) ÷ EMA(V,26); Signal = EMA(PVO,9); "
+        "Hist = PVO − Signal (ChartSchool Percentage Volume Oscillator)"
+    ),
+    "effort_result": (
+        "Wyckoff Effort vs Result on selected-interval bars: "
+        "Effort = RVOL (high≥1.5 · mid · low<0.7); "
+        "Result = bar spread vs SMA(spread, 20) (wide≥1.2× · narrow≤0.7×) + close location. "
+        "Confirm↑/↓ = high effort + wide spread + strong close; "
+        "Absorb = high effort + narrow spread; NoDemand/NoSupply = low effort + narrow."
+    ),
+    "breakout": (
+        "Correct/False breakout vs Donchian(20) of selected interval: "
+        "Correct = close beyond prior box + RVOL≥1.5 + (wide spread or strong close); "
+        "False = wick beyond but close back inside, weak volume break, or failed hold next bar. "
+        "Intraday uses 20×15m/1H/4H bars; Swing 20 days/weeks/months; Long 3M–1Y = 20 daily."
+    ),
+    "bullish": "Bias = bullish when Score ≥ +30 (else neutral until ≤ −30)",
+    "bearish": "Bias = bearish when Score ≤ −30",
     "score": (
-        "Score: ±25 price · ±25 RVOL≥1 · ±15 RVOL≥1.5 · ±15 OBVΔ · "
-        "±10 UV/DV · ±10 CMF · ±10 MFI"
+        "Score (−100…+100) → Bias ≥+30 bullish / ≤−30 bearish: "
+        "±25 bar direction · "
+        "±25 RVOL≥1 (same sign) · ±15 RVOL≥1.5 · ×0.55 if RVOL<0.7 · "
+        "±15/±6 OBVΔ · ±10 UV/DV · ±10 CMF · ±10 MFI · "
+        "±8/±4 Force · ±6 EMV · ±8 VolZ≥2 / ×0.85 VolZ≤−1 · "
+        "±6/±3 A/DΔ · ±8/±4 Chaikin · ±8/±3 PVO hist · "
+        "±8/±6 Break Correct/False · ±5/±4 E/R Confirm·NoDemand/NoSupply · Absorb ×0.9"
     ),
 }
 
 
-def _vol_tone(rvol: float | None) -> str:
-    if rvol is None:
-        return "normal"
-    if rvol >= 1.5:
+def _vol_tone(rvol: float | None, vol_z: float | None = None) -> str:
+    if (rvol is not None and rvol >= 1.5) or (vol_z is not None and vol_z >= 2.0):
         return "spike"
-    if rvol < 0.7:
+    if rvol is not None and rvol < 0.7:
         return "quiet"
     return "normal"
 
@@ -1098,6 +1609,16 @@ def _money_flow_multiplier(high: float | None, low: float | None, close: float) 
     return ((close - low) - (high - close)) / span
 
 
+def _ema_next(prev: float | None, value: float, period: int) -> float:
+    """One EMA step (ChartSchool / Wilder-style α = 2/(N+1))."""
+    if period <= 1:
+        return value
+    alpha = 2.0 / (period + 1.0)
+    if prev is None:
+        return value
+    return prev + alpha * (value - prev)
+
+
 def _volume_score(
     up: bool,
     rvol: float | None,
@@ -1105,8 +1626,21 @@ def _volume_score(
     vol_ratio: float | None,
     cmf: float | None = None,
     mfi: float | None = None,
+    force: float | None = None,
+    emv: float | None = None,
+    vol_z: float | None = None,
+    ad_rising: bool | None = None,
+    chaikin: float | None = None,
+    pvo_hist: float | None = None,
+    er_label: str | None = None,
+    bo_quality: str | None = None,
+    bo_side: str | None = None,
 ) -> float:
-    """Combine classic volume confirms into a signed score (−100…+100)."""
+    """Combine classic volume confirms into a signed score (−100…+100).
+
+    Core: direction × RVOL, then ChartSchool money-flow / volume oscillators,
+    then light Wyckoff E/R + Correct/False break overlays. Clamp at the end.
+    """
     score = 25.0 if up else -25.0
     if rvol is not None:
         if rvol >= 1.0:
@@ -1120,9 +1654,9 @@ def _volume_score(
     elif obv_rising is False and not up:
         score -= 15.0
     elif obv_rising is True and not up:
-        score += 6.0
+        score += 6.0  # bullish divergence lean
     elif obv_rising is False and up:
-        score -= 6.0
+        score -= 6.0  # bearish divergence lean
     if vol_ratio is not None:
         if vol_ratio >= 1.2:
             score += 10.0
@@ -1138,26 +1672,410 @@ def _volume_score(
             score += 10.0
         elif mfi <= 45:
             score -= 10.0
+    # Elder Force Index (smoothed) — ChartSchool
+    if force is not None:
+        if force > 0 and up:
+            score += 8.0
+        elif force < 0 and not up:
+            score -= 8.0
+        elif force > 0 and not up:
+            score += 4.0
+        elif force < 0 and up:
+            score -= 4.0
+    # Arms Ease of Movement — ChartSchool
+    if emv is not None:
+        if emv > 0 and up:
+            score += 6.0
+        elif emv < 0 and not up:
+            score -= 6.0
+    # Volume z-score anomaly (≥2σ unusual activity confirming the move)
+    if vol_z is not None and vol_z >= 2.0:
+        score += 8.0 if up else -8.0
+    elif vol_z is not None and vol_z <= -1.0:
+        score *= 0.85
+    # Chaikin A/D slope
+    if ad_rising is True and up:
+        score += 6.0
+    elif ad_rising is False and not up:
+        score -= 6.0
+    elif ad_rising is True and not up:
+        score += 3.0
+    elif ad_rising is False and up:
+        score -= 3.0
+    # Chaikin Oscillator — ADL momentum (ChartSchool 3/10)
+    if chaikin is not None:
+        if chaikin > 0 and up:
+            score += 8.0
+        elif chaikin < 0 and not up:
+            score -= 8.0
+        elif chaikin > 0 and not up:
+            score += 4.0
+        elif chaikin < 0 and up:
+            score -= 4.0
+    # PVO histogram — volume MACD (ChartSchool 12/26/9)
+    if pvo_hist is not None:
+        if pvo_hist > 0 and up:
+            score += 8.0
+        elif pvo_hist < 0 and not up:
+            score -= 8.0
+        elif pvo_hist > 0 and not up:
+            score += 3.0
+        elif pvo_hist < 0 and up:
+            score -= 3.0
+    # Wyckoff Break overlay (Correct / False)
+    if bo_quality == "correct" and bo_side == "up":
+        score += 8.0
+    elif bo_quality == "correct" and bo_side == "down":
+        score -= 8.0
+    elif bo_quality == "false" and bo_side == "up":
+        score -= 6.0
+    elif bo_quality == "false" and bo_side == "down":
+        score += 6.0  # failed breakdown / spring lean
+    # Wyckoff Effort vs Result overlay
+    if er_label == "Confirm↑":
+        score += 5.0
+    elif er_label == "Confirm↓":
+        score -= 5.0
+    elif er_label == "Absorb":
+        score *= 0.9
+    elif er_label == "NoDemand":
+        score -= 4.0
+    elif er_label == "NoSupply":
+        score += 4.0
     return max(-100.0, min(100.0, score))
 
 
-def _enrich(bars: list[dict], window: int = 20, quote: dict | None = None) -> list[dict]:
+def _sma_seeded_ema_step(
+    value: float,
+    period: int,
+    seed: list[float],
+    ema: float | None,
+) -> tuple[float | None, float | None]:
+    """SMA-seed then EMA (ChartSchool). Returns (ema_state, output_or_None)."""
+    if period <= 1:
+        return value, value
+    if ema is None:
+        seed.append(value)
+        if len(seed) >= period:
+            seeded = sum(seed) / len(seed)
+            return seeded, seeded
+        return None, None
+    nxt = _ema_next(ema, value, period)
+    return nxt, nxt
+
+
+def _bar_hlc(bar: dict) -> tuple[float, float, float]:
+    close = float(bar["close"])
+    high = float(bar["high"]) if bar.get("high") is not None else close
+    low = float(bar["low"]) if bar.get("low") is not None else close
+    if high < low:
+        high, low = low, high
+    return high, low, close
+
+
+def _bar_spread(bar: dict) -> float:
+    high, low, _ = _bar_hlc(bar)
+    return max(0.0, high - low)
+
+
+def _close_location(bar: dict) -> float:
+    """0 = close on low · 1 = close on high (Wyckoff bar control)."""
+    high, low, close = _bar_hlc(bar)
+    span = high - low
+    if span <= 0:
+        return 0.5
+    return max(0.0, min(1.0, (close - low) / span))
+
+
+def _effort_result(
+    rvol: float | None,
+    spread: float,
+    avg_spread: float | None,
+    close_pos: float,
+) -> dict:
+    """Wyckoff Effort vs Result — volume = effort, bar spread/close = result.
+
+    ChartSchool / Wyckoff: harmony when effort and result agree; absorption /
+    no-demand when they diverge. Uses selected-interval bars only.
+    """
+    effort = "mid"
+    if rvol is not None:
+        if rvol >= 1.5:
+            effort = "high"
+        elif rvol < 0.7:
+            effort = "low"
+
+    result = "mid"
+    if avg_spread is not None and avg_spread > 0:
+        ratio = spread / avg_spread
+        if ratio >= 1.2:
+            result = "wide"
+        elif ratio <= 0.7:
+            result = "narrow"
+    elif spread <= 0:
+        result = "narrow"
+
+    strong_up = close_pos >= 0.70
+    strong_dn = close_pos <= 0.30
+    label = "—"
+    tone = "neutral"
+    # Four highest-signal Wyckoff rows + harmony / clash
+    if effort == "high" and result == "wide" and strong_up:
+        label, tone = "Confirm↑", "bull"
+    elif effort == "high" and result == "wide" and strong_dn:
+        label, tone = "Confirm↓", "bear"
+    elif effort == "high" and result == "narrow":
+        label, tone = "Absorb", "warn"  # effort without result
+    elif effort == "high" and result == "wide" and not strong_up and not strong_dn:
+        label, tone = "Fight", "warn"  # high effort, mid close
+    elif effort == "low" and result == "narrow" and strong_up:
+        label, tone = "NoDemand", "bear"
+    elif effort == "low" and result == "narrow" and strong_dn:
+        label, tone = "NoSupply", "bull"
+    elif effort == "high" and result == "mid" and strong_up:
+        label, tone = "Effort↑", "bull"
+    elif effort == "high" and result == "mid" and strong_dn:
+        label, tone = "Effort↓", "bear"
+    elif effort != "low" and result == "wide" and strong_up:
+        label, tone = "Result↑", "bull"
+    elif effort != "low" and result == "wide" and strong_dn:
+        label, tone = "Result↓", "bear"
+    elif effort == "high" and not strong_up and not strong_dn:
+        label, tone = "Clash", "warn"
+
+    return {
+        "effort": effort,
+        "result": result,
+        "er": label,
+        "er_tone": tone,
+        "spread": round(spread, 4),
+        "spread_x": round(spread / avg_spread, 2) if avg_spread and avg_spread > 0 else None,
+        "close_pos": round(close_pos, 2),
+    }
+
+
+def _breakout_quality(
+    bars: list[dict],
+    i: int,
+    box_n: int,
+    rvol: float | None,
+    close_pos: float,
+    spread: float,
+    avg_spread: float | None,
+) -> dict:
+    """Correct vs false breakout — Donchian(box) + volume + close (Wyckoff/VSA).
+
+    box_n = CMF window on the selected interval (20 bars of 15m / 1D / 1W / …).
+    Correct: close beyond prior box + RVOL≥1.5 + wide-ish spread + strong close.
+    False: wick beyond but close back inside, or break on weak volume/weak close,
+    or prior bar broke and this bar closes back inside (failed breakout).
+    """
+    empty = {
+        "breakout": "—",
+        "bo_side": None,
+        "bo_level": None,
+        "bo_quality": None,
+    }
+    if i < box_n or box_n < 2:
+        return empty
+    window = bars[i - box_n : i]
+    highs = [_bar_hlc(b)[0] for b in window]
+    lows = [_bar_hlc(b)[1] for b in window]
+    prior_high = max(highs) if highs else None
+    prior_low = min(lows) if lows else None
+    if prior_high is None or prior_low is None or prior_high <= prior_low:
+        return empty
+
+    high, low, close = _bar_hlc(bars[i])
+    spread_wide = bool(avg_spread and avg_spread > 0 and spread >= 1.0 * avg_spread)
+    vol_ok = rvol is not None and rvol >= 1.5
+    vol_weak = rvol is not None and rvol < 1.0
+
+    # Failed continuation: prior bar closed outside box, this bar back inside
+    if i >= box_n + 1:
+        prev = bars[i - 1]
+        prev_win = bars[i - 1 - box_n : i - 1]
+        if len(prev_win) >= box_n:
+            ph = max(_bar_hlc(b)[0] for b in prev_win)
+            pl = min(_bar_hlc(b)[1] for b in prev_win)
+            _, _, prev_c = _bar_hlc(prev)
+            if prev_c > ph and close <= ph:
+                return {
+                    "breakout": "False↑",
+                    "bo_side": "up",
+                    "bo_level": round(ph, 2),
+                    "bo_quality": "false",
+                }
+            if prev_c < pl and close >= pl:
+                return {
+                    "breakout": "False↓",
+                    "bo_side": "down",
+                    "bo_level": round(pl, 2),
+                    "bo_quality": "false",
+                }
+
+    wick_up = high > prior_high
+    wick_dn = low < prior_low
+    close_up = close > prior_high
+    close_dn = close < prior_low
+
+    if close_up:
+        if vol_ok and (spread_wide or close_pos >= 0.60):
+            return {
+                "breakout": "Correct↑",
+                "bo_side": "up",
+                "bo_level": round(prior_high, 2),
+                "bo_quality": "correct",
+            }
+        if vol_weak or close_pos < 0.50:
+            return {
+                "breakout": "False↑",
+                "bo_side": "up",
+                "bo_level": round(prior_high, 2),
+                "bo_quality": "false",
+            }
+        return {
+            "breakout": "Weak↑",
+            "bo_side": "up",
+            "bo_level": round(prior_high, 2),
+            "bo_quality": "weak",
+        }
+
+    if close_dn:
+        if vol_ok and (spread_wide or close_pos <= 0.40):
+            return {
+                "breakout": "Correct↓",
+                "bo_side": "down",
+                "bo_level": round(prior_low, 2),
+                "bo_quality": "correct",
+            }
+        if vol_weak or close_pos > 0.50:
+            return {
+                "breakout": "False↓",
+                "bo_side": "down",
+                "bo_level": round(prior_low, 2),
+                "bo_quality": "false",
+            }
+        return {
+            "breakout": "Weak↓",
+            "bo_side": "down",
+            "bo_level": round(prior_low, 2),
+            "bo_quality": "weak",
+        }
+
+    # Wick-only beyond level → classic false / upthrust / spring probe
+    if wick_up and close <= prior_high:
+        return {
+            "breakout": "False↑",
+            "bo_side": "up",
+            "bo_level": round(prior_high, 2),
+            "bo_quality": "false",
+        }
+    if wick_dn and close >= prior_low:
+        return {
+            "breakout": "False↓",
+            "bo_side": "down",
+            "bo_level": round(prior_low, 2),
+            "bo_quality": "false",
+        }
+    return empty
+
+
+def _enrich(
+    bars: list[dict],
+    window: int = CS_CMF,
+    rvol_window: int | None = None,
+    quote: dict | None = None,
+) -> list[dict]:
+    """Volume stack — ChartSchool lookbacks as bar counts of the selected interval.
+
+    window      → CMF / UV-DV / OBVΔ / A/DΔ (default 20)
+    rvol_window → RVOL / VolZ prior-bar SMA (default 50; excludes current)
+    MFI 14 · Force EMA 13 · EMV SMA 14 · VolOsc 5/20 · Chaikin 3/10 · PVO 12/26/9
+    — classic, adapted only if history is short.
+    """
     out: list[dict] = []
     obv = 0.0
     ad = 0.0
     vpt = 0.0
+    force_ema: float | None = None
+    force_seed: list[float] = []
+    emv_raw: list[float] = []
+    # Chaikin Oscillator — EMA(ADL,3) − EMA(ADL,10)
+    ad_ema_fast: float | None = None
+    ad_ema_slow: float | None = None
+    ad_fast_seed: list[float] = []
+    ad_slow_seed: list[float] = []
+    # PVO — EMA volume 12/26 + signal EMA 9 of PVO
+    vol_ema_fast: float | None = None
+    vol_ema_slow: float | None = None
+    vol_fast_seed: list[float] = []
+    vol_slow_seed: list[float] = []
+    pvo_sig_ema: float | None = None
+    pvo_sig_seed: list[float] = []
     n_bars = len(bars)
-    # Short listings: use whatever history exists instead of requiring a full window.
-    window = _adapt_period(window or 20, max(1, n_bars - 1), minimum=1) if n_bars else int(window or 20)
-    mfi_period = min(14, max(3, window), max(3, n_bars))
+    # ChartSchool periods — shrink to available bars (recent listings / IPOs).
+    cmf_n = (
+        _adapt_period(window or CS_CMF, n_bars, minimum=min(1, n_bars) or 1)
+        if n_bars
+        else int(window or CS_CMF)
+    )
+    rvol_n = (
+        _adapt_period(
+            rvol_window if rvol_window is not None else CS_RVOL,
+            max(1, n_bars - 1) if n_bars > 1 else 1,
+            minimum=1,
+        )
+        if n_bars
+        else int(rvol_window if rvol_window is not None else CS_RVOL)
+    )
+    mfi_period = _adapt_period(CS_MFI, n_bars, minimum=min(3, n_bars) if n_bars else 3)
+    force_period = _adapt_period(CS_FORCE, n_bars, minimum=min(3, n_bars) if n_bars else 3)
+    emv_period = _adapt_period(CS_EMV, n_bars, minimum=min(3, n_bars) if n_bars else 3)
+    vo_short, vo_long = _adapt_pair(CS_VO_SHORT, CS_VO_LONG, n_bars, fast_min=2)
+    chaikin_fast_n, chaikin_slow_n = _adapt_pair(
+        CS_CHAIKIN_FAST, CS_CHAIKIN_SLOW, n_bars, fast_min=2
+    )
+    pvo_fast_n, pvo_slow_n = _adapt_pair(CS_PVO_FAST, CS_PVO_SLOW, n_bars, fast_min=2)
+    pvo_sig_n = _adapt_period(CS_PVO_SIG, n_bars, minimum=min(3, n_bars) if n_bars else 3)
+    periods = {
+        "rvol": rvol_n,
+        "vol_z": rvol_n,
+        "cmf": cmf_n,
+        "uv_dv": cmf_n,
+        "obv_delta": cmf_n,
+        "ad_delta": cmf_n,
+        "mfi": mfi_period,
+        "force": force_period,
+        "emv": emv_period,
+        "vol_osc_short": vo_short,
+        "vol_osc_long": vo_long,
+        "chaikin_fast": chaikin_fast_n,
+        "chaikin_slow": chaikin_slow_n,
+        "pvo_fast": pvo_fast_n,
+        "pvo_slow": pvo_slow_n,
+        "pvo_signal": pvo_sig_n,
+        "donchian": cmf_n,  # Effort/Result + breakout box on selected interval
+        "spread": cmf_n,
+    }
     for i, bar in enumerate(bars):
-        start = max(0, i - window)
-        prior = bars[start:i]
-        sample = [item["volume"] for item in prior if item["volume"] > 0]
+        rvol_start = max(0, i - rvol_n)
+        cmf_start = max(0, i - cmf_n)
+        # RVOL / VolZ: prior bars only (ChartSchool relative volume).
+        prior = bars[rvol_start:i]
+        sample = [float(item["volume"]) for item in prior if item["volume"] > 0]
         avg = (sum(sample) / len(sample)) if sample else None
-        rvol = (bar["volume"] / avg) if avg else None
+        rvol = (float(bar["volume"]) / avg) if avg else None
 
-        # OBV
+        vol_z = None
+        if len(sample) >= 3:
+            mean = sum(sample) / len(sample)
+            var = sum((v - mean) ** 2 for v in sample) / len(sample)
+            std = var**0.5
+            if std > 0:
+                vol_z = (float(bar["volume"]) - mean) / std
+
+        # OBV (Granville / ChartSchool)
         if i == 0:
             obv = float(bar["volume"])
         else:
@@ -1167,17 +2085,91 @@ def _enrich(bars: list[dict], window: int = 20, quote: dict | None = None) -> li
             elif bar["close"] < prev_close:
                 obv -= bar["volume"]
 
-        # Accumulation / Distribution
+        # Accumulation / Distribution (Chaikin)
         mfm = _money_flow_multiplier(bar.get("high"), bar.get("low"), bar["close"])
         mfv = mfm * bar["volume"]
         ad += mfv
+
+        # Chaikin Oscillator = EMA(ADL,3) − EMA(ADL,10) — ChartSchool
+        ad_ema_fast, ad_fast_out = _sma_seeded_ema_step(
+            ad, chaikin_fast_n, ad_fast_seed, ad_ema_fast
+        )
+        ad_ema_slow, ad_slow_out = _sma_seeded_ema_step(
+            ad, chaikin_slow_n, ad_slow_seed, ad_ema_slow
+        )
+        chaikin = (
+            (ad_fast_out - ad_slow_out)
+            if ad_fast_out is not None and ad_slow_out is not None
+            else None
+        )
+
+        # PVO(12/26/9) — ChartSchool Percentage Volume Oscillator
+        vol_f = float(bar["volume"] or 0)
+        vol_ema_fast, vol_fast_out = _sma_seeded_ema_step(
+            vol_f, pvo_fast_n, vol_fast_seed, vol_ema_fast
+        )
+        vol_ema_slow, vol_slow_out = _sma_seeded_ema_step(
+            vol_f, pvo_slow_n, vol_slow_seed, vol_ema_slow
+        )
+        pvo = None
+        pvo_signal = None
+        pvo_hist = None
+        if vol_fast_out is not None and vol_slow_out is not None and vol_slow_out > 0:
+            pvo = 100.0 * (vol_fast_out - vol_slow_out) / vol_slow_out
+            pvo_sig_ema, pvo_sig_out = _sma_seeded_ema_step(
+                pvo, pvo_sig_n, pvo_sig_seed, pvo_sig_ema
+            )
+            if pvo_sig_out is not None:
+                pvo_signal = pvo_sig_out
+                pvo_hist = pvo - pvo_signal
 
         # VPT
         if i > 0 and bars[i - 1]["close"]:
             vpt += bar["volume"] * (bar["close"] - bars[i - 1]["close"]) / bars[i - 1]["close"]
 
-        # CMF over window (including current)
-        cmf_slice = out[start:i]
+        # Elder Force Index — ChartSchool: FI(1)=(C−Cprev)×V ; FI(13)=EMA seeded with SMA
+        force_out: float | None = None
+        if i > 0:
+            force_raw = (bar["close"] - bars[i - 1]["close"]) * float(bar["volume"])
+            if force_ema is None:
+                force_seed.append(force_raw)
+                if len(force_seed) >= force_period:
+                    force_ema = sum(force_seed) / len(force_seed)
+                    force_out = force_ema
+                elif force_seed:
+                    force_out = sum(force_seed) / len(force_seed)
+            else:
+                force_ema = _ema_next(force_ema, force_raw, force_period)
+                force_out = force_ema
+
+        # Arms Ease of Movement — ChartSchool EMV(14) = SMA of 1-period EMV
+        emv = None
+        if i > 0:
+            high = bar.get("high") if bar.get("high") is not None else bar["close"]
+            low = bar.get("low") if bar.get("low") is not None else bar["close"]
+            prev_high = bars[i - 1].get("high")
+            prev_low = bars[i - 1].get("low")
+            prev_high = prev_high if prev_high is not None else bars[i - 1]["close"]
+            prev_low = prev_low if prev_low is not None else bars[i - 1]["close"]
+            distance = ((high + low) / 2.0) - ((prev_high + prev_low) / 2.0)
+            span = high - low
+            box = (float(bar["volume"]) / 100_000_000.0) / span if span > 0 else None
+            raw_emv = (distance / box) if box else 0.0
+            emv_raw.append(raw_emv)
+            if len(emv_raw) >= emv_period:
+                emv = sum(emv_raw[-emv_period:]) / emv_period
+
+        # Volume Oscillator % — ChartSchool SMA(V,5) vs SMA(V,20) on consecutive bars
+        vol_osc = None
+        if i + 1 >= vo_long:
+            chunk = [float(b["volume"] or 0) for b in bars[i + 1 - vo_long : i + 1]]
+            long_avg = sum(chunk) / vo_long
+            short_avg = sum(chunk[-vo_short:]) / vo_short
+            if long_avg > 0:
+                vol_osc = 100.0 * (short_avg - long_avg) / long_avg
+
+        # CMF(20) — ChartSchool (including current bar)
+        cmf_slice = out[cmf_start:i]
         cmf_mfv = sum(
             _money_flow_multiplier(item.get("high"), item.get("low"), item["close"]) * item["volume"]
             for item in cmf_slice
@@ -1185,7 +2177,7 @@ def _enrich(bars: list[dict], window: int = 20, quote: dict | None = None) -> li
         cmf_vol = sum(item["volume"] for item in cmf_slice) + bar["volume"]
         cmf = (cmf_mfv / cmf_vol) if cmf_vol else None
 
-        # MFI (typical price money flow)
+        # MFI (typical price money flow) — ChartSchool
         mfi = None
         if i >= mfi_period:
             pos_flow = 0.0
@@ -1217,10 +2209,20 @@ def _enrich(bars: list[dict], window: int = 20, quote: dict | None = None) -> li
                 mfi = 100.0
 
         obv_rising = None
-        if i >= window and out:
-            obv_rising = obv > out[i - window]["obv"]
+        ad_rising = None
+        if i >= cmf_n and out:
+            obv_rising = obv > out[i - cmf_n]["obv"]
+            ad_rising = ad > out[i - cmf_n]["ad"]
 
-        window_bars = out[start:i]
+        # OBV vs price divergence label (ChartSchool interpretation)
+        obv_div = None
+        if obv_rising is not None:
+            if obv_rising and not bar["up"]:
+                obv_div = "bull"
+            elif (not obv_rising) and bar["up"]:
+                obv_div = "bear"
+
+        window_bars = out[cmf_start:i]
         up_vol = sum(item["volume"] for item in window_bars if item.get("up"))
         down_vol = sum(item["volume"] for item in window_bars if not item.get("up"))
         if bar["up"]:
@@ -1229,7 +2231,31 @@ def _enrich(bars: list[dict], window: int = 20, quote: dict | None = None) -> li
             down_vol += bar["volume"]
         vol_ratio = (up_vol / down_vol) if down_vol > 0 else (None if up_vol == 0 else 99.0)
 
-        score = _volume_score(bool(bar["up"]), rvol, obv_rising, vol_ratio, cmf, mfi)
+        # Effort vs Result + Correct/False breakout (Wyckoff — bar counts of this TF)
+        spread = _bar_spread(bar)
+        close_pos = _close_location(bar)
+        prior_spreads = [_bar_spread(b) for b in bars[cmf_start:i]]
+        avg_spread = (sum(prior_spreads) / len(prior_spreads)) if prior_spreads else None
+        er = _effort_result(rvol, spread, avg_spread, close_pos)
+        bo = _breakout_quality(bars, i, cmf_n, rvol, close_pos, spread, avg_spread)
+
+        score = _volume_score(
+            bool(bar["up"]),
+            rvol,
+            obv_rising,
+            vol_ratio,
+            cmf,
+            mfi,
+            force=force_out,
+            emv=emv,
+            vol_z=vol_z,
+            ad_rising=ad_rising,
+            chaikin=chaikin,
+            pvo_hist=pvo_hist,
+            er_label=er.get("er"),
+            bo_quality=bo.get("bo_quality"),
+            bo_side=bo.get("bo_side"),
+        )
         bias = _bias_from_score(score)
         strength = (
             "strong"
@@ -1242,18 +2268,41 @@ def _enrich(bars: list[dict], window: int = 20, quote: dict | None = None) -> li
         enriched = dict(bar)
         enriched["avg_vol"] = int(round(avg)) if avg else None
         enriched["rvol"] = round(rvol, 2) if rvol is not None else None
-        enriched["spike"] = bool(rvol is not None and rvol >= 1.5)
-        enriched["tone"] = _vol_tone(enriched["rvol"])
+        enriched["vol_z"] = round(vol_z, 2) if vol_z is not None else None
+        enriched["spike"] = bool(
+            (rvol is not None and rvol >= 1.5) or (vol_z is not None and vol_z >= 2.0)
+        )
+        enriched["tone"] = _vol_tone(enriched["rvol"], enriched["vol_z"])
         enriched["obv"] = int(round(obv))
         enriched["obv_rising"] = obv_rising
+        enriched["obv_div"] = obv_div
         enriched["ad"] = int(round(ad))
+        enriched["ad_rising"] = ad_rising
         enriched["cmf"] = round(cmf, 3) if cmf is not None else None
         enriched["mfi"] = round(mfi, 1) if mfi is not None else None
         enriched["vpt"] = int(round(vpt))
+        enriched["force"] = round(force_out, 1) if force_out is not None else None
+        enriched["emv"] = round(emv, 4) if emv is not None else None
+        enriched["vol_osc"] = round(vol_osc, 1) if vol_osc is not None else None
+        enriched["chaikin"] = round(chaikin, 1) if chaikin is not None else None
+        enriched["pvo"] = round(pvo, 2) if pvo is not None else None
+        enriched["pvo_signal"] = round(pvo_signal, 2) if pvo_signal is not None else None
+        enriched["pvo_hist"] = round(pvo_hist, 2) if pvo_hist is not None else None
         enriched["vol_ratio"] = round(vol_ratio, 2) if vol_ratio is not None else None
+        enriched["effort"] = er.get("effort")
+        enriched["result"] = er.get("result")
+        enriched["er"] = er.get("er")
+        enriched["er_tone"] = er.get("er_tone")
+        enriched["spread_x"] = er.get("spread_x")
+        enriched["close_pos"] = er.get("close_pos")
+        enriched["breakout"] = bo.get("breakout")
+        enriched["bo_side"] = bo.get("bo_side")
+        enriched["bo_level"] = bo.get("bo_level")
+        enriched["bo_quality"] = bo.get("bo_quality")
         enriched["score"] = round(score, 1)
         enriched["bias"] = bias
         enriched["strength"] = strength
+        enriched["periods"] = periods
 
         delivery = None
         if quote is not None and i == len(bars) - 1:
@@ -1265,6 +2314,7 @@ def _enrich(bars: list[dict], window: int = 20, quote: dict | None = None) -> li
         enriched["study"] = {
             "volume": enriched["volume"],
             "rvol": enriched["rvol"],
+            "vol_z": enriched["vol_z"],
             "avg_vol": enriched["avg_vol"],
             "move": move,
             "tone": enriched["tone"],
@@ -1272,14 +2322,34 @@ def _enrich(bars: list[dict], window: int = 20, quote: dict | None = None) -> li
             "score": enriched["score"],
             "strength": enriched["strength"],
             "obv_rising": enriched["obv_rising"],
+            "obv_div": enriched["obv_div"],
+            "ad_rising": enriched["ad_rising"],
             "vol_ratio": enriched["vol_ratio"],
             "cmf": enriched["cmf"],
             "mfi": enriched["mfi"],
             "ad": enriched["ad"],
             "vpt": enriched["vpt"],
+            "force": enriched["force"],
+            "emv": enriched["emv"],
+            "vol_osc": enriched["vol_osc"],
+            "chaikin": enriched["chaikin"],
+            "pvo": enriched["pvo"],
+            "pvo_signal": enriched["pvo_signal"],
+            "pvo_hist": enriched["pvo_hist"],
+            "effort": enriched["effort"],
+            "result": enriched["result"],
+            "er": enriched["er"],
+            "er_tone": enriched["er_tone"],
+            "spread_x": enriched["spread_x"],
+            "close_pos": enriched["close_pos"],
+            "breakout": enriched["breakout"],
+            "bo_side": enriched["bo_side"],
+            "bo_level": enriched["bo_level"],
+            "bo_quality": enriched["bo_quality"],
             "delivery_pct": delivery,
             "high": enriched.get("high"),
             "low": enriched.get("low"),
+            "periods": periods,
         }
         out.append(enriched)
     return out
@@ -1292,6 +2362,8 @@ def _counts(bars: list[dict]) -> dict:
         "bearish": sum(1 for bar in bars if bar.get("bias") == "bearish"),
         "neutral": sum(1 for bar in bars if bar.get("bias") == "neutral"),
         "spike": sum(1 for bar in bars if bar.get("tone") == "spike"),
+        "correct_break": sum(1 for bar in bars if bar.get("bo_quality") == "correct"),
+        "false_break": sum(1 for bar in bars if bar.get("bo_quality") == "false"),
         "up": sum(1 for bar in bars if bar.get("up")),
         "down": sum(1 for bar in bars if not bar.get("up")),
     }
@@ -1307,9 +2379,14 @@ def _stats(bars: list[dict], quote: dict, kind: str) -> dict:
         "change_pct": _num(quote.get("pricepercentchange"))
         if kind == "stock"
         else (last or {}).get("change_pct"),
+        "avg_vol": (last or {}).get("avg_vol")
+        or int(_num(quote.get("DVolAvg20")) or 0)
+        or None,
+        # Legacy alias (was always named _20 even when RVOL window ≠ 20).
         "avg_vol_20": (last or {}).get("avg_vol")
         or int(_num(quote.get("DVolAvg20")) or 0)
         or None,
+        "periods": (last or {}).get("periods"),
         "rvol": (last or {}).get("rvol"),
         "tone": (last or {}).get("tone") or "normal",
         "bias": (last or {}).get("bias") or "neutral",
@@ -1317,11 +2394,31 @@ def _stats(bars: list[dict], quote: dict, kind: str) -> dict:
         "strength": (last or {}).get("strength") or "weak",
         "obv": (last or {}).get("obv"),
         "obv_rising": (last or {}).get("obv_rising"),
+        "obv_div": (last or {}).get("obv_div"),
+        "ad_rising": (last or {}).get("ad_rising"),
         "vol_ratio": (last or {}).get("vol_ratio"),
         "cmf": (last or {}).get("cmf"),
         "mfi": (last or {}).get("mfi"),
         "ad": (last or {}).get("ad"),
         "vpt": (last or {}).get("vpt"),
+        "force": (last or {}).get("force"),
+        "emv": (last or {}).get("emv"),
+        "vol_osc": (last or {}).get("vol_osc"),
+        "chaikin": (last or {}).get("chaikin"),
+        "pvo": (last or {}).get("pvo"),
+        "pvo_signal": (last or {}).get("pvo_signal"),
+        "pvo_hist": (last or {}).get("pvo_hist"),
+        "effort": (last or {}).get("effort"),
+        "result": (last or {}).get("result"),
+        "er": (last or {}).get("er"),
+        "er_tone": (last or {}).get("er_tone"),
+        "spread_x": (last or {}).get("spread_x"),
+        "close_pos": (last or {}).get("close_pos"),
+        "breakout": (last or {}).get("breakout"),
+        "bo_side": (last or {}).get("bo_side"),
+        "bo_level": (last or {}).get("bo_level"),
+        "bo_quality": (last or {}).get("bo_quality"),
+        "vol_z": (last or {}).get("vol_z"),
         "delivery_qty": int(_num(quote.get("QtyDeliverable")) or 0) or None,
         "delivery_pct_5d": _num(quote.get("AvgDelVolPer_5day")),
         "spikes": sum(1 for bar in bars if bar.get("spike")),
@@ -1408,11 +2505,7 @@ def _load_bars(
         exchange=exchange,
         fast=fast,
     )
-    intraday = tf_id in {"15m", "1h", "4h"}
-    bars = _bars_from_history(raw, intraday=intraday)
-    if tf.get("aggregate"):
-        bars = _aggregate_bars(bars, int(tf["aggregate"]))
-    return bars
+    return _history_to_tf_bars(raw, tf_id)
 
 
 def build_volume(
@@ -1461,7 +2554,13 @@ def build_volume(
         nse = quote.get("NSEID") or meta["nse"]
         sc = meta["sc_id"]
 
-    bars = _enrich(bars_raw, window=int(tf["avg_window"]), quote=quote)
+    wins = _tf_study_windows(tf_id)
+    bars = _enrich(
+        bars_raw,
+        window=wins["avg_window"],
+        rvol_window=wins["rvol_window"],
+        quote=quote,
+    )
     if not bars:
         raise RuntimeError("No volume bars returned for this symbol and timeframe.")
 
@@ -1474,11 +2573,9 @@ def build_volume(
     if tf_id == "4h":
         note += " (4h built from 60-minute bars)"
     stats = _stats(bars, quote, kind)
-    preferred_win = max(12, min(int(tf.get("avg_window") or 20), 40))
-    bars_used = len(bars)
-    partial_history = bars_used < preferred_win + 1
-    stats["bars_used"] = bars_used
-    stats["partial_history"] = partial_history
+    preferred_win = max(wins["avg_window"], wins["rvol_window"])
+    hist = _history_meta(len(bars), preferred_win + 1)
+    stats.update(hist)
     payload = {
         "as_of": _ist_stamp(),
         "cached": False,
@@ -1488,8 +2585,7 @@ def build_volume(
         "tf_meta": _tf_meta(tf_id),
         "formulas": FORMULAS,
         "volume_available": volume_available,
-        "partial_history": partial_history,
-        "bars_used": bars_used,
+        **hist,
         "symbol": {
             "kind": kind,
             "id": meta["id"],
@@ -1601,6 +2697,7 @@ def _scan_quote_row(preset: dict) -> dict | None:
 
 def _scan_row(preset: dict, tf_id: str) -> dict | None:
     tf = TIMEFRAMES[tf_id]
+    wins = _tf_study_windows(tf_id)
     bars = _enrich(
         _load_bars(
             preset["nse"],
@@ -1608,14 +2705,14 @@ def _scan_row(preset: dict, tf_id: str) -> dict | None:
             exchange=preset.get("exchange") or "NSE",
             fast=True,
         ),
-        window=int(tf["avg_window"]),
+        window=wins["avg_window"],
+        rvol_window=wins["rvol_window"],
     )
     if not bars:
         return None
     last = bars[-1]
-    preferred = max(12, min(int(tf.get("avg_window") or 20), 40))
-    bars_used = len(bars)
-    partial = bars_used < preferred + 1
+    preferred = max(wins["avg_window"], wins["rvol_window"])
+    hist = _history_meta(len(bars), preferred + 1)
     quote = {}
     try:
         quote = _quote_stock(
@@ -1627,8 +2724,7 @@ def _scan_row(preset: dict, tf_id: str) -> dict | None:
     except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
         quote = {}
     study = dict(last.get("study") or {})
-    study["bars_used"] = bars_used
-    study["partial_history"] = partial
+    study.update(hist)
     return {
         "id": preset["id"],
         "nse": quote.get("NSEID") or quote.get("BSEID") or preset["nse"],
@@ -1644,19 +2740,39 @@ def _scan_row(preset: dict, tf_id: str) -> dict | None:
         "score": last.get("score"),
         "strength": last.get("strength"),
         "obv_rising": last.get("obv_rising"),
+        "obv_div": last.get("obv_div"),
+        "ad_rising": last.get("ad_rising"),
         "vol_ratio": last.get("vol_ratio"),
         "cmf": last.get("cmf"),
         "mfi": last.get("mfi"),
         "ad": last.get("ad"),
         "vpt": last.get("vpt"),
+        "force": last.get("force"),
+        "emv": last.get("emv"),
+        "vol_osc": last.get("vol_osc"),
+        "chaikin": last.get("chaikin"),
+        "pvo": last.get("pvo"),
+        "pvo_signal": last.get("pvo_signal"),
+        "pvo_hist": last.get("pvo_hist"),
+        "effort": last.get("effort"),
+        "result": last.get("result"),
+        "er": last.get("er"),
+        "er_tone": last.get("er_tone"),
+        "spread_x": last.get("spread_x"),
+        "close_pos": last.get("close_pos"),
+        "breakout": last.get("breakout"),
+        "bo_side": last.get("bo_side"),
+        "bo_level": last.get("bo_level"),
+        "bo_quality": last.get("bo_quality"),
+        "vol_z": last.get("vol_z"),
         "spike": last.get("spike"),
+        "periods": last.get("periods") or study.get("periods"),
         "close": last["close"],
         "change_pct": last["change_pct"],
         "up": last["up"],
         "label": last["label"],
         "delivery_pct": _num(quote.get("AvgDelVolPer_5day")),
-        "bars_used": bars_used,
-        "partial_history": partial,
+        **hist,
         "study": study,
     }
 
@@ -1666,40 +2782,130 @@ def _scan_row(preset: dict, tf_id: str) -> dict | None:
 TECH_INDICATORS = [
     "rsi",
     "macd",
+    "ppo",
     "sma",
+    "sma200",
     "ema",
     "bb",
     "stoch",
     "cci",
     "willr",
     "adx",
+    "aroon",
     "roc",
 ]
 
-# Default Technical score set (matches UI filter default).
-TECH_CORE_INDICATORS = ["rsi", "macd", "sma", "ema"]
+# Default Technical score set — core + high-value ChartSchool scan KPIs (PPO · Aroon · 50/200).
+TECH_CORE_INDICATORS = [
+    "rsi",
+    "macd",
+    "ppo",
+    "sma",
+    "sma200",
+    "ema",
+    "stoch",
+    "adx",
+    "aroon",
+    "bb",
+    "roc",
+]
 
-# Wilder / Appel / Bollinger defaults — periods are bars of the active TF.
-# RSI: ChartSchool RSI = 100 − 100/(1+RS); RS = AvgGain/AvgLoss (Wilder smooth).
+# Wilder / Appel / Bollinger / Chande defaults — periods are bars of the active TF.
 TECH_FORMULAS = {
-    "timeframe": TF_CONTRACT,
+    "timeframe": (
+        "All Technical periods are ChartSchool bar-counts on the selected chip’s resolution "
+        "(not calendar days). "
+        "Intraday 15m/1H/4H → that many 15m/60m/4h bars; "
+        "Swing 1D/1W/1M → days/weeks/months; "
+        "Long 3M/6M/1Y → daily bars (same math as 1D); 5Y/Max → weekly. "
+        "Defaults: RSI(14) · MACD(12/26/9) · PPO(12/26/9) · SMA(20/50) · SMA(50/200) · "
+        "EMA(20) · BB(20,2) · Full Stoch(14/3/3) · CCI(20) · %R(14) · ADX(14) · "
+        "Aroon(25) · ROC(12) · ATR(14)."
+    ),
     "rsi": (
-        "RSI(14) = 100 − 100/(1+RS); RS = AvgGain/AvgLoss (Wilder smooth) — "
-        "≥55 bull · ≤45 bear · ≥60/≤40 strong · ChartSchool RSI"
+        "Wilder RSI(14): first AvgGain/AvgLoss = SMA of first 14 changes; then "
+        "Avg = (Prev×13 + Current)/14; RSI = 100 − 100/(1+AvgGain/AvgLoss). "
+        "Score: ≥60 +2 · ≥55 +1 · ≤45 −1 · ≤40 −2 (ChartSchool RSI)."
     ),
     "macd": (
-        "MACD = EMA12−EMA26; signal = EMA9(MACD); hist = MACD−signal "
-        "(Appel) — hist>0 and MACD>signal = bullish"
+        "Appel MACD: EMA(12)−EMA(26) of close (EMA seeded with SMA); "
+        "Signal = EMA(9) of MACD; Hist = MACD−Signal. "
+        "Score: Hist>0 & MACD>Signal +1/+2 · opposite −1/−2. "
+        "If PPO is also selected, MACD is shown but not double-counted in Score."
     ),
-    "sma": "SMA(n) = mean(close, n); stack bullish when SMA20 > SMA50",
-    "ema": "EMA(n) with α=2/(n+1); close > EMA20 = short-term bullish",
-    "bb": "%B = (C−Lower)/(Upper−Lower); bands = SMA20 ± 2σ (Bollinger)",
-    "stoch": "%K = 100×(C−LL14)/(HH14−LL14) — ≥50 bull · ≤20/≥80 extremes",
-    "cci": "CCI = (TP−SMA20)/(0.015×MD) — >0 up lean · ≥100/≤−100 strong",
-    "willr": "%R = −100×(HH14−C)/(HH14−LL14) — >−50 bull · ≤−80/≥−20 extremes",
-    "adx": "+DI/−DI/ADX(14) Wilder — direction from DI; ADX≥25 strengthens vote",
-    "roc": "ROC(12) = 100×(C−C₁₂)/C₁₂ — >0 up · ≥3%/≤−3% strong",
-    "score": "Score = sum of selected indicator votes scaled to −100…+100",
+    "ppo": (
+        "ChartSchool PPO(12/26/9): ((EMA12−EMA26)/EMA26)×100; Signal=EMA9(PPO); "
+        "Hist=PPO−Signal. Preferred over MACD for comparing stocks (percentage scale). "
+        "Score: Hist>0 & PPO>Signal +1/+2 · opposite −1/−2 "
+        "(when both MACD+PPO selected, Score uses PPO only)."
+    ),
+    "sma": (
+        "SMA(n)=mean(close,n) on selected bars. Score: SMA20>SMA50 +1 · SMA20<SMA50 −1 "
+        "(ChartSchool moving averages)."
+    ),
+    "sma200": (
+        "ChartSchool Golden/Death Cross bias: SMA50 vs SMA200 (exact periods — needs ≥200 bars). "
+        "Score: SMA50>SMA200 +2 · SMA50<SMA200 −2. Blank on short history (e.g. many intraday series)."
+    ),
+    "ema": (
+        "EMA(n): seed=SMA(n); then EMA=Prev+α×(Close−Prev), α=2/(n+1). "
+        "Score: Close>EMA20 +1 · Close<EMA20 −1."
+    ),
+    "bb": (
+        "Bollinger(20,2): Mid=SMA20; Upper/Lower=Mid±2σ (σ of last 20 closes); "
+        "%B=(C−Lower)/(Upper−Lower). Score: %B≥0.8 +2 · ≥0.5 +1 · ≤0.2 −2 · <0.5 −1 "
+        "(ChartSchool Bollinger %B — position in band, not a standalone reverse signal)."
+    ),
+    "stoch": (
+        "ChartSchool Full Stochastic(14,3,3): Fast%K=100×(C−LL14)/(HH14−LL14); "
+        "Full%K=SMA(Fast%K,3); %D=SMA(Full%K,3). Table Stoch = Full%K. "
+        "Score: ≥80 +2 · ≥50 +1 · ≤20 −2 · <50 −1."
+    ),
+    "cci": (
+        "CCI(20)=(TP−SMA20(TP))/(0.015×MeanDeviation); TP=(H+L+C)/3. "
+        "Score: ≥100 +2 · >0 +1 · ≤−100 −2 · <0 −1 (Lambert / ChartSchool CCI)."
+    ),
+    "willr": (
+        "Williams %R(14)=−100×(HH14−C)/(HH14−LL14). "
+        "Score: ≥−20 +2 · ≥−50 +1 · ≤−80 −2 · <−50 −1 (ChartSchool Williams %R)."
+    ),
+    "adx": (
+        "Wilder +DI/−DI/ADX(14): TR, +DM, −DM smoothed like ATR; "
+        "+DI=100×+DM/ATR; DX=100×|+DI−−DI|/(+DI+−DI); ADX=Wilder smooth of DX. "
+        "Score: +DI>−DI +1 (−1 if opposite); ADX≥25 doubles to ±2."
+    ),
+    "aroon": (
+        "Chande Aroon(25): Up=((25−bars since HH25)/25)×100; Down=((25−bars since LL25)/25)×100; "
+        "Osc=Up−Down. Score: Osc≥50 +2 · Up>Down +1 · Osc≤−50 −2 · Up<Down −1 (ChartSchool Aroon)."
+    ),
+    "roc": (
+        "ROC(12)=100×(C−C₁₂)/C₁₂ on selected bars. "
+        "Score: ≥+3% +2 · >0 +1 · ≤−3% −2 · <0 −1 (ChartSchool ROC)."
+    ),
+    "atr": (
+        "ATR(14) Wilder: TR=max(H−L,|H−Cprev|,|L−Cprev|); first ATR=SMA(TR,14); "
+        "then (Prev×13+TR)/14. ATR%=100×ATR/Close (ChartSchool ATR / ATRP)."
+    ),
+    "setup": (
+        "Setup (display, not in score): Thin if <8 bars (recent listing); "
+        "Overbought if RSI≥70 or Stoch≥80 or %B≥1; "
+        "Oversold if RSI≤30 or Stoch≤20 or %B≤0; "
+        "Trend↑/↓ if SMA stack + Close vs EMA20 (+ ADX≥20 & DI / Aroon when strong); "
+        "Momentum↑/↓ from RSI+MACD+Stoch; else Range."
+    ),
+    "score": (
+        "Score = (Σ selected votes) / (2×N) × 100, clamped ±100. "
+        "Each selected Signal votes −2…+2 (N = voting Signals with data). "
+        "MACD+PPO together → PPO only (same Appel signal). "
+        "Recent listings: periods shrink to available bars; Signals that still lack "
+        "lookback are skipped (e.g. SMA50/200 needs ≥200 bars). "
+        "Bias: ≥+30 bullish · ≤−30 bearish · else neutral."
+    ),
+    "history": (
+        "history=full when bars cover ChartSchool windows (≥~55–200); "
+        "partial when periods are shrunk; thin when <8 bars (IPO / new listing). "
+        "Stochastic falls back to Fast %K if Full(14/3/3) does not fit."
+    ),
     "bullish": "Bullish when technical score ≥ +30",
     "bearish": "Bearish when technical score ≤ −30",
 }
@@ -1718,10 +2924,28 @@ TECH_SOURCES = [
         "url": "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/macd-moving-average-convergence-divergence-oscillator",
     },
     {
+        "id": "ppo",
+        "name": "PPO",
+        "ref": "ChartSchool Percentage Price Oscillator (scan-comparable MACD)",
+        "url": "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/percentage-price-oscillator-ppo",
+    },
+    {
         "id": "ma",
-        "name": "SMA / EMA",
-        "ref": "ChartSchool moving averages",
-        "url": "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/moving-averages-simple-and-exponential",
+        "name": "SMA / EMA / Golden Cross",
+        "ref": "ChartSchool moving averages · Golden / Death Cross",
+        "url": "https://chartschool.stockcharts.com/table-of-contents/trading-strategies-and-models/trading-strategies/moving-average-trading-strategies/trading-using-the-golden-cross",
+    },
+    {
+        "id": "aroon",
+        "name": "Aroon",
+        "ref": "Tushar Chande — ChartSchool Aroon",
+        "url": "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/aroon",
+    },
+    {
+        "id": "adx",
+        "name": "ADX",
+        "ref": "J. Welles Wilder — ChartSchool ADX",
+        "url": "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/average-directional-index-adx",
     },
 ]
 
@@ -1746,10 +2970,116 @@ def _parse_tech_indicators(raw: str | list[str] | None) -> list[str]:
 
 
 def _adapt_period(preferred: int, n: int, minimum: int = 2) -> int:
-    """Shrink a lookback period to fit available bars (IPO / short history)."""
+    """Shrink a lookback to fit available bars (IPO / short history).
+
+    Always returns a value in ``[1, n]`` when ``n > 0`` — never exceeds bar count
+    (avoids SMA(21) on 20 bars and similar silent None results).
+    """
     if n <= 0:
-        return minimum
-    return max(minimum, min(int(preferred), int(n)))
+        return max(1, int(minimum))
+    pref = max(1, int(preferred))
+    lo = max(1, min(int(minimum), n))
+    return max(lo, min(pref, n))
+
+
+def _history_meta(n: int, full_need: int, *, thin_bars: int = 8) -> dict:
+    """Shared recent-listing flag for every desk (Volume · Technical · Lab · Chart).
+
+    thin     — fewer than ``thin_bars`` (IPO / brand-new series)
+    partial  — some ChartSchool windows still truncated
+    full     — enough bars for preferred lookbacks
+    """
+    bars = max(0, int(n))
+    need = max(1, int(full_need))
+    # Yahoo 2y/5y/10y daily counts land a few sessions under a 252-day year.
+    slack = max(12, int(round(need * 0.025))) if need >= 240 else 0
+    if bars < thin_bars:
+        hist = "thin"
+    elif bars + slack < need:
+        hist = "partial"
+    else:
+        hist = "full"
+    return {
+        "history": hist,
+        "partial_history": hist != "full",
+        "bars_used": bars,
+        "history_need": need,
+    }
+
+
+def _adapt_pair(fast_pref: int, slow_pref: int, n: int, *, fast_min: int = 2) -> tuple[int, int]:
+    """Fast/slow periods both ≤ n with fast < slow when possible (IPO-safe)."""
+    if n <= 0:
+        return 1, 1
+    fast = _adapt_period(fast_pref, n, minimum=min(fast_min, n))
+    slow = _adapt_period(slow_pref, n, minimum=min(n, fast + 1 if fast < n else n))
+    if slow <= fast:
+        if n > fast:
+            slow = n
+        elif slow > 1:
+            fast = slow - 1
+        else:
+            fast = 1
+    return fast, slow
+
+
+def _tech_lookbacks(n: int, prefs: dict[str, int]) -> dict[str, int]:
+    """ChartSchool preferred periods, coherently shrunk for short / IPO history.
+
+    Every returned period is ≤ ``n`` (or ≤ n−1 for RSI/ROC which need a prior bar).
+    """
+    n = max(1, int(n))
+    # RSI / ROC need a prior close.
+    p_rsi = _adapt_period(prefs["rsi"], max(1, n - 1), minimum=min(2, max(1, n - 1))) if n >= 2 else 1
+    p_ema = _adapt_period(prefs["ema"], n, minimum=min(2, n))
+    # MACD/PPO: keep fast < slow ≤ n; leave room for signal when possible.
+    p_sig = _adapt_period(prefs["sig"], n, minimum=min(2, n))
+    ideal_slow = min(prefs["slow"], max(2, n - p_sig + 1))
+    p_slow = _adapt_period(ideal_slow, n, minimum=min(2, n))
+    ideal_fast = min(prefs["fast"], max(1, p_slow - 1), max(1, n // 2))
+    p_fast = _adapt_period(ideal_fast, n, minimum=1)
+    if p_fast >= p_slow and p_slow > 1:
+        p_fast = p_slow - 1
+    # SMA stack: fast < slow, both ≤ n.
+    p_sma_f = _adapt_period(prefs["sma_f"], n, minimum=min(2, n))
+    p_sma_s = _adapt_period(prefs["sma_s"], n, minimum=min(n, p_sma_f + 1 if p_sma_f < n else n))
+    if p_sma_s <= p_sma_f:
+        if n > p_sma_f:
+            p_sma_s = n
+        elif p_sma_s > 1:
+            p_sma_f = p_sma_s - 1
+        else:
+            p_sma_f = 1
+    p_bb = _adapt_period(prefs.get("bb", CS_BB), n, minimum=min(2, n))
+    p_stoch = _adapt_period(prefs["stoch"], n, minimum=min(2, n))
+    p_stoch_slow = _adapt_period(prefs.get("stoch_slow", CS_STOCH_SLOW), n, minimum=1)
+    while p_stoch + p_stoch_slow - 1 > n and p_stoch_slow > 1:
+        p_stoch_slow -= 1
+    while p_stoch + p_stoch_slow - 1 > n and p_stoch > 1:
+        p_stoch -= 1
+    p_cci = _adapt_period(prefs["cci"], n, minimum=min(2, n))
+    p_roc = _adapt_period(prefs["roc"], max(1, n - 1), minimum=1) if n >= 2 else 1
+    p_adx = _adapt_period(prefs["adx"], n, minimum=min(3, n))
+    p_atr = _adapt_period(prefs.get("atr", CS_ATR), n, minimum=min(2, n))
+    p_aroon = _adapt_period(prefs.get("aroon", CS_AROON), n, minimum=min(2, n))
+    return {
+        "rsi": max(1, p_rsi),
+        "ema": p_ema,
+        "fast": max(1, p_fast),
+        "slow": max(1, p_slow),
+        "sig": max(1, p_sig),
+        "sma_f": p_sma_f,
+        "sma_s": p_sma_s,
+        "bb": p_bb,
+        "stoch": p_stoch,
+        "stoch_slow": p_stoch_slow,
+        "cci": p_cci,
+        "roc": p_roc,
+        "adx": p_adx,
+        "atr": p_atr,
+        "aroon": p_aroon,
+        "sma_l": prefs.get("sma_l", CS_SMA_LONG),
+    }
 
 
 def _adapt_study_window(
@@ -1823,14 +3153,43 @@ def _rsi_series(closes: list[float], period: int = 14) -> list[float | None]:
     return out
 
 
-def _stoch_k(highs: list[float], lows: list[float], closes: list[float], period: int = 14) -> float | None:
-    if len(closes) < period:
+def _stoch_fast_k_at(
+    highs: list[float],
+    lows: list[float],
+    closes: list[float],
+    end: int,
+    period: int,
+) -> float | None:
+    """Fast %K at index `end` over `period` bars (ChartSchool Stochastic)."""
+    start = end - period + 1
+    if start < 0 or end >= len(closes):
         return None
-    hh = max(highs[-period:])
-    ll = min(lows[-period:])
+    hh = max(highs[start : end + 1])
+    ll = min(lows[start : end + 1])
     if hh <= ll:
         return 50.0
-    return ((closes[-1] - ll) / (hh - ll)) * 100.0
+    return ((closes[end] - ll) / (hh - ll)) * 100.0
+
+
+def _stoch_k(
+    highs: list[float],
+    lows: list[float],
+    closes: list[float],
+    period: int = 14,
+    smooth: int = 3,
+) -> float | None:
+    """ChartSchool Full Stochastic %K: SMA(smooth) of Fast %K(period). Default 14/3."""
+    smooth = max(1, int(smooth))
+    need = period + smooth - 1
+    if len(closes) < need:
+        return None
+    vals: list[float] = []
+    for end in range(len(closes) - smooth, len(closes)):
+        fk = _stoch_fast_k_at(highs, lows, closes, end, period)
+        if fk is None:
+            return None
+        vals.append(fk)
+    return sum(vals) / smooth
 
 
 def _cci_at(highs: list[float], lows: list[float], closes: list[float], period: int = 20) -> float | None:
@@ -1853,6 +3212,116 @@ def _willr_at(highs: list[float], lows: list[float], closes: list[float], period
     if hh <= ll:
         return -50.0
     return ((hh - closes[-1]) / (hh - ll)) * -100.0
+
+
+def _aroon_at(
+    highs: list[float], lows: list[float], period: int = 25
+) -> tuple[float | None, float | None, float | None]:
+    """ChartSchool Aroon(period): Up, Down, Oscillator = Up − Down."""
+    if period <= 0 or len(highs) < period or len(lows) < period:
+        return None, None, None
+    window_h = highs[-period:]
+    window_l = lows[-period:]
+    # Days since high/low within the window (0 = today is the extreme).
+    hh = max(window_h)
+    ll = min(window_l)
+    since_high = period - 1 - max(i for i, v in enumerate(window_h) if v == hh)
+    since_low = period - 1 - max(i for i, v in enumerate(window_l) if v == ll)
+    up = ((period - since_high) / period) * 100.0
+    down = ((period - since_low) / period) * 100.0
+    return up, down, up - down
+
+
+def _atr_last(
+    highs: list[float], lows: list[float], closes: list[float], period: int = 14
+) -> float | None:
+    """Wilder ATR(period) — ChartSchool Average True Range."""
+    n = len(closes)
+    if period <= 0 or n < period + 1:
+        return None
+    trs: list[float] = []
+    for i in range(1, n):
+        tr = max(
+            highs[i] - lows[i],
+            abs(highs[i] - closes[i - 1]),
+            abs(lows[i] - closes[i - 1]),
+        )
+        trs.append(tr)
+    if len(trs) < period:
+        return None
+    atr = sum(trs[:period]) / period
+    for i in range(period, len(trs)):
+        atr = (atr * (period - 1) + trs[i]) / period
+    return atr
+
+
+def _tech_setup(ind: dict) -> str:
+    """Confluence label for scanning — ChartSchool trend / momentum / extremes."""
+    rsi = ind.get("rsi")
+    hist = ind.get("macd_hist")
+    macd = ind.get("macd")
+    signal = ind.get("macd_signal")
+    sma20 = ind.get("sma20")
+    sma50 = ind.get("sma50")
+    ema20 = ind.get("ema20")
+    close = ind.get("close")
+    stoch = ind.get("stoch_k")
+    bb = ind.get("bb_pctb")
+    plus_di = ind.get("plus_di")
+    minus_di = ind.get("minus_di")
+    adx = ind.get("adx")
+
+    overbought = (
+        (rsi is not None and rsi >= 70)
+        or (stoch is not None and stoch >= 80)
+        or (bb is not None and bb >= 1.0)
+    )
+    oversold = (
+        (rsi is not None and rsi <= 30)
+        or (stoch is not None and stoch <= 20)
+        or (bb is not None and bb <= 0.0)
+    )
+    if overbought and not oversold:
+        return "Overbought"
+    if oversold and not overbought:
+        return "Oversold"
+
+    stack_up = sma20 is not None and sma50 is not None and sma20 > sma50
+    stack_dn = sma20 is not None and sma50 is not None and sma20 < sma50
+    above_ema = close is not None and ema20 is not None and close > ema20
+    below_ema = close is not None and ema20 is not None and close < ema20
+    di_up = plus_di is not None and minus_di is not None and plus_di > minus_di
+    di_dn = plus_di is not None and minus_di is not None and plus_di < minus_di
+    trend_ok = adx is not None and adx >= 20
+    aroon_osc = ind.get("aroon_osc")
+    aroon_up = aroon_osc is not None and aroon_osc >= 50
+    aroon_dn = aroon_osc is not None and aroon_osc <= -50
+    gold = ind.get("sma50") is not None and ind.get("sma200") is not None and ind["sma50"] > ind["sma200"]
+    death = ind.get("sma50") is not None and ind.get("sma200") is not None and ind["sma50"] < ind["sma200"]
+    if stack_up and above_ema and (di_up or aroon_up or gold) and trend_ok:
+        return "Trend↑"
+    if stack_dn and below_ema and (di_dn or aroon_dn or death) and trend_ok:
+        return "Trend↓"
+
+    macd_up = hist is not None and signal is not None and macd is not None and hist > 0 and macd > signal
+    macd_dn = hist is not None and signal is not None and macd is not None and hist < 0 and macd < signal
+    rsi_up = rsi is not None and rsi >= 55
+    rsi_dn = rsi is not None and rsi <= 45
+    st_up = stoch is not None and stoch >= 50
+    st_dn = stoch is not None and stoch < 50
+    if macd_up and rsi_up and st_up:
+        return "Momentum↑"
+    if macd_dn and rsi_dn and st_dn:
+        return "Momentum↓"
+    if stack_up and above_ema:
+        return "Trend↑"
+    if stack_dn and below_ema:
+        return "Trend↓"
+    if macd_up or rsi_up:
+        return "Momentum↑"
+    if macd_dn or rsi_dn:
+        return "Momentum↓"
+    return "Range"
 
 
 def _adx_last(
@@ -1928,10 +3397,24 @@ def _tech_votes(ind: dict) -> list[tuple[str, int]]:
             votes.append(("macd", -2 if hist < -abs(macd) * 0.05 else -1))
         else:
             votes.append(("macd", 0))
+    ppo = ind.get("ppo")
+    ppo_sig = ind.get("ppo_signal")
+    ppo_hist = ind.get("ppo_hist")
+    if ppo is not None and ppo_sig is not None and ppo_hist is not None:
+        if ppo_hist > 0 and ppo > ppo_sig:
+            votes.append(("ppo", 2 if ppo_hist > abs(ppo) * 0.05 else 1))
+        elif ppo_hist < 0 and ppo < ppo_sig:
+            votes.append(("ppo", -2 if ppo_hist < -abs(ppo) * 0.05 else -1))
+        else:
+            votes.append(("ppo", 0))
     sma20 = ind.get("sma20")
     sma50 = ind.get("sma50")
     if sma20 is not None and sma50 is not None:
         votes.append(("sma", 1 if sma20 > sma50 else -1 if sma20 < sma50 else 0))
+    sma200 = ind.get("sma200")
+    if sma50 is not None and sma200 is not None:
+        # ChartSchool Golden / Death Cross bias (strong long-term filter).
+        votes.append(("sma200", 2 if sma50 > sma200 else -2 if sma50 < sma200 else 0))
     ema20 = ind.get("ema20")
     close = ind.get("close")
     if ema20 is not None and close is not None:
@@ -1992,6 +3475,20 @@ def _tech_votes(ind: dict) -> list[tuple[str, int]]:
         if adx is not None and adx >= 25 and lean:
             lean = 2 if lean > 0 else -2
         votes.append(("adx", lean))
+    aroon_up = ind.get("aroon_up")
+    aroon_dn = ind.get("aroon_down")
+    aroon_osc = ind.get("aroon_osc")
+    if aroon_osc is not None and aroon_up is not None and aroon_dn is not None:
+        if aroon_osc >= 50:
+            votes.append(("aroon", 2))
+        elif aroon_up > aroon_dn:
+            votes.append(("aroon", 1))
+        elif aroon_osc <= -50:
+            votes.append(("aroon", -2))
+        elif aroon_up < aroon_dn:
+            votes.append(("aroon", -1))
+        else:
+            votes.append(("aroon", 0))
     roc = ind.get("roc")
     if roc is not None:
         if roc >= 3:
@@ -2011,20 +3508,37 @@ def _tech_score_from_votes(
     votes: list[tuple[str, int]],
     selected: list[str] | None = None,
 ) -> float:
+    """Scale selected votes to −100…+100.
+
+    Each vote is −2…+2. Denominator = 2×N so a full-strength panel → ±100.
+    ChartSchool: PPO is the %-form of MACD — when both are selected for scoring,
+    only PPO is counted so the Appel signal is not double-weighted.
+    """
     if selected:
         allow = set(selected)
         votes = [(name, val) for name, val in votes if name in allow]
+    names = {name for name, _ in votes}
+    if "macd" in names and "ppo" in names:
+        votes = [(name, val) for name, val in votes if name != "macd"]
     if not votes:
         return 0.0
     raw = sum(v for _, v in votes)
-    # each indicator can contribute up to ±2
     denom = max(2.0 * len(votes), 1.0)
     return max(-100.0, min(100.0, (raw / denom) * 100.0))
 
 
-def _tech_enrich(bars: list[dict], indicators: list[str] | None = None) -> dict | None:
-    # Process with whatever history exists (recent listings may have << 55 bars).
-    if not bars or len(bars) < 3:
+def _tech_enrich(
+    bars: list[dict],
+    indicators: list[str] | None = None,
+    tf_id: str = "1d",
+) -> dict | None:
+    """Technical study on available bars — works for recent listings / IPOs.
+
+    Periods shrink to fit history. Signals that still cannot compute are omitted
+    from Score (denom shrinks). ``history`` = full | partial | thin.
+    """
+    # Need at least 2 bars for a directional change; 1 bar → price-only thin row.
+    if not bars:
         return None
     closes = [float(b["close"]) for b in bars]
     highs = [
@@ -2033,23 +3547,22 @@ def _tech_enrich(bars: list[dict], indicators: list[str] | None = None) -> dict 
     lows = [float(b["low"] if b.get("low") is not None else b["close"]) for b in bars]
     last = bars[-1]
     n = len(closes)
-    partial = n < 55
-    # Classic defaults, shrunk to available length.
-    p_rsi = _adapt_period(14, max(2, n - 1), minimum=2)
-    p_ema = _adapt_period(20, n, minimum=3)
-    p_fast = _adapt_period(12, max(3, n // 2), minimum=3)
-    p_slow = _adapt_period(26, n, minimum=max(4, p_fast + 1))
-    p_sig = _adapt_period(9, max(3, n // 3), minimum=3)
-    p_sma_f = _adapt_period(20, n, minimum=3)
-    p_sma_s = _adapt_period(50, n, minimum=max(4, p_sma_f + 1))
-    p_stoch = _adapt_period(14, n, minimum=3)
-    p_cci = _adapt_period(20, n, minimum=3)
-    p_roc = _adapt_period(12, max(2, n - 1), minimum=2)
-    p_adx = _adapt_period(14, max(5, n // 2), minimum=5)
+    prefs = _tech_period_prefs(tf_id)
+    full_need = max(prefs["sma_s"] + 1, prefs["slow"] + prefs["sig"] + 2, prefs.get("sma_l", CS_SMA_LONG), 55)
+    lb = _tech_lookbacks(n, prefs)
+    p_rsi = lb["rsi"]
+    p_ema = lb["ema"]
+    p_fast, p_slow, p_sig = lb["fast"], lb["slow"], lb["sig"]
+    p_sma_f, p_sma_s = lb["sma_f"], lb["sma_s"]
+    p_sma_l = lb["sma_l"]
+    p_bb = lb["bb"]
+    p_stoch, p_stoch_slow = lb["stoch"], lb["stoch_slow"]
+    p_cci, p_roc = lb["cci"], lb["roc"]
+    p_adx, p_atr, p_aroon = lb["adx"], lb["atr"], lb["aroon"]
 
-    ema20_s = _ema_series(closes, p_ema)
-    ema12_s = _ema_series(closes, p_fast)
-    ema26_s = _ema_series(closes, p_slow)
+    ema20_s = _ema_series(closes, p_ema) if n >= p_ema else [None] * n
+    ema12_s = _ema_series(closes, p_fast) if n >= p_fast else [None] * n
+    ema26_s = _ema_series(closes, p_slow) if n >= p_slow else [None] * n
     macd_line: list[float | None] = [
         (ema12_s[i] - ema26_s[i]) if ema12_s[i] is not None and ema26_s[i] is not None else None
         for i in range(n)
@@ -2062,40 +3575,82 @@ def _tech_enrich(bars: list[dict], indicators: list[str] | None = None) -> dict 
         for j, val in enumerate(compact):
             if val is not None:
                 signal_series[first_i + j] = val
-    rsi_s = _rsi_series(closes, p_rsi)
+    # ChartSchool PPO — percent form of MACD (comparable across prices).
+    ppo_line: list[float | None] = [
+        ((ema12_s[i] - ema26_s[i]) / ema26_s[i] * 100.0)
+        if ema12_s[i] is not None and ema26_s[i] not in (None, 0)
+        else None
+        for i in range(n)
+    ]
+    ppo_vals = [x for x in ppo_line if x is not None]
+    ppo_signal_series: list[float | None] = [None] * n
+    if len(ppo_vals) >= p_sig:
+        first_p = next(i for i, x in enumerate(ppo_line) if x is not None)
+        compact_p = _ema_series(ppo_vals, p_sig)
+        for j, val in enumerate(compact_p):
+            if val is not None:
+                ppo_signal_series[first_p + j] = val
+    rsi_s = _rsi_series(closes, p_rsi) if n > p_rsi else [None] * n
     sma20 = _sma_at(closes, p_sma_f)
     sma50 = _sma_at(closes, p_sma_s)
-    ema20 = ema20_s[-1]
+    # Exact SMA50/200 for Golden Cross when history allows; else null (never fake).
+    sma50_x = _sma_at(closes, CS_SMA_SLOW) if n >= CS_SMA_SLOW else None
+    sma200 = _sma_at(closes, p_sma_l) if n >= p_sma_l else None
+    ema20 = ema20_s[-1] if ema20_s else None
     macd = macd_line[-1]
     macd_signal = signal_series[-1]
     macd_hist = (
         (macd - macd_signal) if macd is not None and macd_signal is not None else None
     )
-    bb_mid = sma20
+    # Short history: if signal EMA not ready yet, lean on MACD vs zero (centerline).
+    if macd_hist is None and macd is not None and n < full_need:
+        macd_signal = 0.0
+        macd_hist = macd
+    ppo = ppo_line[-1]
+    ppo_signal = ppo_signal_series[-1]
+    ppo_hist = (ppo - ppo_signal) if ppo is not None and ppo_signal is not None else None
+    if ppo_hist is None and ppo is not None and n < full_need:
+        ppo_signal = 0.0
+        ppo_hist = ppo
+    bb_mid = _sma_at(closes, p_bb)
     bb_pctb = None
-    if bb_mid is not None and n >= p_sma_f:
-        chunk = closes[-p_sma_f:]
-        var = sum((x - bb_mid) ** 2 for x in chunk) / p_sma_f
+    if bb_mid is not None and n >= p_bb:
+        chunk = closes[-p_bb:]
+        var = sum((x - bb_mid) ** 2 for x in chunk) / p_bb  # population σ (Bollinger)
         std = var**0.5
-        upper = bb_mid + 2 * std
-        lower = bb_mid - 2 * std
+        upper = bb_mid + CS_BB_DEV * std
+        lower = bb_mid - CS_BB_DEV * std
         span = upper - lower
         bb_pctb = ((closes[-1] - lower) / span) if span > 0 else 0.5
-    stoch_k = _stoch_k(highs, lows, closes, p_stoch)
+    stoch_k = _stoch_k(highs, lows, closes, p_stoch, smooth=p_stoch_slow)
+    stoch_mode = "full"
+    if stoch_k is None and n >= p_stoch:
+        # Fall back to Fast %K when Full Stoch window does not fit (IPO / thin).
+        stoch_k = _stoch_fast_k_at(highs, lows, closes, n - 1, p_stoch)
+        stoch_mode = "fast"
     cci = _cci_at(highs, lows, closes, p_cci)
     willr = _willr_at(highs, lows, closes, p_stoch)
     plus_di, minus_di, adx = _adx_last(highs, lows, closes, p_adx)
+    aroon_up, aroon_down, aroon_osc = _aroon_at(highs, lows, p_aroon)
+    atr = _atr_last(highs, lows, closes, p_atr)
+    atr_pct = (100.0 * atr / closes[-1]) if atr is not None and closes[-1] else None
     roc = None
     if n > p_roc and closes[-(p_roc + 1)]:
         roc = ((closes[-1] - closes[-(p_roc + 1)]) / closes[-(p_roc + 1)]) * 100.0
+    # For votes: use exact SMA50 when pairing with SMA200; else adapted SMA50 for short stack.
+    sma50_for_cross = sma50_x if sma200 is not None else sma50
     ind = {
         "close": closes[-1],
         "rsi": round(rsi_s[-1], 1) if rsi_s[-1] is not None else None,
         "macd": round(macd, 3) if macd is not None else None,
         "macd_signal": round(macd_signal, 3) if macd_signal is not None else None,
         "macd_hist": round(macd_hist, 3) if macd_hist is not None else None,
+        "ppo": round(ppo, 3) if ppo is not None else None,
+        "ppo_signal": round(ppo_signal, 3) if ppo_signal is not None else None,
+        "ppo_hist": round(ppo_hist, 3) if ppo_hist is not None else None,
         "sma20": round(sma20, 2) if sma20 is not None else None,
-        "sma50": round(sma50, 2) if sma50 is not None else None,
+        "sma50": round(sma50_for_cross, 2) if sma50_for_cross is not None else None,
+        "sma200": round(sma200, 2) if sma200 is not None else None,
         "ema20": round(ema20, 2) if ema20 is not None else None,
         "bb_pctb": round(bb_pctb, 3) if bb_pctb is not None else None,
         "stoch_k": round(stoch_k, 1) if stoch_k is not None else None,
@@ -2104,7 +3659,12 @@ def _tech_enrich(bars: list[dict], indicators: list[str] | None = None) -> dict 
         "plus_di": round(plus_di, 1) if plus_di is not None else None,
         "minus_di": round(minus_di, 1) if minus_di is not None else None,
         "adx": round(adx, 1) if adx is not None else None,
+        "aroon_up": round(aroon_up, 1) if aroon_up is not None else None,
+        "aroon_down": round(aroon_down, 1) if aroon_down is not None else None,
+        "aroon_osc": round(aroon_osc, 1) if aroon_osc is not None else None,
         "roc": round(roc, 2) if roc is not None else None,
+        "atr": round(atr, 2) if atr is not None else None,
+        "atr_pct": round(atr_pct, 2) if atr_pct is not None else None,
     }
     selected = _parse_tech_indicators(indicators)
     votes = _tech_votes(ind)
@@ -2113,10 +3673,44 @@ def _tech_enrich(bars: list[dict], indicators: list[str] | None = None) -> dict 
     strength = (
         "strong" if abs(score) >= 60 else "moderate" if abs(score) >= 30 else "weak"
     )
+    hist = _history_meta(n, full_need)
+    history = hist["history"]
+    partial = hist["partial_history"]
+    setup = _tech_setup(ind)
+    if history == "thin" and setup in ("Range", "Momentum↑", "Momentum↓"):
+        setup = "Thin"
+    # Which selected Signals could not vote (missing lookback).
+    voted_names = {name for name, _ in votes}
+    skipped = [name for name in selected if name not in voted_names]
+    # After PPO preference, macd may still show in votes dict but not score — not "skipped".
+    shown = {name: val for name, val in votes if name in selected}
+    stoch_period_label = (
+        f"{p_stoch}/{p_stoch_slow}/{p_stoch_slow}"
+        if stoch_mode == "full"
+        else f"{p_stoch} fast"
+    )
     return {
         **ind,
-        "votes": {name: val for name, val in votes if name in selected},
+        "setup": setup,
+        "votes": shown,
         "indicators": selected,
+        "skipped": skipped,
+        "periods": {
+            "rsi": p_rsi,
+            "ema": p_ema,
+            "macd": f"{p_fast}/{p_slow}/{p_sig}",
+            "ppo": f"{p_fast}/{p_slow}/{p_sig}",
+            "sma": f"{p_sma_f}/{p_sma_s}",
+            "sma200": f"{CS_SMA_SLOW}/{p_sma_l}" if sma200 is not None else None,
+            "bb": f"{p_bb},{CS_BB_DEV:g}",
+            "stoch": stoch_period_label,
+            "cci": p_cci,
+            "willr": p_stoch,
+            "roc": p_roc,
+            "adx": p_adx,
+            "aroon": p_aroon,
+            "atr": p_atr,
+        },
         "score": score,
         "bias": bias,
         "strength": strength,
@@ -2124,8 +3718,7 @@ def _tech_enrich(bars: list[dict], indicators: list[str] | None = None) -> dict 
         "up": last.get("up"),
         "volume": last.get("volume"),
         "label": last.get("label"),
-        "bars_used": n,
-        "partial_history": partial,
+        **hist,
     }
 
 
@@ -2134,13 +3727,16 @@ def _scan_tech_row(
     tf_id: str,
     indicators: list[str] | None = None,
 ) -> dict | None:
+    # 3M/6M are short daily windows. SMA50/200 still needs ~200 sessions,
+    # so those chips read the 1-year daily series (RSI/MACD use the same last bars).
+    hist_tf = "1y" if tf_id in {"3m", "6m"} else tf_id
     bars = _load_bars(
         preset["nse"],
-        tf_id,
+        hist_tf,
         exchange=preset.get("exchange") or "NSE",
         fast=True,
     )
-    study = _tech_enrich(bars, indicators=indicators)
+    study = _tech_enrich(bars, indicators=indicators, tf_id=tf_id)
     if not study:
         return None
     quote = {}
@@ -2168,8 +3764,12 @@ def _scan_tech_row(
         "macd": study.get("macd"),
         "macd_signal": study.get("macd_signal"),
         "macd_hist": study.get("macd_hist"),
+        "ppo": study.get("ppo"),
+        "ppo_signal": study.get("ppo_signal"),
+        "ppo_hist": study.get("ppo_hist"),
         "sma20": study.get("sma20"),
         "sma50": study.get("sma50"),
+        "sma200": study.get("sma200"),
         "ema20": study.get("ema20"),
         "bb_pctb": study.get("bb_pctb"),
         "stoch_k": study.get("stoch_k"),
@@ -2178,15 +3778,24 @@ def _scan_tech_row(
         "plus_di": study.get("plus_di"),
         "minus_di": study.get("minus_di"),
         "adx": study.get("adx"),
+        "aroon_up": study.get("aroon_up"),
+        "aroon_down": study.get("aroon_down"),
+        "aroon_osc": study.get("aroon_osc"),
         "roc": study.get("roc"),
+        "atr": study.get("atr"),
+        "atr_pct": study.get("atr_pct"),
+        "setup": study.get("setup"),
         "score": study.get("score"),
         "bias": study.get("bias"),
         "strength": study.get("strength"),
         "votes": study.get("votes") or {},
+        "skipped": study.get("skipped") or [],
+        "periods": study.get("periods"),
         "study": study,
         "spike": False,
         "bars_used": study.get("bars_used"),
         "partial_history": study.get("partial_history"),
+        "history": study.get("history") or ("partial" if study.get("partial_history") else "full"),
     }
 
 
@@ -2195,6 +3804,7 @@ def build_tech_board(
     universe_id: str = "nifty50",
     fresh: bool = False,
     indicators: str | list[str] | None = None,
+    progress_job: str | None = None,
 ) -> dict:
     _ensure_universe_ready()
     tf_id = _normalize_tf(tf_id)
@@ -2203,7 +3813,7 @@ def build_tech_board(
     universe_id = meta["id"]
     selected = _parse_tech_indicators(indicators)
     presets = _load_universe(universe_id)
-    cache_key = ("tech-board", universe_id, tf_id, ",".join(selected))
+    cache_key = ("tech-board-v3", universe_id, tf_id, ",".join(selected))
     now = time.time()
     if not fresh:
         with _cache_lock:
@@ -2212,74 +3822,56 @@ def build_tech_board(
                 payload = dict(cached[1])
                 payload["cached"] = True
                 payload["session"] = session_status()
+                _scan_job_finish(progress_job, ok=True)
                 return payload
 
+    _scan_job_start(
+        progress_job,
+        total=len(presets),
+        phase="scan",
+        label=f"{meta['label']} · Technical",
+    )
     errors = 0
-    if _universe_is_large(universe_id):
-        quote_rows: list[dict] = []
-        with ThreadPoolExecutor(max_workers=18) as pool:
-            futures = {pool.submit(_scan_quote_row, preset): preset for preset in presets}
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row and row.get("volume", 0) > 0:
-                    quote_rows.append(row)
-        quote_rows.sort(key=lambda item: item.get("volume") or 0, reverse=True)
-        enrich_limit = int(meta.get("enrich_limit") or 200)
-        shortlist = quote_rows[:enrich_limit]
-        rows: list[dict] = []
-        with ThreadPoolExecutor(max_workers=12) as pool:
-            futures = {
-                pool.submit(
-                    _scan_tech_row,
-                    {
-                        "id": row["id"],
-                        "label": row["name"],
-                        "sc_id": row["sc_id"],
-                        "nse": row["nse"],
-                        "exchange": row.get("exchange"),
-                    },
-                    tf_id,
-                    selected,
-                ): row
-                for row in shortlist
-            }
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row:
-                    rows.append(row)
-        enriched_n = len(rows)
-        rows = _merge_quote_remainder(rows, quote_rows)
-        universe_note = (
-            f"{meta['label']}: quoted {len(quote_rows)}, tech-enriched {enriched_n}"
-            f", board {len(rows)}/{_universe_full_size(universe_id)}"
-            f" · {len(selected)} indicators"
-        )
-    else:
-        rows = []
-        with ThreadPoolExecutor(max_workers=12) as pool:
-            futures = {
-                pool.submit(_scan_tech_row, preset, tf_id, selected): preset
-                for preset in presets
-            }
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row:
-                    rows.append(row)
-        universe_note = (
-            f"{meta['label']} technical scan · {tf['label']} · {len(selected)} indicators"
-        )
+    try:
+        if _universe_is_large(universe_id):
+            rows = []
+            with ThreadPoolExecutor(max_workers=16) as pool:
+                futures = {
+                    pool.submit(_scan_tech_row, preset, tf_id, selected): preset for preset in presets
+                }
+                for future in _as_completed_progress(futures, progress_job, phase="enrich"):
+                    try:
+                        row = future.result()
+                    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+                        errors += 1
+                        continue
+                    if row:
+                        rows.append(row)
+            universe_note = (
+                f"{meta['label']}: tech-enriched {len(rows)}/{len(presets)}"
+                f" of {_universe_full_size(universe_id)} · {len(selected)} indicators"
+            )
+        else:
+            rows = []
+            with ThreadPoolExecutor(max_workers=12) as pool:
+                futures = {
+                    pool.submit(_scan_tech_row, preset, tf_id, selected): preset
+                    for preset in presets
+                }
+                for future in _as_completed_progress(futures, progress_job, phase="scan"):
+                    try:
+                        row = future.result()
+                    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+                        errors += 1
+                        continue
+                    if row:
+                        rows.append(row)
+            universe_note = (
+                f"{meta['label']} technical scan · {tf['label']} · {len(selected)} indicators"
+            )
+    except Exception as exc:
+        _scan_job_finish(progress_job, ok=False, error=str(exc))
+        raise
 
     rows.sort(
         key=lambda item: (
@@ -2343,6 +3935,7 @@ def build_tech_board(
     }
     with _cache_lock:
         _cache[cache_key] = (now, payload)
+    _scan_job_finish(progress_job, ok=True)
     return payload
 
 
@@ -2350,6 +3943,7 @@ def build_board(
     tf_id: str = "1d",
     universe_id: str = "nifty50",
     fresh: bool = False,
+    progress_job: str | None = None,
 ) -> dict:
     _ensure_universe_ready()
     tf_id = _normalize_tf(tf_id)
@@ -2357,7 +3951,7 @@ def build_board(
     meta = _universe_meta(universe_id)
     universe_id = meta["id"]
     presets = _load_universe(universe_id)
-    cache_key = ("board", universe_id, tf_id)
+    cache_key = ("board-v2", universe_id, tf_id)
     now = time.time()
     if not fresh:
         with _cache_lock:
@@ -2366,71 +3960,50 @@ def build_board(
                 payload = dict(cached[1])
                 payload["cached"] = True
                 payload["session"] = session_status()
+                _scan_job_finish(progress_job, ok=True)
                 return payload
 
+    _scan_job_start(
+        progress_job,
+        total=len(presets),
+        phase="scan",
+        label=f"{meta['label']} · Volume",
+    )
     errors = 0
-    # Very large universes: quote pass first, then history-enrich the most active names.
-    # Index books (Nifty 50/500, Midcap, Smallcap) are scanned in full when sized.
-    if _universe_is_large(universe_id):
-        quote_rows: list[dict] = []
-        with ThreadPoolExecutor(max_workers=18) as pool:
-            futures = {pool.submit(_scan_quote_row, preset): preset for preset in presets}
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row and row.get("volume", 0) > 0:
-                    quote_rows.append(row)
-        quote_rows.sort(key=lambda item: item.get("volume") or 0, reverse=True)
-        enrich_limit = int(meta.get("enrich_limit") or 200)
-        shortlist = quote_rows[:enrich_limit]
-        rows: list[dict] = []
-        with ThreadPoolExecutor(max_workers=12) as pool:
-            futures = {
-                pool.submit(_scan_row, {
-                    "id": row["id"],
-                    "label": row["name"],
-                    "sc_id": row["sc_id"],
-                    "nse": row["nse"],
-                    "exchange": row.get("exchange"),
-                }, tf_id): row
-                for row in shortlist
-            }
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row:
-                    rows.append(row)
-        enriched_n = len(rows)
-        rows = _merge_quote_remainder(rows, quote_rows)
-        universe_note = (
-            f"{meta['label']}: quoted {len(quote_rows)}, enriched {enriched_n}"
-            f", board {len(rows)}/{_universe_full_size(universe_id)}"
-        )
-    else:
-        rows = []
-        pool = ThreadPoolExecutor(max_workers=12)
-        futures = {pool.submit(_scan_row, preset, tf_id): preset for preset in presets}
-        try:
-            for future in as_completed(futures, timeout=18):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row:
-                    rows.append(row)
-        except TimeoutError:
-            errors += 1
-            print("Board scan: deadline — returning rows already in hand")
-        finally:
-            pool.shutdown(wait=False, cancel_futures=True)
-        universe_note = f"{meta['label']} full volume scan · {tf['label']}"
+    # Large books used to history-enrich only the 1,200 most active quotes.
+    try:
+        if _universe_is_large(universe_id):
+            rows = []
+            with ThreadPoolExecutor(max_workers=16) as pool:
+                futures = {pool.submit(_scan_row, preset, tf_id): preset for preset in presets}
+                for future in _as_completed_progress(futures, progress_job, phase="enrich"):
+                    try:
+                        row = future.result()
+                    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+                        errors += 1
+                        continue
+                    if row:
+                        rows.append(row)
+            universe_note = (
+                f"{meta['label']}: volume-enriched {len(rows)}/{len(presets)}"
+                f" of {_universe_full_size(universe_id)}"
+            )
+        else:
+            rows = []
+            with ThreadPoolExecutor(max_workers=12) as pool:
+                futures = {pool.submit(_scan_row, preset, tf_id): preset for preset in presets}
+                for future in _as_completed_progress(futures, progress_job, phase="scan"):
+                    try:
+                        row = future.result()
+                    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+                        errors += 1
+                        continue
+                    if row:
+                        rows.append(row)
+            universe_note = f"{meta['label']} full volume scan · {tf['label']}"
+    except Exception as exc:
+        _scan_job_finish(progress_job, ok=False, error=str(exc))
+        raise
 
     rows.sort(
         key=lambda item: (
@@ -2473,6 +4046,7 @@ def build_board(
     }
     with _cache_lock:
         _cache[cache_key] = (now, payload)
+    _scan_job_finish(progress_job, ok=True)
     return payload
 
 
@@ -2541,43 +4115,58 @@ SCI_SOURCES = [
 ]
 
 SCI_FORMULAS = {
-    "timeframe": TF_CONTRACT,
+    "timeframe": (
+        "Lab periods are ChartSchool bar-counts on the selected chip’s resolution "
+        "(not calendar days). "
+        "Intraday 15m/1H/4H → that many bars; Swing 1D/1W/1M → day/week/month; "
+        "Long 3M–1Y → daily (same as 1D); 5Y/Max → weekly. "
+        "Defaults: Donchian/CMF/OBV(20) · RVOL(50 prior) · BB BandWidth(20,2) · ATR(14) · "
+        "break needs RVOL≥1.5×."
+    ),
+    "history": (
+        "Recent listings: Donchian/RVOL/CMF/ATR/BB windows shrink to available bars. "
+        "history=thin (<8) · partial · full. Scores use only what the series can support."
+    ),
     "range": (
-        "Range% = 100 × (HH_N − LL_N) / mid over N=avg_window bars — "
-        "tight box ≈ consolidation (Donchian / ChartSchool Price Channels)"
+        "Range% = 100 × (prior HH_N − prior LL_N) / mid — Donchian box excluding the "
+        "current bar when possible (ChartSchool Price Channels). N = CMF/avg_window "
+        "on the selected chip (default 20)."
     ),
     "squeeze": (
-        "BandWidth = (Upper−Lower)/SMA_N = 4σ/SMA; ATR% = ATR14/close; "
-        "contraction vs prior N bars = squeeze (Bollinger · Wilder ATR)"
+        "BandWidth = 4σ/SMA_N on last N closes (Bollinger 20,2); ATR% = ATR(14)/Close. "
+        "Squeeze if BandWidth or ATR% < 85% of the prior N-bar reading."
     ),
     "rvol": (
-        "RVOL = V ÷ SMA(V, N) — breakout needs RVOL ≥ 1.5 "
-        "(ChartSchool relative volume practice)"
+        "RVOL = V_t ÷ SMA(V, prior 50 bars) — current bar excluded (ChartSchool RVOL). "
+        "Breakout filter: RVOL ≥ 1.5×."
     ),
     "cmf": (
-        "CMF(N) in the base — positive = accumulation while price coils "
-        "(Chaikin / ChartSchool CMF)"
+        "CMF(N) = Σ MFV_N ÷ Σ V_N over the Donchian base; "
+        "MFV=((C−L)−(H−C))/(H−L)×V (Chaikin / ChartSchool). N defaults to 20."
     ),
     "obv": (
-        "OBV Δ over N bars > 0 while range is tight = quiet buying "
-        "(Granville / ChartSchool OBV)"
+        "OBVΔ = OBV_t − OBV_{t−N} on selected bars; rising while coiled = quiet buying "
+        "(Granville / ChartSchool OBV)."
     ),
     "structure": (
-        "Higher pivot lows (last 3 swing lows rising) = bullish structure "
-        "(ChartSchool Trend Lines)"
+        "Higher pivot lows (last 3 swings, or 2 on thin history) = bullish structure "
+        "(ChartSchool Trend Lines)."
     ),
     "bull_breakout": (
-        "Close > prior HH_N (exclude current bar) AND RVOL≥1.5 AND close near highs"
+        "Close > prior HH_N AND RVOL≥1.5 AND close in top of range (pos≥0.85)."
     ),
     "bull_base": (
-        "Consolidating box + (CMF>0 or OBV rising or higher lows) — coiled bull"
+        "Coil (consol_score≥55) + accumulation (CMF>0.05 or OBV↑ or higher lows)."
     ),
     "consolidating": (
-        "Tight Range% + squeeze (BB/ATR contraction) + volume drying in base"
+        "Coil from tight Range% + BandWidth/ATR squeeze + volume dry-up in the base."
     ),
-    "score": "Bull score prioritizes breakout > bull base > plain consolidation",
-    "rank": "Rank 1 = highest bull/pattern score in the universe",
-    "spark": "Sparkline = last 30 closes for visual pattern context",
+    "score": (
+        "Pattern score 0…100: breakout uses bull_score; bull_base mixes bull+coil; "
+        "plain coil uses consol×0.7. Bias bullish on breakout/bull_base."
+    ),
+    "rank": "Rank 1 = breakout first, then bull base, then coil — by score inside each group",
+    "spark": "Sparkline = last 30 closes of the selected TF for visual context",
 }
 
 
@@ -2649,15 +4238,28 @@ def _higher_lows(lows: list[float], count: int = 3) -> bool | None:
     return all(recent[i] < recent[i + 1] for i in range(len(recent) - 1))
 
 
-def _sci_enrich(bars: list[dict], window: int = 20) -> dict | None:
-    """Volume + chart-pattern reader for bull / consolidating setups."""
+def _sci_enrich(
+    bars: list[dict],
+    window: int = CS_CMF,
+    rvol_window: int | None = None,
+) -> dict | None:
+    """Lab reader — Donchian coil / breakout with ChartSchool lookbacks on TF bars."""
     n = len(bars)
+    pref_box = int(window or CS_CMF)
+    pref_rvol = int(rvol_window if rvol_window is not None else CS_RVOL)
     # Fit Donchian/base window to available history (recent listings OK).
-    base = _adapt_study_window(window or 20, n, floor=4, headroom=1)
+    base = _adapt_study_window(pref_box, n, floor=4, headroom=1)
+    if base is None:
+        base = _adapt_study_window(pref_box, n, floor=2, headroom=1)
     if base is None:
         return None
-    preferred = max(12, min(int(window or 20), 30))
-    partial = n < preferred + 20
+    # RVOL uses prior bars only → cap at n−1.
+    rvol_n = _adapt_period(pref_rvol, max(1, n - 1), minimum=1)
+    atr_p = _adapt_period(CS_ATR, max(1, n - 1), minimum=min(3, max(1, n - 1)))
+    bb_n = _adapt_period(pref_box, n, minimum=min(3, n))
+    cmf_n = min(base, n)
+    preferred = max(pref_box, pref_rvol, CS_ATR)
+    hist = _history_meta(n, preferred + 1)
     closes = [float(b["close"]) for b in bars]
     highs = [
         float(b["high"] if b.get("high") is not None else b["close"]) for b in bars
@@ -2680,8 +4282,7 @@ def _sci_enrich(bars: list[dict], window: int = 20) -> dict | None:
     if prior_h > prior_l:
         pos_in_range = (close - prior_l) / (prior_h - prior_l)
 
-    # Bollinger BandWidth on N=base bars of the active TF (ChartSchool BandWidth)
-    bb_n = base
+    # Bollinger BandWidth on N bars of the active TF (ChartSchool BandWidth)
     sma_bb = _sma_at(closes, bb_n)
     bb_width = None
     bb_width_prev = None
@@ -2698,7 +4299,6 @@ def _sci_enrich(bars: list[dict], window: int = 20) -> dict | None:
             prev_std = prev_var**0.5
             bb_width_prev = (4.0 * prev_std) / prev_sma if prev_sma else None
 
-    atr_p = _adapt_period(14, max(3, n - 1), minimum=3)
     atr_s = _atr_series(highs, lows, closes, atr_p)
     atr = atr_s[-1]
     atr_prev = atr_s[-1 - base] if n > base + atr_p else None
@@ -2710,8 +4310,9 @@ def _sci_enrich(bars: list[dict], window: int = 20) -> dict | None:
     if atr_pct is not None and atr_pct_prev is not None and atr_pct_prev > 0:
         squeeze = squeeze or atr_pct < atr_pct_prev * 0.85
 
-    # Volume: RVOL + dry-up in base
-    avg_vol = _sma_last(vols, base)
+    # ChartSchool RVOL — prior bars only (exclude current).
+    prior_vols = [v for v in vols[max(0, n - 1 - rvol_n) : n - 1] if v > 0]
+    avg_vol = (sum(prior_vols) / len(prior_vols)) if prior_vols else None
     rvol = (vols[-1] / avg_vol) if avg_vol and avg_vol > 0 else None
     half = max(2, base // 2)
     base_vol = _sma_last(vols[-(base + 1) : -1] or vols[-base:], half)
@@ -2720,8 +4321,7 @@ def _sci_enrich(bars: list[dict], window: int = 20) -> dict | None:
         base_vol is not None and prior_vol is not None and prior_vol > 0 and base_vol < prior_vol * 0.85
     )
 
-    # CMF over base window
-    cmf_n = min(base, n)
+    # CMF over Donchian/base window
     mfv_sum = 0.0
     vol_sum = 0.0
     for i in range(n - cmf_n, n):
@@ -2861,8 +4461,19 @@ def _sci_enrich(bars: list[dict], window: int = 20) -> dict | None:
         "label": last.get("label"),
         "breakout_level": round(prior_h, 2) if prior_h else None,
         "support_level": round(prior_l, 2) if prior_l else None,
-        "bars_used": n,
-        "partial_history": partial,
+        **hist,
+        "window": base,
+        "rvol_window": rvol_n,
+        "periods": {
+            "donchian": base,
+            "cmf": cmf_n,
+            "obv": obv_back,
+            "rvol": rvol_n,
+            "bb": f"{bb_n},{CS_BB_DEV:g}",
+            "atr": atr_p,
+            "break_rvol": 1.5,
+            "hl": hl_need,
+        },
     }
 
 
@@ -2874,7 +4485,12 @@ def _scan_sci_row(preset: dict, tf_id: str) -> dict | None:
         exchange=preset.get("exchange") or "NSE",
         fast=True,
     )
-    study = _sci_enrich(bars, window=int(tf["avg_window"]))
+    wins = _tf_study_windows(tf_id)
+    study = _sci_enrich(
+        bars,
+        window=wins["avg_window"],
+        rvol_window=wins["rvol_window"],
+    )
     if not study:
         return None
     quote = {}
@@ -2920,8 +4536,13 @@ def _scan_sci_row(preset: dict, tf_id: str) -> dict | None:
         "breakout_level": study.get("breakout_level"),
         "support_level": study.get("support_level"),
         "study": study,
+        "periods": study.get("periods"),
+        "window": study.get("window"),
+        "rvol_window": study.get("rvol_window"),
         "bars_used": study.get("bars_used"),
         "partial_history": study.get("partial_history"),
+        "history": study.get("history") or ("partial" if study.get("partial_history") else "full"),
+        "history_need": study.get("history_need"),
         "rank": None,
         "percentile": None,
     }
@@ -2931,6 +4552,7 @@ def build_sci_board(
     tf_id: str = "1d",
     universe_id: str = "nifty50",
     fresh: bool = False,
+    progress_job: str | None = None,
 ) -> dict:
     _ensure_universe_ready()
     tf_id = _normalize_tf(tf_id)
@@ -2938,7 +4560,7 @@ def build_sci_board(
     meta = _universe_meta(universe_id)
     universe_id = meta["id"]
     presets = _load_universe(universe_id)
-    cache_key = ("sci-board-pattern", universe_id, tf_id)
+    cache_key = ("sci-board-v2", universe_id, tf_id)
     now = time.time()
     if not fresh:
         with _cache_lock:
@@ -2947,71 +4569,53 @@ def build_sci_board(
                 payload = dict(cached[1])
                 payload["cached"] = True
                 payload["session"] = session_status()
+                _scan_job_finish(progress_job, ok=True)
                 return payload
 
+    _scan_job_start(
+        progress_job,
+        total=len(presets),
+        phase="scan",
+        label=f"{meta['label']} · Lab",
+    )
     errors = 0
-    if _universe_is_large(universe_id):
-        quote_rows: list[dict] = []
-        with ThreadPoolExecutor(max_workers=18) as pool:
-            futures = {pool.submit(_scan_quote_row, preset): preset for preset in presets}
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row and row.get("volume", 0) > 0:
-                    quote_rows.append(row)
-        quote_rows.sort(key=lambda item: item.get("volume") or 0, reverse=True)
-        enrich_limit = int(meta.get("enrich_limit") or 200)
-        shortlist = quote_rows[:enrich_limit]
-        rows: list[dict] = []
-        with ThreadPoolExecutor(max_workers=12) as pool:
-            futures = {
-                pool.submit(
-                    _scan_sci_row,
-                    {
-                        "id": row["id"],
-                        "label": row["name"],
-                        "sc_id": row["sc_id"],
-                        "nse": row["nse"],
-                        "exchange": row.get("exchange"),
-                    },
-                    tf_id,
-                ): row
-                for row in shortlist
-            }
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row:
-                    rows.append(row)
-        enriched_n = len(rows)
-        rows = _merge_quote_remainder(rows, quote_rows)
-        universe_note = (
-            f"{meta['label']}: quoted {len(quote_rows)}, pattern-enriched {enriched_n}"
-            f", board {len(rows)}/{_universe_full_size(universe_id)}"
-        )
-    else:
-        rows = []
-        with ThreadPoolExecutor(max_workers=12) as pool:
-            futures = {
-                pool.submit(_scan_sci_row, preset, tf_id): preset for preset in presets
-            }
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row:
-                    rows.append(row)
-        universe_note = (
-            f"{meta['label']} pattern lab · {tf['label']} · volume + chart patterns"
-        )
+    try:
+        if _universe_is_large(universe_id):
+            rows = []
+            with ThreadPoolExecutor(max_workers=16) as pool:
+                futures = {pool.submit(_scan_sci_row, preset, tf_id): preset for preset in presets}
+                for future in _as_completed_progress(futures, progress_job, phase="enrich"):
+                    try:
+                        row = future.result()
+                    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+                        errors += 1
+                        continue
+                    if row:
+                        rows.append(row)
+            universe_note = (
+                f"{meta['label']}: lab-enriched {len(rows)}/{len(presets)}"
+                f" of {_universe_full_size(universe_id)}"
+            )
+        else:
+            rows = []
+            with ThreadPoolExecutor(max_workers=12) as pool:
+                futures = {
+                    pool.submit(_scan_sci_row, preset, tf_id): preset for preset in presets
+                }
+                for future in _as_completed_progress(futures, progress_job, phase="scan"):
+                    try:
+                        row = future.result()
+                    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+                        errors += 1
+                        continue
+                    if row:
+                        rows.append(row)
+            universe_note = (
+                f"{meta['label']} Lab · {tf['label']} · volume + chart patterns"
+            )
+    except Exception as exc:
+        _scan_job_finish(progress_job, ok=False, error=str(exc))
+        raise
 
     pattern_rank = {
         "bull_breakout": 0,
@@ -3091,6 +4695,7 @@ def build_sci_board(
     }
     with _cache_lock:
         _cache[cache_key] = (now, payload)
+    _scan_job_finish(progress_job, ok=True)
     return payload
 
 
@@ -3110,61 +4715,202 @@ CHART_STUDIES = [
     "candle",
 ]
 
+# API field → table header (Chart dashboard “→ columns” must match ScanTable labels).
+CHART_COLUMN_LABELS = {
+    "support": "Sup",
+    "resistance": "Res",
+    "demand_lo": "Demand",
+    "supply_lo": "Supply",
+    "dist_support_pct": "Dist S%",
+    "dist_resistance_pct": "Dist R%",
+    "range_width_pct": "Range%",
+    "setup": "Setup",
+    "trend": "Trend",
+    "trend_touches": "Touches",
+    "higher_lows": "HL",
+    "lower_highs": "LH",
+    "gap": "Gap",
+    "gap_pct": "Gap%",
+    "rvol": "RVOL",
+    "pattern": "Pattern",
+    "fib_nearest": "Fib",
+    "fib_zone": "Fib zone",
+    "fib_context": "Fib ctx",
+    "candle": "Candle",
+    "candle_quality": "Candle Q",
+    "score": "Score",
+    "bias": "Bias",
+    "high_edge": "Edge",
+    "confluence": "Conf",
+}
+
 CHART_SOURCES = [
     {
         "id": "support_resistance",
         "name": "Support & Resistance",
         "ref": "StockCharts ChartSchool — reaction highs/lows, trading ranges, S⇄R flips",
         "url": "https://chartschool.stockcharts.com/table-of-contents/chart-analysis/support-and-resistance",
+        "columns": ["support", "resistance", "demand_lo", "supply_lo", "dist_support_pct", "dist_resistance_pct", "range_width_pct", "setup"],
+        "lookback": "sr_look · sr · near_pct · zone_pct",
     },
     {
         "id": "trend",
         "name": "Trend Lines",
         "ref": "StockCharts — uptrend (rising lows) / downtrend (falling highs), ≥3 touches",
         "url": "https://chartschool.stockcharts.com/table-of-contents/chart-analysis/trend-lines",
+        "columns": ["trend", "trend_touches", "higher_lows", "lower_highs"],
+        "lookback": "trend_touches",
     },
     {
         "id": "gap",
         "name": "Gaps",
         "ref": "StockCharts — common · breakaway · runaway · exhaustion (volume context)",
         "url": "https://chartschool.stockcharts.com/table-of-contents/chart-analysis/gaps-and-gap-analysis",
+        "columns": ["gap", "gap_pct", "rvol"],
+        "lookback": "rvol · gap_rvol",
+    },
+    {
+        "id": "rvol",
+        "name": "Relative Volume (RVOL)",
+        "ref": "StockCharts — V ÷ SMA(prior 50); confirms gaps/breaks (default 50)",
+        "url": "https://chartschool.stockcharts.com/table-of-contents/technical-indicators-and-overlays/technical-indicators/relative-volume-rvol",
+        "columns": ["rvol"],
+        "lookback": "rvol",
     },
     {
         "id": "pattern",
         "name": "Chart Patterns",
         "ref": "StockCharts — rectangle · triangles · flags · double top/bottom",
         "url": "https://chartschool.stockcharts.com/table-of-contents/chart-analysis/chart-patterns",
+        "columns": ["pattern"],
+        "lookback": "sr",
     },
     {
         "id": "fibonacci",
         "name": "Fibonacci Retracements",
         "ref": "StockCharts — 23.6% · 38.2% · 50% · 61.8% alert zones",
         "url": "https://chartschool.stockcharts.com/table-of-contents/chart-analysis/chart-annotation-tools/fibonacci-retracements",
+        "columns": ["fib_nearest", "fib_zone", "fib_context"],
+        "lookback": "fib_swing",
     },
     {
         "id": "candle",
         "name": "Candlestick Reversals",
-        "ref": "StockCharts — hammer · engulfing · shooting star · doji",
+        "ref": "StockCharts — hammer · engulfing · shooting star · doji (context at S/R)",
         "url": "https://chartschool.stockcharts.com/table-of-contents/chart-analysis/candlestick-charts/introduction-to-candlesticks",
+        "columns": ["candle", "candle_quality"],
+        "lookback": "last bar",
+    },
+    {
+        "id": "candle_bull",
+        "name": "Bullish Candlestick Patterns",
+        "ref": "StockCharts — hammer · bullish engulfing at support",
+        "url": "https://chartschool.stockcharts.com/table-of-contents/chart-analysis/candlestick-charts/candlestick-bullish-reversal-patterns",
+        "columns": ["candle"],
+        "lookback": "last bar",
+    },
+    {
+        "id": "candle_bear",
+        "name": "Bearish Candlestick Patterns",
+        "ref": "StockCharts — shooting star · bearish engulfing at resistance",
+        "url": "https://chartschool.stockcharts.com/table-of-contents/chart-analysis/candlestick-charts/candlestick-bearish-reversal-patterns",
+        "columns": ["candle"],
+        "lookback": "last bar",
+    },
+    {
+        "id": "score_edges",
+        "name": "Score · Edge · Conf",
+        "ref": "Murphy / ChartSchool — weighted high-success edges · confirmation count",
+        "url": "https://chartschool.stockcharts.com/table-of-contents/chart-analysis",
+        "columns": ["score", "bias", "high_edge", "confluence"],
+        "lookback": "edges on selected read window",
     },
 ]
 
 CHART_FORMULAS = {
-    "timeframe": TF_CONTRACT,
+    "timeframe": (
+        "Chart read windows (no Intraday): "
+        "Daily sessions: 126 (6M) · 252 (1Y) · 504 (2Y) · 756 (3Y) · 1008 (4Y) · 1260 (5Y) · 2520 (Full). "
+        "Swing weeks: 104 (2Y) · 260 (5Y). Long: 60 months · 520 weeks (10Y). "
+        "Inside every chip: RVOL(50) · S/R base(20) · trend ≥3 touches · Fib on that chart. "
+        "A bar is that resolution (RVOL(50) = 50 weeks on Swing, 50 months on 5Y·M). "
+        "S/R and Fib use the selected chart. Near≤1.25% · gap RVOL≥1.4."
+    ),
+    "history": (
+        "Recent listings / IPOs: use every available bar of the selected chip. "
+        "S/R base, pivot look, RVOL, and Fib swing shrink to fit; trend needs 2 touches "
+        "when <12 bars; Fib alerts off until ≥24 bars. "
+        "history=thin (<8) · partial · full. Score dampened thin×0.45 / partial×0.70 "
+        "and tagged T/P on Score/Setup — never blank solely for short history."
+    ),
+    "score": (
+        "Score column = projected confluence 0…100 (mid 50) from ChartSchool edges: "
+        "vol-confirmed S/R break · validated trend · cont pattern+trend · "
+        "reversal candle at S/R/Fib · breakaway gap · Fib 38.2–61.8 with trend. "
+        "Murphy: ≥3 aligned edges adds a bonus. Bullish ≥60 · bearish ≤40 · "
+        "thin/partial dampened · T/P tag."
+    ),
+    "bias": (
+        "Bias column: bullish when Score≥60 · bearish when Score≤40 · else neutral."
+    ),
+    "high_edge": (
+        "Edge column = High when |Conf|≥3 or a top-tier edge fires "
+        "(vol_breakout / vol_breakdown / cont pattern+trend / hammer_sr / star_sr / "
+        "gap_breakaway). Off on thin IPOs. Hover Edge/Conf for edge list."
+    ),
+    "confluence": (
+        "Conf column = bull edges − bear edges (signed count). "
+        "|Conf|≥3 triggers Murphy bonus on Score."
+    ),
+    "setup": (
+        "Setup column: breakout / breakdown / near_support / near_resistance / "
+        "fib_zone / mid_range — from S/R proximity and breaks. T/P = thin/partial history."
+    ),
     "support": (
-        "Support = nearest swing-low pivot ≤ close (reaction low zone ~0.4%) — "
-        "ChartSchool Support & Resistance"
+        "Sup = nearest shelf at or under the close on the look window: swing-low zone, "
+        "or a broken swing high that flipped to support when it is tighter (ChartSchool S⇄R). "
+        "Never plotted above the close. Touches = reactions inside ~0.6%."
     ),
     "resistance": (
-        "Resistance = nearest swing-high pivot ≥ close — ChartSchool S&R"
+        "Res = nearest swing-high zone at or above the close on the selected chart "
+        "(5-bar swings, not a one-day spike). Break = close through that zone."
+    ),
+    "demand": (
+        "Demand = bottom 20% of the selected chart high–low (visible-range discount). "
+        "PAGEIND-style base: the orange zone price is sitting on, not the last tiny pivot."
+    ),
+    "supply": (
+        "Supply = top 20% of the selected chart high–low (visible-range premium). "
+        "The ceiling of this read window — 1D·160 is the recent swing, 2Y+ reaches the prior high."
+    ),
+    "dist": (
+        "Dist S% / Dist R% = % from close to support / resistance. "
+        "Near when ≤ near_pct (1.25% full · 1.5% partial · 2% thin)."
+    ),
+    "range_width": (
+        "S/R% = 100×(nearest Res − nearest Sup) / mid. "
+        "Loc = where Close sits from Demand (0) to Supply (100)."
     ),
     "trend": (
-        "Uptrend: ≥3 rising swing lows + positive slope; downtrend: ≥3 falling "
-        "swing highs + negative slope — ChartSchool Trend Lines (3rd touch validates)"
+        "Trend column: up / down / sideways — rising swing lows or falling swing highs "
+        "(ChartSchool Trend Lines). Touches(≥N) counts touches; ✓ when validated "
+        "(≥3, or ≥2 on thin). HL / LH = higher lows / lower highs structure."
     ),
-    "gap_up": "Up gap when bar.low > prior.high — ChartSchool Gaps",
-    "gap_down": "Down gap when bar.high < prior.low — ChartSchool Gaps",
-    "breakaway_gap": "Gap out of congestion with RVOL≥1.4 — ChartSchool gap types",
+    "rvol": (
+        "RVOL(N) = V_t ÷ SMA(V, prior N bars) — current excluded (ChartSchool). "
+        "Confirms gaps/breaks at ≥1.4×. On 1W, N weeks; on 1M, N months."
+    ),
+    "gap": (
+        "Gap column: up/down × common|breakaway|runaway|exhaustion (or —). "
+        "Up when low>prior high; down when high<prior low. "
+        "Breakaway needs congestion (range ~4–16%) + RVOL≥1.4. Gap% on hover."
+    ),
+    "pattern": (
+        "Pattern column: rectangle · asc/desc/sym triangle · double top/bottom · flag "
+        "(or —). ChartSchool confirmation = close through the boundary or neckline "
+        "(doubles score only after that break). Role = continuation / reversal / range. "
+        "Shapes shrink on short history."
+    ),
     "rectangle": "Sideways range between flat support & resistance",
     "asc_triangle": "Flat highs + rising lows — bullish continuation bias",
     "desc_triangle": "Flat lows + falling highs — bearish continuation bias",
@@ -3173,13 +4919,191 @@ CHART_FORMULAS = {
     "double_top": "Two similar swing highs with intervening trough — reversal",
     "flag": "Tight counter-move after an impulse leg — continuation",
     "fib": (
-        "After advance: level = High − (High−Low)×r; after decline: Low+(High−Low)×r; "
-        "r ∈ {0.236, 0.382, 0.5, 0.618} — ChartSchool Fibonacci (50% Dow Theory)"
+        "Fib(≥swing) = nearest retracement label (23.6/38.2/50/61.8). "
+        "After advance: High−span×r; after decline: Low+span×r. "
+        "Zone highlight when ≤1% of 38.2/50/61.8. Off until ≥24 bars. "
+        "Hover: context · dist% · swing."
     ),
-    "hammer": "Small body near top of range + long lower shadow — bullish reversal",
+    "candle": (
+        "Candle column: hammer / bullish engulfing / shooting star / bearish engulfing / "
+        "doji (or —). Stronger at S/R or Fib — quality on hover."
+    ),
+    "hammer": (
+        "Small body near top of range + long lower shadow — bullish reversal; "
+        "stronger at support / Fib / downtrend (ChartSchool)."
+    ),
     "engulfing": "Current body engulfs prior body — reversal candlestick",
-    "score": "Confluence of S/R · trend · gap · pattern · Fib · candle (0…100 bull lean)",
 }
+
+# ChartSchool / Murphy — higher-reliability edges for score projection (points from 50).
+# Prefer volume-confirmed breaks, validated trends, continuation-with-trend, context candles.
+CHART_EDGE_WEIGHTS: dict[str, float] = {
+    # S/R breaks — volume confirmation preferred (ChartSchool TA 101 / Murphy)
+    "vol_breakout": 22.0,
+    "breakout": 12.0,
+    "vol_breakdown": -22.0,
+    "breakdown": -12.0,
+    # Validated trend lines (≥3 touches)
+    "trend_valid_up": 12.0,
+    "trend_up": 5.0,
+    "trend_valid_down": -12.0,
+    "trend_down": -5.0,
+    # Continuation patterns aligned with trend (ascending triangle, flags)
+    "cont_asc_triangle": 14.0,
+    "asc_triangle": 7.0,
+    "cont_desc_triangle": -14.0,
+    "desc_triangle": -7.0,
+    "cont_flag_bull": 12.0,
+    "flag_bull": 6.0,
+    "cont_flag_bear": -12.0,
+    "flag_bear": -6.0,
+    "rect_support": 7.0,
+    "rect_resist": -7.0,
+    "sym_coil": 2.0,
+    # Reversal patterns (double bottom/top — ChartSchool: confirm on break)
+    "double_bottom": 11.0,
+    "double_top": -11.0,
+    # Gaps — breakaway/runaway > common; exhaustion fades
+    "gap_breakaway_up": 12.0,
+    "gap_runaway_up": 8.0,
+    "gap_common_up": 2.0,
+    "gap_exhaust_up": -5.0,
+    "gap_breakaway_down": -12.0,
+    "gap_runaway_down": -8.0,
+    "gap_common_down": -2.0,
+    "gap_exhaust_down": 5.0,
+    # Candles with S/R or Fib context (ChartSchool)
+    "hammer_sr": 12.0,
+    "engulf_bull_sr": 11.0,
+    "hammer_weak": 3.0,
+    "star_sr": -12.0,
+    "engulf_bear_sr": -11.0,
+    "star_weak": -3.0,
+    # Fib alert zone with trend (38.2 / 50 / 61.8)
+    "fib_pullback_up": 10.0,
+    "fib_bounce_down": -8.0,
+    "fib_pullback": 4.0,
+    "fib_bounce": -3.0,
+    # Near S/R with trend (bounce / reject setups)
+    "near_support_up": 9.0,
+    "near_support": 5.0,
+    "near_resist_down": -9.0,
+    "near_resist": -5.0,
+    # Murphy confirmation bonus applied separately when |edges| ≥ 3
+}
+
+
+def _cluster_prices(prices: list[float], zone_pct: float) -> list[tuple[float, int]]:
+    """Merge reaction prices that sit in one ChartSchool zone. Returns (level, touches)."""
+    if not prices:
+        return []
+    pts = sorted(float(p) for p in prices)
+    groups: list[list[float]] = [[pts[0]]]
+    for price in pts[1:]:
+        mid = sum(groups[-1]) / len(groups[-1])
+        if mid > 0 and abs(price - mid) / mid * 100.0 <= zone_pct:
+            groups[-1].append(price)
+        else:
+            groups.append([price])
+    return [(sum(group) / len(group), len(group)) for group in groups]
+
+
+def _chart_sr_levels(
+    swing_highs: list[float],
+    swing_lows: list[float],
+    highs: list[float],
+    lows: list[float],
+    close: float,
+    *,
+    look: int,
+    base: int,
+    zone_pct: float,
+) -> dict:
+    """Nearest chart support under price and resistance over price.
+
+    Resistance is the closest swing-high zone the close has not broken.
+    Support is the closest shelf under the close: a swing low, or a broken
+    swing high that flipped (ChartSchool S⇄R) when that shelf is tighter.
+    """
+    cluster_pct = max(zone_pct, 0.6)
+    hi_lv = _cluster_prices(swing_highs, cluster_pct)
+    lo_lv = _cluster_prices(swing_lows, cluster_pct)
+
+    res_opts = [(px, touches) for px, touches in hi_lv if px + 1e-9 >= close]
+    res_from = "pivot"
+    if not res_opts:
+        overhead = [h for h in highs[-look:] if h >= close]
+        if not overhead:
+            overhead = [h for h in highs[-base:] if h >= close] or highs[-base:]
+        res_opts = [(max(overhead) if max(overhead) >= close else close, 1)]
+        res_from = "range"
+    res_opts.sort(key=lambda item: item[0])
+    nearest_res = res_opts[0][0]
+    res_band = [item for item in res_opts if item[0] <= nearest_res * 1.003]
+    resistance, res_touches = max(res_band, key=lambda item: (item[1], -item[0]))
+
+    # Swing lows on or under the close. A high the close has cleared becomes support
+    # only when it is a tighter shelf than those lows (ChartSchool role reversal).
+    sup_opts = [(px, touches, "pivot") for px, touches in lo_lv if px <= close]
+    nearest_low = max((px for px, _, _ in sup_opts), default=None)
+    for px, touches in hi_lv:
+        if px >= close:
+            continue
+        if nearest_low is not None and px < nearest_low:
+            continue
+        sup_opts.append((px, touches, "flip"))
+    sup_from = "pivot"
+    if not sup_opts:
+        under = [lv for lv in lows[-look:] if lv <= close]
+        if not under:
+            under = [lv for lv in lows[-base:] if lv <= close] or lows[-base:]
+        floor = min(under) if min(under) <= close else close
+        sup_opts = [(floor, 1, "range")]
+    sup_opts.sort(key=lambda item: -item[0])
+    nearest_sup = sup_opts[0][0]
+    sup_band = [item for item in sup_opts if item[0] >= nearest_sup * 0.997]
+    support, sup_touches, sup_from = max(sup_band, key=lambda item: (item[1], item[0]))
+
+    if resistance <= support:
+        under = [lv for lv in lows[-look:] if lv < close] or lows[-base:]
+        over = [h for h in highs[-look:] if h > close] or highs[-base:]
+        support, resistance = min(under), max(over)
+        if resistance <= support:
+            support, resistance = min(lows[-base:]), max(highs[-base:])
+        sup_touches, res_touches = 1, 1
+        sup_from, res_from = "range", "range"
+
+    return {
+        "support": support,
+        "resistance": resistance,
+        "support_touches": int(sup_touches),
+        "resistance_touches": int(res_touches),
+        "support_from": sup_from,
+        "resistance_from": res_from,
+    }
+
+
+def _visible_range_zones(highs: list[float], lows: list[float], fraction: float = 0.20) -> dict:
+    """Premium and discount zones of the selected chart (visible-range supply/demand).
+
+    Top 20% of the chart high–low is supply. Bottom 20% is demand.
+    Matches a multi-year daily read such as PAGEIND: demand near the base,
+    supply near the ceiling, not the last one-day pivot.
+    """
+    if not highs or not lows:
+        return {}
+    hi = max(highs)
+    lo = min(lows)
+    span = hi - lo
+    if span <= 0:
+        return {"demand_lo": lo, "demand_hi": hi, "supply_lo": lo, "supply_hi": hi}
+    band = span * fraction
+    return {
+        "demand_lo": lo,
+        "demand_hi": lo + band,
+        "supply_lo": hi - band,
+        "supply_hi": hi,
+    }
 
 
 def _pivot_highs(highs: list[float], left: int = 2, right: int = 2) -> list[tuple[int, float]]:
@@ -3230,15 +5154,48 @@ def _detect_candle(o: float, h: float, l: float, c: float, prev_o: float, prev_c
     return "none"
 
 
-def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
-    """StockCharts Chart Analysis — tightened ChartSchool rules."""
+def _chart_enrich(
+    bars: list[dict],
+    window: int = CS_CMF,
+    rvol_window: int | None = None,
+    sr_look: int | None = None,
+    fib_swing: int | None = None,
+) -> dict | None:
+    """StockCharts Chart Analysis — tightened ChartSchool rules.
+
+    Recent listings: shrink every lookback to available bars and still emit a row
+    (S/R from HH/LL of what exists). Score conviction is dampened when thin/partial.
+    """
     n = len(bars)
-    # Fit S/R window to available bars so short listings still get a reading.
-    base = _adapt_study_window(window or 20, n, floor=4, headroom=1)
-    if base is None:
+    if n < 1:
         return None
-    preferred = max(18, min(int(window or 20), 40))
-    partial = n < preferred + 12
+    # Fit S/R window to available bars so short listings still get a reading.
+    base = _adapt_study_window(window or CS_CMF, n, floor=4, headroom=1)
+    if base is None:
+        base = _adapt_study_window(window or CS_CMF, n, floor=2, headroom=1)
+    if base is None:
+        # Brand-new listing (1–2 bars): use the whole series as the box.
+        base = max(1, n - (1 if n > 1 else 0))
+    rvol_n = _adapt_period(
+        rvol_window if rvol_window is not None else CS_RVOL,
+        max(1, n - 1) if n > 1 else 1,
+        minimum=1,
+    )
+    look_pref_meta = int(sr_look) if sr_look is not None else 90
+    fib_pref_meta = int(fib_swing) if fib_swing is not None else max(50, int(window or CS_CMF) * 3)
+    preferred = max(
+        int(window or CS_CMF),
+        int(rvol_window or CS_RVOL),
+        look_pref_meta,
+        fib_pref_meta,
+    )
+    # RVOL excludes the current bar, so it needs one extra session. Do not add
+    # that extra bar on top of a longer S/R window — that marked every full
+    # chart (126, 260, 504, …) as partial and dampened the score.
+    full_need = max(preferred, int(rvol_window or CS_RVOL) + 1)
+    hist = _history_meta(n, full_need)
+    partial = hist["partial_history"]
+    listing = hist.get("history") or "full"  # thin | partial | full
     opens = [float(b.get("open") if b.get("open") is not None else b["close"]) for b in bars]
     highs = [float(b["high"] if b.get("high") is not None else b["close"]) for b in bars]
     lows = [float(b["low"] if b.get("low") is not None else b["close"]) for b in bars]
@@ -3246,29 +5203,61 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
     vols = [float(b.get("volume") or 0) for b in bars]
     last = bars[-1]
     close = closes[-1]
-    tol = max(close * 0.004, 1e-6)  # ~0.4% zone (ChartSchool: zones, not exact ticks)
+    zone_pct = 0.4
+    # Slightly wider "near" zone when history is short (levels noisier).
+    near_pct = 2.0 if listing == "thin" else 1.5 if listing == "partial" else 1.25
+    gap_rvol = 1.4
+    tol = max(close * (zone_pct / 100.0), 1e-6)  # ChartSchool: zones, not exact ticks
 
     # --- Support & Resistance (reaction highs / lows) ---
-    look = min(n, 90)
+    # Chip sets preferred pivot look; always clamp to available bars (IPO-safe).
+    if sr_look is not None:
+        look_pref = int(sr_look)
+    else:
+        look_pref = 90
+        if n >= 800:
+            look_pref = 252
+        elif n >= 400:
+            look_pref = 200
+        elif n >= 220:
+            look_pref = 160
+        elif n >= 180:
+            look_pref = 120
+    look = _adapt_period(look_pref, n, minimum=min(max(base, 2), n))
     off = n - look
     pivot_lr = 2 if look >= 10 else 1
     ph_abs = [(off + i, v) for i, v in _pivot_highs(highs[-look:], left=pivot_lr, right=pivot_lr)]
     pl_abs = [(off + i, v) for i, v in _pivot_lows(lows[-look:], left=pivot_lr, right=pivot_lr)]
-    # Nearest resistance above / support below from recent pivots
-    resist_cands = sorted({v for _, v in ph_abs[-8:] if v >= close - tol})
-    support_cands = sorted({v for _, v in pl_abs[-8:] if v <= close + tol}, reverse=True)
-    resistance = resist_cands[0] if resist_cands else max(highs[-base:])
-    support = support_cands[0] if support_cands else min(lows[-base:])
-    if resistance <= support:
-        support, resistance = min(lows[-base:]), max(highs[-base:])
+    # Support / resistance use the whole selected chart, with a wider swing
+    # so a one-day spike is not "the" level. Trend keeps the shorter look above.
+    chart_lr = 5 if n >= 40 else 3 if n >= 16 else max(1, pivot_lr)
+    ph_chart = [v for _, v in _pivot_highs(highs, left=chart_lr, right=chart_lr)]
+    pl_chart = [v for _, v in _pivot_lows(lows, left=chart_lr, right=chart_lr)]
+    sr = _chart_sr_levels(
+        ph_chart,
+        pl_chart,
+        highs,
+        lows,
+        close,
+        look=n,
+        base=base,
+        zone_pct=zone_pct,
+    )
+    zones = _visible_range_zones(highs, lows)
+    support = sr["support"]
+    resistance = sr["resistance"]
+    support_touches = sr["support_touches"]
+    resistance_touches = sr["resistance_touches"]
+    support_from = sr["support_from"]
+    resistance_from = sr["resistance_from"]
 
     mid_sr = (support + resistance) / 2.0
     range_width = ((resistance - support) / mid_sr * 100.0) if mid_sr else None
     dist_sup = ((close - support) / close * 100.0) if close else None
     dist_res = ((resistance - close) / close * 100.0) if close else None
     # Near = inside ChartSchool-style zone under the level
-    near_support = bool(dist_sup is not None and -0.15 <= dist_sup <= 1.25)
-    near_resistance = bool(dist_res is not None and -0.15 <= dist_res <= 1.25)
+    near_support = bool(dist_sup is not None and -0.15 <= dist_sup <= near_pct)
+    near_resistance = bool(dist_res is not None and -0.15 <= dist_res <= near_pct)
     # Breaks: close through the level (ChartSchool: supply/demand wins on close)
     if n >= 2:
         prior_inside = closes[-2] <= resistance + tol and closes[-2] >= support - tol
@@ -3314,10 +5303,11 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
     else:
         trend_touches = max(len(low_piv), len(high_piv))
 
-    # --- Gaps (ChartSchool definitions + volume significance) ---
+    # --- Gaps (ChartSchool definitions + RVOL prior-only volume significance) ---
     gap = "none"
     gap_pct = None
-    avg_vol = _sma_last(vols, base)
+    prior_vols = [v for v in vols[max(0, n - 1 - rvol_n) : n - 1] if v > 0]
+    avg_vol = (sum(prior_vols) / len(prior_vols)) if prior_vols else None
     rvol = (vols[-1] / avg_vol) if avg_vol and avg_vol > 0 else None
     congested = bool(range_width is not None and 4.0 <= range_width <= 16.0)
     if n >= 2:
@@ -3325,7 +5315,7 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
         # Gap must persist: today's extreme still clear of prior bar (intraday fill ignored on daily)
         if lows[-1] > prev_h:
             gap_pct = (lows[-1] - prev_h) / prev_h * 100.0 if prev_h else None
-            strong_vol = rvol is not None and rvol >= 1.4
+            strong_vol = rvol is not None and rvol >= gap_rvol
             large_gap = gap_pct is not None and gap_pct >= 1.0
             if congested and strong_vol and close > resistance - tol:
                 gap = "up_breakaway"
@@ -3337,7 +5327,7 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
                 gap = "up_common"
         elif highs[-1] < prev_l:
             gap_pct = (prev_l - highs[-1]) / prev_l * 100.0 if prev_l else None
-            strong_vol = rvol is not None and rvol >= 1.4
+            strong_vol = rvol is not None and rvol >= gap_rvol
             large_gap = gap_pct is not None and gap_pct >= 1.0
             if congested and strong_vol and close < support + tol:
                 gap = "down_breakaway"
@@ -3375,6 +5365,7 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
         flat_low = (lh_v - ll) / mid_sr <= 0.012
 
     pattern = "none"
+    pattern_neck = None  # double top/bottom confirmation level (ChartSchool reaction extreme)
     if range_width is not None and range_width <= 11 and flat_high and flat_low:
         pattern = "rectangle"
     elif flat_high and rising_lows and range_width is not None and range_width <= 18:
@@ -3384,21 +5375,24 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
     elif falling_highs and rising_lows and range_width is not None and range_width <= 14:
         pattern = "sym_triangle"
     else:
-        # Double bottom: two similar lows, peak between, second low not much lower
-        if len(pl_abs) >= 2:
+        # Double bottom: two similar lows, peak between (gap shrinks on short history)
+        dbl_gap = 3 if n < 30 else 6
+        if len(pl_abs) >= 2 and mid_sr:
             i1, a = pl_abs[-2]
             i2, b = pl_abs[-1]
-            if 6 <= i2 - i1 <= base * 2 and abs(a - b) / mid_sr <= 0.025 and i2 >= n - base:
+            if dbl_gap <= i2 - i1 <= max(base * 2, dbl_gap + 1) and abs(a - b) / mid_sr <= 0.03 and i2 >= n - base:
                 peak = max(highs[i1 : i2 + 1])
-                if peak >= max(a, b) * 1.025 and close >= min(a, b):
+                if peak >= max(a, b) * 1.02 and close >= min(a, b):
                     pattern = "double_bottom"
-        if pattern == "none" and len(ph_abs) >= 2:
+                    pattern_neck = peak
+        if pattern == "none" and len(ph_abs) >= 2 and mid_sr:
             i1, a = ph_abs[-2]
             i2, b = ph_abs[-1]
-            if 6 <= i2 - i1 <= base * 2 and abs(a - b) / mid_sr <= 0.025 and i2 >= n - base:
+            if dbl_gap <= i2 - i1 <= max(base * 2, dbl_gap + 1) and abs(a - b) / mid_sr <= 0.03 and i2 >= n - base:
                 trough = min(lows[i1 : i2 + 1])
-                if trough <= min(a, b) * 0.975 and close <= max(a, b):
+                if trough <= min(a, b) * 0.98 and close <= max(a, b):
                     pattern = "double_top"
+                    pattern_neck = trough
         # Flag / pennant: impulse ≥6% then 5–12 bar coil ≤4%
         if pattern == "none" and n > 20:
             for impulse_len in (10, 14, 18):
@@ -3412,10 +5406,51 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
                     pattern = "flag_bull" if move > 0 else "flag_bear"
                     break
 
+    # ChartSchool: a pattern is complete on the break (neckline / boundary), not on the shape alone.
+    pattern_role = "none"
+    pattern_confirmed = False
+    if pattern == "rectangle":
+        pattern_role = "range"
+        pattern_confirmed = bool(break_res or break_sup)
+    elif pattern in ("asc_triangle", "flag_bull"):
+        pattern_role = "continuation"
+        if pattern == "asc_triangle":
+            pattern_confirmed = bool(break_res)
+        elif n > 6:
+            pattern_confirmed = close > max(highs[-6:-1])
+    elif pattern in ("desc_triangle", "flag_bear"):
+        pattern_role = "continuation"
+        if pattern == "desc_triangle":
+            pattern_confirmed = bool(break_sup)
+        elif n > 6:
+            pattern_confirmed = close < min(lows[-6:-1])
+    elif pattern == "sym_triangle":
+        pattern_role = "continuation"
+        pattern_confirmed = bool(break_res or break_sup)
+    elif pattern == "double_bottom":
+        pattern_role = "reversal"
+        pattern_confirmed = bool(pattern_neck is not None and close > pattern_neck)
+    elif pattern == "double_top":
+        pattern_role = "reversal"
+        pattern_confirmed = bool(pattern_neck is not None and close < pattern_neck)
+
     # --- Fibonacci: ChartSchool after advance/decline ---
-    swing_look = min(n - 1, max(50, base * 3))
-    swing_h = highs[-swing_look:]
-    swing_l = lows[-swing_look:]
+    # Needs a meaningful swing — skip alert zones on brand-new listings (<24 bars).
+    if fib_swing is not None:
+        fib_pref = int(fib_swing)
+    else:
+        fib_pref = max(50, base * 3)
+        if n >= 800:
+            fib_pref = max(fib_pref, 180)
+        elif n >= 400:
+            fib_pref = max(fib_pref, 120)
+        elif n >= 220:
+            fib_pref = max(fib_pref, 90)
+    swing_look = _adapt_period(
+        fib_pref, max(1, n - 1) if n > 1 else 1, minimum=min(8, max(1, n - 1 if n > 1 else 1))
+    )
+    swing_h = highs[-swing_look:] if swing_look else highs
+    swing_l = lows[-swing_look:] if swing_look else lows
     swing_high, swing_low = max(swing_h), min(swing_l)
     hi_i = len(swing_h) - 1 - swing_h[::-1].index(swing_high)
     lo_i = len(swing_l) - 1 - swing_l[::-1].index(swing_low)
@@ -3424,7 +5459,8 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
     fib_dist = None
     fib_zone = False
     fib_context = None  # pullback | bounce
-    if swing_high > swing_low * 1.02:
+    fib_ready = n >= 24 and swing_high > swing_low * 1.02
+    if fib_ready:
         span = swing_high - swing_low
         if hi_i > lo_i:
             # Advance then correction — retrace from high toward low
@@ -3473,60 +5509,126 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
     else:
         setup = "mid_range"
 
-    score = 50.0
-    if trend == "up":
-        score += 14 if trend_valid else 8
-    elif trend == "down":
-        score -= 14 if trend_valid else 8
-    if near_support:
-        score += 10
-    if near_resistance:
-        score -= 8
+    # --- Projected score from ChartSchool higher-reliability edges ---
+    # Prefer volume-confirmed breaks, validated trends, continuation-with-trend,
+    # S/R candles, breakaway gaps, Fib+trend (Murphy confirmation principle).
+    edges: list[str] = []
+    vol_ok = rvol is not None and rvol >= gap_rvol
     if break_res:
-        score += 16 + (4 if rvol and rvol >= 1.4 else 0)
+        edges.append("vol_breakout" if vol_ok else "breakout")
     if break_sup:
-        score -= 16 + (4 if rvol and rvol >= 1.4 else 0)
+        edges.append("vol_breakdown" if vol_ok else "breakdown")
+    if trend == "up":
+        edges.append("trend_valid_up" if trend_valid else "trend_up")
+    elif trend == "down":
+        edges.append("trend_valid_down" if trend_valid else "trend_down")
     if pattern == "asc_triangle":
-        score += 10
+        edges.append("cont_asc_triangle" if trend == "up" else "asc_triangle")
     elif pattern == "desc_triangle":
-        score -= 10
-    elif pattern == "double_bottom":
-        score += 12
-    elif pattern == "double_top":
-        score -= 12
+        edges.append("cont_desc_triangle" if trend == "down" else "desc_triangle")
     elif pattern == "flag_bull":
-        score += 9
+        edges.append("cont_flag_bull" if trend == "up" else "flag_bull")
     elif pattern == "flag_bear":
-        score -= 9
+        edges.append("cont_flag_bear" if trend == "down" else "flag_bear")
     elif pattern == "rectangle" and near_support:
-        score += 6
+        edges.append("rect_support")
+    elif pattern == "rectangle" and near_resistance:
+        edges.append("rect_resist")
     elif pattern == "sym_triangle":
-        score += 2
-    if gap in {"up_breakaway", "up_runaway"}:
-        score += 10
+        edges.append("sym_coil")
+    elif pattern == "double_bottom" and pattern_confirmed:
+        # ChartSchool: reversal completes on the neckline break, not the second low.
+        edges.append("double_bottom")
+    elif pattern == "double_top" and pattern_confirmed:
+        edges.append("double_top")
+    if gap == "up_breakaway":
+        edges.append("gap_breakaway_up")
+    elif gap == "up_runaway":
+        edges.append("gap_runaway_up")
     elif gap == "up_common":
-        score += 2
-    elif gap in {"down_breakaway", "down_runaway"}:
-        score -= 10
-    elif gap == "down_common":
-        score -= 2
+        edges.append("gap_common_up")
     elif gap == "up_exhaustion":
-        score -= 4
+        edges.append("gap_exhaust_up")
+    elif gap == "down_breakaway":
+        edges.append("gap_breakaway_down")
+    elif gap == "down_runaway":
+        edges.append("gap_runaway_down")
+    elif gap == "down_common":
+        edges.append("gap_common_down")
     elif gap == "down_exhaustion":
-        score += 4
-    if candle in {"hammer", "engulfing_bull"}:
-        score += 10 if candle_quality == candle else 4
-    if candle in {"shooting_star", "engulfing_bear"}:
-        score -= 10 if candle_quality == candle else 4
+        edges.append("gap_exhaust_down")
+    if candle == "hammer":
+        edges.append("hammer_sr" if (near_support or fib_zone) else "hammer_weak")
+    elif candle == "engulfing_bull":
+        edges.append("engulf_bull_sr" if (near_support or fib_zone) else "hammer_weak")
+    elif candle == "shooting_star":
+        edges.append("star_sr" if (near_resistance or fib_zone) else "star_weak")
+    elif candle == "engulfing_bear":
+        edges.append("engulf_bear_sr" if (near_resistance or fib_zone) else "star_weak")
     if fib_zone and fib_context == "pullback":
-        score += 7
-    if fib_zone and fib_context == "bounce":
-        score -= 5
+        edges.append("fib_pullback_up" if trend == "up" else "fib_pullback")
+    elif fib_zone and fib_context == "bounce":
+        edges.append("fib_bounce_down" if trend == "down" else "fib_bounce")
+    if near_support and not break_res and not break_sup:
+        edges.append("near_support_up" if trend == "up" else "near_support")
+    if near_resistance and not break_res and not break_sup:
+        edges.append("near_resist_down" if trend == "down" else "near_resist")
+
+    # Deduplicate while preserving order
+    _seen_edges: set[str] = set()
+    uniq_edges: list[str] = []
+    for e in edges:
+        if e not in _seen_edges:
+            _seen_edges.add(e)
+            uniq_edges.append(e)
+    edges = uniq_edges
+
+    score = 50.0
+    for e in edges:
+        score += CHART_EDGE_WEIGHTS.get(e, 0.0)
+    bull_n = sum(1 for e in edges if CHART_EDGE_WEIGHTS.get(e, 0) > 0)
+    bear_n = sum(1 for e in edges if CHART_EDGE_WEIGHTS.get(e, 0) < 0)
+    # Murphy confirmation: several aligned factors strengthen the projection
+    if bull_n >= 3 and bull_n > bear_n and listing == "full":
+        score += 6.0
+    elif bear_n >= 3 and bear_n > bull_n and listing == "full":
+        score -= 6.0
+    # Recent listing: pull score toward 50 — less conviction on short series.
+    if listing == "thin":
+        score = 50.0 + (score - 50.0) * 0.45
+    elif listing == "partial":
+        score = 50.0 + (score - 50.0) * 0.70
     score = max(0.0, min(100.0, score))
+    confluence = bull_n - bear_n
+    top_tier = {
+        "vol_breakout",
+        "vol_breakdown",
+        "cont_asc_triangle",
+        "cont_desc_triangle",
+        "cont_flag_bull",
+        "cont_flag_bear",
+        "hammer_sr",
+        "star_sr",
+        "engulf_bull_sr",
+        "engulf_bear_sr",
+        "gap_breakaway_up",
+        "gap_breakaway_down",
+        "double_bottom",
+        "double_top",
+        "fib_pullback_up",
+        "fib_bounce_down",
+    }
+    # High-edge only when history can support the claim (not on thin IPOs).
+    high_edge = bool(
+        listing != "thin"
+        and (abs(confluence) >= 3 or any(e in top_tier for e in edges))
+    )
     bias = "bullish" if score >= 60 else "bearish" if score <= 40 else "neutral"
     strength = (
         "strong" if score >= 72 or score <= 28 else "moderate" if score >= 60 or score <= 40 else "weak"
     )
+    if listing == "thin":
+        strength = "weak"
 
     spark = _spark_closes(closes, 30)
     spark_up = bool(len(closes) >= 2 and closes[-1] >= closes[-min(30, n)])
@@ -3539,6 +5641,25 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
         "rvol": round(rvol, 2) if rvol is not None else None,
         "support": round(support, 2),
         "resistance": round(resistance, 2),
+        "support_touches": support_touches,
+        "resistance_touches": resistance_touches,
+        "support_from": support_from,
+        "resistance_from": resistance_from,
+        "demand_lo": round(zones["demand_lo"], 2) if zones else None,
+        "demand_hi": round(zones["demand_hi"], 2) if zones else None,
+        "supply_lo": round(zones["supply_lo"], 2) if zones else None,
+        "supply_hi": round(zones["supply_hi"], 2) if zones else None,
+        "at_demand": bool(
+            zones and zones["demand_lo"] <= close <= zones["demand_hi"] * (1 + near_pct / 100.0)
+        ),
+        "at_supply": bool(
+            zones and zones["supply_lo"] * (1 - near_pct / 100.0) <= close <= zones["supply_hi"]
+        ),
+        "range_pos_pct": (
+            round((close - zones["demand_lo"]) / (zones["supply_hi"] - zones["demand_lo"]) * 100.0, 1)
+            if zones and zones["supply_hi"] > zones["demand_lo"]
+            else None
+        ),
         "dist_support_pct": round(dist_sup, 2) if dist_sup is not None else None,
         "dist_resistance_pct": round(dist_res, 2) if dist_res is not None else None,
         "near_support": near_support,
@@ -3554,6 +5675,8 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
         "gap": gap,
         "gap_pct": round(gap_pct, 2) if gap_pct is not None else None,
         "pattern": pattern,
+        "pattern_role": pattern_role,
+        "pattern_confirmed": pattern_confirmed,
         "fib_levels": {k: round(v, 2) for k, v in fib_levels.items()},
         "fib_nearest": fib_nearest,
         "fib_dist_pct": fib_dist,
@@ -3565,17 +5688,47 @@ def _chart_enrich(bars: list[dict], window: int = 20) -> dict | None:
         "score": round(score, 1),
         "bias": bias,
         "strength": strength,
-        "spike": bool(break_res and rvol is not None and rvol >= 1.4),
+        "edges": edges,
+        "confluence": confluence,
+        "high_edge": high_edge,
+        "listing": listing,
+        "adapted": bool(listing != "full"),
+        "spike": bool(break_res and rvol is not None and rvol >= gap_rvol),
         "spark": spark,
         "spark_up": spark_up,
         "label": last.get("label"),
-        "bars_used": n,
-        "partial_history": partial,
+        **hist,
         "study_window": base,
+        "rvol_window": rvol_n,
+        "window": base,
+        "periods": {
+            "sr": base,
+            "sr_look": look,
+            "pivot": pivot_lr,
+            "trend_touches": piv_need,
+            "rvol": rvol_n,
+            "gap_rvol": gap_rvol,
+            "near_pct": near_pct,
+            "fib_swing": swing_look,
+            "zone_pct": zone_pct,
+            "adapted": bool(listing != "full"),
+            "available": n,
+            "preferred_look": look_pref,
+            "preferred_fib": fib_pref,
+        },
     }
 
 
-def _scan_chart_row(preset: dict, tf_id: str) -> dict | None:
+def _chart_trim_bars(bars: list[dict], tf_id: str) -> list[dict]:
+    """Cap Chart history: 1D·160 stays tight; 1D·Full keeps deep daily bars."""
+    tf = TIMEFRAMES.get(_normalize_tf(tf_id)) or {}
+    cap = int(tf.get("chart_countback") or 0)
+    if cap > 0 and len(bars) > cap:
+        return bars[-cap:]
+    return bars
+
+
+def _scan_chart_row(preset: dict, tf_id: str, *, with_quote: bool = False) -> dict | None:
     tf = TIMEFRAMES[tf_id]
     bars = _load_bars(
         preset["nse"],
@@ -3583,28 +5736,36 @@ def _scan_chart_row(preset: dict, tf_id: str) -> dict | None:
         exchange=preset.get("exchange") or "NSE",
         fast=True,
     )
-    study = _chart_enrich(bars, window=int(tf["avg_window"]))
+    bars = _chart_trim_bars(bars, tf_id)
+    wins = _tf_study_windows(tf_id)
+    study = _chart_enrich(
+        bars,
+        window=wins["avg_window"],
+        rvol_window=wins["rvol_window"],
+        sr_look=tf.get("chart_sr_look"),
+        fib_swing=tf.get("chart_fib_swing"),
+    )
     if not study:
         return None
     quote = {}
-    try:
-        quote = _quote_stock(
-            preset.get("sc_id") or "",
-            nse=preset.get("nse") or preset.get("id") or "",
-            exchange=preset.get("exchange") or "NSE",
-            fast=True,
-        )
-    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-        quote = {}
+    if with_quote:
+        try:
+            quote = _quote_stock(
+                preset.get("sc_id") or "",
+                nse=preset.get("nse") or preset.get("id") or "",
+                exchange=preset.get("exchange") or "NSE",
+                fast=True,
+            )
+        except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+            quote = {}
     return {
         "id": preset["id"],
         "nse": quote.get("NSEID") or quote.get("BSEID") or preset["nse"],
         "name": quote.get("company") or preset["label"],
         "sc_id": preset["sc_id"],
         "exchange": quote.get("_market") or preset.get("exchange") or "NSE",
-        "sector": quote.get("SC_SUBSEC") or quote.get("newSubsector") or "",
+        "sector": quote.get("SC_SUBSEC") or quote.get("newSubsector") or preset.get("industry") or "",
         **{k: study.get(k) for k in study if k != "label"},
-        "study": study,
         "rank": None,
         "percentile": None,
     }
@@ -3620,7 +5781,7 @@ def _history_to_tf_bars(raw: dict, tf_id: str) -> list[dict]:
     bars = _bars_from_history(raw, intraday=intraday)
     if tf.get("aggregate"):
         bars = _aggregate_bars(bars, int(tf["aggregate"]))
-    return bars
+    return _trim_swing_period_stub(bars, str(tf.get("resolution") or ""))
 
 
 def _load_exchange_volume_bars(symbol: str, tf_id: str, *, exchange: str, bse_id: str = "") -> list[dict]:
@@ -3701,12 +5862,16 @@ def _merge_nse_bse_volume_rows(symbol: str, tf_id: str, sc_id: str = "") -> list
             row["close"] = bar.get("close")
             row["change_pct"] = bar.get("change_pct")
             row["up"] = bar.get("up")
-    return _enrich_exchange_volume_kpis([by_date[k] for k in sorted(by_date.keys())])
+    wins = _tf_study_windows(tf_id)
+    return _enrich_exchange_volume_kpis(
+        [by_date[k] for k in sorted(by_date.keys())],
+        rvol_window=wins["rvol_window"],
+    )
 
 
-def _enrich_exchange_volume_kpis(rows: list[dict], rvol_window: int = 10) -> list[dict]:
+def _enrich_exchange_volume_kpis(rows: list[dict], rvol_window: int = CS_RVOL) -> list[dict]:
     """Volume-only KPIs: total, AvgN, Δ total/NSE/BSE, RVOL, spike, delivery %."""
-    win = max(3, int(rvol_window or 10))
+    win = max(3, int(rvol_window or CS_RVOL))
     totals: list[float] = []
     nse_hist: list[float] = []
     bse_hist: list[float] = []
@@ -3796,7 +5961,7 @@ def build_symbol_dossier(
         "label": symbol,
         "exchange": exchange,
     }
-    cache_key = ("dossier-v7", symbol, sc_id, tf_id, exchange, str(indicators or ""))
+    cache_key = ("dossier-v8", symbol, sc_id, tf_id, exchange, str(indicators or ""))
     now = time.time()
     if not fresh:
         with _cache_lock:
@@ -3824,7 +5989,7 @@ def build_symbol_dossier(
     with ThreadPoolExecutor(max_workers=4) as pool:
         fut_tech = pool.submit(_scan_tech_row, preset, tf_id, selected)
         fut_sci = pool.submit(_scan_sci_row, preset, tf_id)
-        fut_chart = pool.submit(_scan_chart_row, preset, tf_id)
+        fut_chart = pool.submit(_scan_chart_row, preset, tf_id, with_quote=True)
         fut_xbars = pool.submit(_merge_nse_bse_volume_rows, symbol, tf_id, sc_id)
         tech = fut_tech.result()
         sci = fut_sci.result()
@@ -3882,18 +6047,80 @@ def build_symbol_dossier(
     return payload
 
 
+def _chart_dashboard(rows: list[dict]) -> dict:
+    """ChartSchool families — gaps and patterns are not one bucket.
+
+    Breakaway / runaway / exhaustion are different gap types (ChartSchool).
+    Continuation vs reversal, and confirmed only after the boundary/neckline break.
+    """
+
+    def n(pred) -> int:
+        return sum(1 for r in rows if pred(r))
+
+    def gap_is(*kinds: str):
+        return lambda r: (r.get("gap") or "none") in kinds
+
+    bull_candle = {"hammer", "engulfing_bull"}
+    bear_candle = {"shooting_star", "engulfing_bear"}
+    scores = [r.get("score") for r in rows if r.get("score") is not None]
+    confs = [r.get("confluence") for r in rows if r.get("confluence") is not None]
+    return {
+        "bullish": n(lambda r: r.get("bias") == "bullish"),
+        "bearish": n(lambda r: r.get("bias") == "bearish"),
+        "high_edge": n(lambda r: r.get("high_edge")),
+        "avg_score": round(sum(scores) / len(scores), 1) if scores else None,
+        "avg_confluence": round(sum(confs) / len(confs), 1) if confs else None,
+        "near_support": n(lambda r: r.get("near_support")),
+        "near_resistance": n(lambda r: r.get("near_resistance")),
+        "breakout": n(lambda r: r.get("break_resistance")),
+        "breakdown": n(lambda r: r.get("break_support")),
+        "vol_break": n(
+            lambda r: "vol_breakout" in (r.get("edges") or [])
+            or "vol_breakdown" in (r.get("edges") or [])
+        ),
+        "trend_up": n(lambda r: r.get("trend") == "up"),
+        "trend_down": n(lambda r: r.get("trend") == "down"),
+        "trend_valid": n(lambda r: r.get("trend_valid")),
+        "gaps": n(lambda r: r.get("gap") and r.get("gap") != "none"),
+        "gap_breakaway": n(gap_is("up_breakaway", "down_breakaway")),
+        "gap_runaway": n(gap_is("up_runaway", "down_runaway")),
+        "gap_exhaustion": n(gap_is("up_exhaustion", "down_exhaustion")),
+        "gap_common": n(gap_is("up_common", "down_common")),
+        "patterns": n(lambda r: r.get("pattern") and r.get("pattern") != "none"),
+        "pattern_cont": n(lambda r: r.get("pattern_role") == "continuation"),
+        "pattern_rev": n(lambda r: r.get("pattern_role") == "reversal"),
+        "pattern_confirmed": n(lambda r: r.get("pattern_confirmed")),
+        "fib_zone": n(lambda r: r.get("fib_zone")),
+        "candles": n(lambda r: r.get("candle") and r.get("candle") != "none"),
+        "candle_bull": n(lambda r: r.get("candle") in bull_candle),
+        "candle_bear": n(lambda r: r.get("candle") in bear_candle),
+        "candle_context": n(
+            lambda r: r.get("candle")
+            and r.get("candle") not in ("none", "doji")
+            and r.get("candle_quality")
+            and not str(r.get("candle_quality")).endswith("_weak")
+        ),
+        "thin": n(lambda r: r.get("history") == "thin"),
+        "partial": n(lambda r: r.get("history") == "partial"),
+    }
+
+
 def build_chart_board(
     tf_id: str = "1d",
     universe_id: str = "nifty50",
     fresh: bool = False,
+    progress_job: str | None = None,
 ) -> dict:
     _ensure_universe_ready()
     tf_id = _normalize_tf(tf_id)
+    # ChartSchool patterns need day/week/month structure — skip Intraday noise.
+    if tf_id in {"15m", "1h", "4h"}:
+        tf_id = "1d"
     tf = TIMEFRAMES[tf_id]
     meta = _universe_meta(universe_id)
     universe_id = meta["id"]
     presets = _load_universe(universe_id)
-    cache_key = ("chart-board-v2", universe_id, tf_id)
+    cache_key = ("chart-board-v17", universe_id, tf_id)
     now = time.time()
     if not fresh:
         with _cache_lock:
@@ -3902,69 +6129,55 @@ def build_chart_board(
                 payload = dict(cached[1])
                 payload["cached"] = True
                 payload["session"] = session_status()
+                _scan_job_finish(progress_job, ok=True)
                 return payload
 
+    _scan_job_start(
+        progress_job,
+        total=len(presets),
+        phase="scan",
+        label=f"{meta['label']} · Chart",
+    )
     errors = 0
-    if _universe_is_large(universe_id):
-        quote_rows: list[dict] = []
-        with ThreadPoolExecutor(max_workers=18) as pool:
-            futures = {pool.submit(_scan_quote_row, preset): preset for preset in presets}
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row and row.get("volume", 0) > 0:
-                    quote_rows.append(row)
-        quote_rows.sort(key=lambda item: item.get("volume") or 0, reverse=True)
-        enrich_limit = int(meta.get("enrich_limit") or 200)
-        shortlist = quote_rows[:enrich_limit]
-        rows: list[dict] = []
-        with ThreadPoolExecutor(max_workers=12) as pool:
-            futures = {
-                pool.submit(
-                    _scan_chart_row,
-                    {
-                        "id": row["id"],
-                        "label": row["name"],
-                        "sc_id": row["sc_id"],
-                        "nse": row["nse"],
-                        "exchange": row.get("exchange"),
-                    },
-                    tf_id,
-                ): row
-                for row in shortlist
-            }
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row:
-                    rows.append(row)
-        enriched_n = len(rows)
-        rows = _merge_quote_remainder(rows, quote_rows)
-        universe_note = (
-            f"{meta['label']}: quoted {len(quote_rows)}, chart-enriched {enriched_n}"
-            f", board {len(rows)}/{_universe_full_size(universe_id)}"
-        )
-    else:
-        rows = []
-        with ThreadPoolExecutor(max_workers=12) as pool:
-            futures = {
-                pool.submit(_scan_chart_row, preset, tf_id): preset for preset in presets
-            }
-            for future in as_completed(futures):
-                try:
-                    row = future.result()
-                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-                    errors += 1
-                    continue
-                if row:
-                    rows.append(row)
-        universe_note = f"{meta['label']} Chart Analysis · {tf['label']} · ChartSchool"
+    try:
+        if _universe_is_large(universe_id):
+            # Whole book. The old cap kept only the 1,200 highest-volume quotes,
+            # so quieter names such as 3MINDIA stayed on the board with no chart fields.
+            rows = []
+            with ThreadPoolExecutor(max_workers=16) as pool:
+                futures = {
+                    pool.submit(_scan_chart_row, preset, tf_id): preset for preset in presets
+                }
+                for future in _as_completed_progress(futures, progress_job, phase="enrich"):
+                    try:
+                        row = future.result()
+                    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+                        errors += 1
+                        continue
+                    if row:
+                        rows.append(row)
+            universe_note = (
+                f"{meta['label']}: chart-enriched {len(rows)}/{len(presets)}"
+                f" of {_universe_full_size(universe_id)}"
+            )
+        else:
+            rows = []
+            with ThreadPoolExecutor(max_workers=12) as pool:
+                futures = {
+                    pool.submit(_scan_chart_row, preset, tf_id): preset for preset in presets
+                }
+                for future in _as_completed_progress(futures, progress_job, phase="scan"):
+                    try:
+                        row = future.result()
+                    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+                        errors += 1
+                        continue
+                    if row:
+                        rows.append(row)
+            universe_note = f"{meta['label']} Chart Analysis · {tf['label']} · ChartSchool"
+    except Exception as exc:
+        _scan_job_finish(progress_job, ok=False, error=str(exc))
+        raise
 
     rows.sort(
         key=lambda item: (
@@ -3996,19 +6209,9 @@ def build_chart_board(
         "formulas": CHART_FORMULAS,
         "studies": list(CHART_STUDIES),
         "chart_sources": CHART_SOURCES,
+        "column_labels": dict(CHART_COLUMN_LABELS),
         "toc": "https://chartschool.stockcharts.com/table-of-contents/chart-analysis",
-        "dashboard": {
-            "near_support": sum(1 for r in rows if r.get("near_support")),
-            "near_resistance": sum(1 for r in rows if r.get("near_resistance")),
-            "breakout": sum(1 for r in rows if r.get("break_resistance")),
-            "breakdown": sum(1 for r in rows if r.get("break_support")),
-            "trend_up": sum(1 for r in rows if r.get("trend") == "up"),
-            "trend_down": sum(1 for r in rows if r.get("trend") == "down"),
-            "gaps": sum(1 for r in rows if r.get("gap") and r.get("gap") != "none"),
-            "patterns": sum(1 for r in rows if r.get("pattern") and r.get("pattern") != "none"),
-            "fib_zone": sum(1 for r in rows if r.get("fib_zone")),
-            "candles": sum(1 for r in rows if r.get("candle") and r.get("candle") != "none"),
-        },
+        "dashboard": _chart_dashboard(rows),
         "source": {
             "name": sources.get("plot_source") or "Moneycontrol / Yahoo",
             "verified": bool(sources.get("ready")),
@@ -4029,6 +6232,7 @@ def build_chart_board(
     }
     with _cache_lock:
         _cache[cache_key] = (now, payload)
+    _scan_job_finish(progress_job, ok=True)
     return payload
 
 
@@ -4049,7 +6253,10 @@ SPURT_FORMULAS = {
     ),
     "vol_x": "Vol× = today volume ÷ reference average volume (NSE week-1 avg / BSE 2-wk avg)",
     "rank": "Rank 1 = highest Vol× within the selected exchange tab",
-    "score": "Score = clamp(log-scaled Vol× + price confirmation, −100…+100)",
+    "score": (
+        "Score −100…+100. Volume term is log10(Vol×)/log10(200), so 3×, 10×, and 50× stay apart. "
+        "An up move adds at most 10; a down move keeps the multiple but softens the score."
+    ),
     "history": (
         "After cash close (15:30 IST), the live NSE+BSE list is written to "
         "data/spurts_history/YYYY-MM-DD.json and kept for 30 calendar days"
@@ -4112,6 +6319,8 @@ def clear_runtime_caches() -> dict:
         spurt_n = len(_spurt_cache)
         _spurt_cache.clear()
     _probe_cache = None
+    with _yahoo_hist_lock:
+        _yahoo_hist.clear()
     return {
         "ok": True,
         "as_of": _ist_stamp(),
@@ -4349,6 +6558,8 @@ def build_spurts_dashboard(days: int = SPURTS_HISTORY_DAYS) -> dict:
                 "nse": sum(1 for r in rows if r.get("exchange") == "NSE"),
                 "bse": sum(1 for r in rows if r.get("exchange") == "BSE"),
                 "spike": sum(1 for r in rows if (r.get("vol_x") or 0) >= 3),
+                "up": sum(1 for r in rows if (r.get("change_pct") or 0) > 0),
+                "down": sum(1 for r in rows if (r.get("change_pct") or 0) < 0),
             }
         )
         seen_today: set[str] = set()
@@ -4432,7 +6643,7 @@ def build_spurts_dashboard(days: int = SPURTS_HISTORY_DAYS) -> dict:
             ),
             "total_listings": sum(d["count"] for d in daily_series),
         },
-        "reappeared": reappear[:40],
+        "reappeared": reappear[:120],
         "purpose": SPURT_HISTORY_PURPOSE,
         "formulas": {
             k: SPURT_FORMULAS[k] for k in ("history", "reappear", "vol_x", "nse", "bse") if k in SPURT_FORMULAS
@@ -4667,19 +6878,21 @@ def _fetch_bse_spurts() -> tuple[list[dict], dict]:
 
 
 def _spurt_score(vol_x: float | None, change_pct: float | None) -> float:
-    """Map volume multiple + price move into −100…+100 for ranking context."""
+    """Map volume multiple + price move into −100…+100.
+
+    The volume term reaches 100 only near 200×, so a 30× name and a 120× name
+    do not both pin at the cap. Rank order is still Vol×, not this score.
+    """
     if vol_x is None or vol_x <= 0:
         base = 0.0
     else:
-        # 1× → ~0, 3× → ~35, 10× → ~70, 50×+ → ~100
-        base = max(0.0, min(100.0, (math.log10(vol_x) / math.log10(50.0)) * 100.0))
+        base = max(0.0, min(100.0, (math.log10(vol_x) / math.log10(200.0)) * 100.0))
     if change_pct is None:
-        signed = base * 0.85
+        signed = base * 0.9
     elif change_pct >= 0:
-        signed = base + min(15.0, change_pct)
+        signed = base * 0.9 + min(10.0, change_pct * 0.5)
     else:
-        # Volume spurt on a down day still ranks high on vol, but softens score.
-        signed = base * 0.55 + max(-25.0, change_pct)
+        signed = base * 0.55 + max(-20.0, change_pct)
     return round(max(-100.0, min(100.0, signed)), 1)
 
 
@@ -4719,13 +6932,7 @@ def _enrich_one_spurt_live(row: dict) -> dict:
     if live_chg is not None:
         row["change_pct"] = live_chg
         row["up"] = live_chg >= 0
-    if live_vol is not None and live_vol > 0:
-        row["live_volume"] = int(live_vol)
-        # Prefer live session volume for display; keep exchange vol for vol_x basis.
-        row["volume"] = int(live_vol)
-        avg = _num(row.get("avg_volume"))
-        if avg and avg > 0:
-            row["vol_x"] = round(live_vol / avg, 2)
+        if row.get("vol_x") is not None:
             row["score"] = _spurt_score(row["vol_x"], live_chg)
             row["bias"] = _bias_from_score(row["score"])
             row["strength"] = (
@@ -4735,6 +6942,10 @@ def _enrich_one_spurt_live(row: dict) -> dict:
                 if abs(row["score"]) >= 30
                 else "weak"
             )
+    if live_vol is not None and live_vol > 0:
+        row["live_volume"] = int(live_vol)
+        # Vol× stays the exchange multiple (NSE 1-week / BSE 2-week).
+        # A Yahoo session print is a different stamp and must not replace it.
     row["live"] = True
     row["quote_source"] = "yahoo"
     return row
@@ -5015,8 +7226,22 @@ class Handler(BaseHTTPRequestHandler):
             return
 
     def _json(self, payload: dict, code: int = 200) -> None:
-        body = json.dumps(payload).encode()
-        self._send(code, body, "application/json; charset=utf-8")
+        raw = json.dumps(payload, separators=(",", ":")).encode()
+        accept = self.headers.get("Accept-Encoding") or ""
+        if "gzip" in accept and len(raw) > 2048:
+            body = gzip.compress(raw, compresslevel=5)
+            try:
+                self.send_response(code)
+                self.send_header("Content-Type", "application/json; charset=utf-8")
+                self.send_header("Content-Encoding", "gzip")
+                self.send_header("Content-Length", str(len(body)))
+                self.send_header("Cache-Control", "no-store")
+                self.end_headers()
+                self.wfile.write(body)
+            except (BrokenPipeError, ConnectionResetError, ConnectionAbortedError):
+                return
+            return
+        self._send(code, raw, "application/json; charset=utf-8")
 
     def do_GET(self) -> None:  # noqa: N802
         parsed = urlparse(self.path)
@@ -5034,6 +7259,9 @@ class Handler(BaseHTTPRequestHandler):
             except (URLError, HTTPError, TimeoutError, OSError, ValueError) as exc:
                 self._json({"error": str(exc)}, code=502)
             return
+        if parsed.path == "/api/scan-progress":
+            self._json(get_scan_progress((params.get("job") or [""])[0]))
+            return
         if parsed.path == "/api/board":
             try:
                 self._json(
@@ -5041,6 +7269,7 @@ class Handler(BaseHTTPRequestHandler):
                         tf_id=(params.get("tf") or params.get("timeframe") or ["1d"])[0],
                         universe_id=(params.get("universe") or ["nifty50"])[0],
                         fresh=(params.get("fresh") or ["0"])[0] == "1",
+                        progress_job=(params.get("job") or [None])[0],
                     )
                 )
             except (URLError, HTTPError, TimeoutError, OSError, ValueError) as exc:
@@ -5054,6 +7283,7 @@ class Handler(BaseHTTPRequestHandler):
                         universe_id=(params.get("universe") or ["nifty50"])[0],
                         fresh=(params.get("fresh") or ["0"])[0] == "1",
                         indicators=(params.get("indicators") or [None])[0],
+                        progress_job=(params.get("job") or [None])[0],
                     )
                 )
             except (URLError, HTTPError, TimeoutError, OSError, ValueError) as exc:
@@ -5066,6 +7296,7 @@ class Handler(BaseHTTPRequestHandler):
                         tf_id=(params.get("tf") or params.get("timeframe") or ["1d"])[0],
                         universe_id=(params.get("universe") or ["nifty50"])[0],
                         fresh=(params.get("fresh") or ["0"])[0] == "1",
+                        progress_job=(params.get("job") or [None])[0],
                     )
                 )
             except (URLError, HTTPError, TimeoutError, OSError, ValueError) as exc:
@@ -5078,6 +7309,7 @@ class Handler(BaseHTTPRequestHandler):
                         tf_id=(params.get("tf") or params.get("timeframe") or ["1d"])[0],
                         universe_id=(params.get("universe") or ["nifty50"])[0],
                         fresh=(params.get("fresh") or ["0"])[0] == "1",
+                        progress_job=(params.get("job") or [None])[0],
                     )
                 )
             except (URLError, HTTPError, TimeoutError, OSError, ValueError) as exc:

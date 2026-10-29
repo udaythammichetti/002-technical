@@ -1,15 +1,42 @@
 import { useDesk } from '../store'
 
-/** Compact status line for Volume / Technical (no KPI dashboard). */
+/** Compact status line for Volume / Technical / Lab / Chart. */
 export default function BoardMeta() {
   const board = useDesk((s) => s.board)
   const desk = useDesk((s) => s.desk)
-  if (!board || (desk !== 'volume' && desk !== 'tech')) return null
+  if (!board || (desk !== 'volume' && desk !== 'tech' && desk !== 'sci' && desk !== 'chart')) return null
 
   const counts = board.counts || {}
+  const vol = board.tf_meta?.volume
+  const tech = board.tf_meta?.tech
+  const lab = board.tf_meta?.lab
+  const chart = board.tf_meta?.chart
+  const cmfN = vol?.cmf ?? board.tf_meta?.avg_window
+  const rvolN = vol?.rvol ?? board.tf_meta?.rvol_window
   const parts = [
     board.universe_label,
     board.timeframe_label,
+    desk === 'volume' && rvolN != null ? `RVOL=${rvolN}` : null,
+    desk === 'volume' && cmfN != null ? `CMF=${cmfN}` : null,
+    desk === 'volume' && vol?.mfi != null ? `MFI=${vol.mfi}` : null,
+    desk === 'volume' && vol?.chaikin != null ? `ChOsc=${vol.chaikin}` : null,
+    desk === 'volume' && vol?.pvo != null ? `PVO=${vol.pvo}` : null,
+    desk === 'tech' && tech?.rsi != null ? `RSI=${tech.rsi}` : null,
+    desk === 'tech' && tech?.ppo != null ? `PPO=${tech.ppo}` : null,
+    desk === 'tech' && tech?.sma200 != null ? `50/200=${tech.sma200}` : null,
+    desk === 'tech' && tech?.aroon != null ? `Aroon=${tech.aroon}` : null,
+    desk === 'tech' && tech?.adx != null ? `ADX=${tech.adx}` : null,
+    desk === 'sci' && lab?.donchian != null ? `Donchian=${lab.donchian}` : null,
+    desk === 'sci' && lab?.rvol != null ? `RVOL=${lab.rvol}` : null,
+    desk === 'sci' && lab?.cmf != null ? `CMF=${lab.cmf}` : null,
+    desk === 'sci' && lab?.bb != null ? `BB=${lab.bb}` : null,
+    desk === 'sci' && lab?.atr != null ? `ATR=${lab.atr}` : null,
+    desk === 'sci' && lab?.break_rvol != null ? `break≥${lab.break_rvol}×` : null,
+    desk === 'chart' && chart?.sr != null ? `S/R=${chart.sr}` : null,
+    desk === 'chart' && chart?.rvol != null ? `RVOL=${chart.rvol}` : null,
+    desk === 'chart' && chart?.near_pct != null ? `near≤${chart.near_pct}%` : null,
+    desk === 'chart' && chart?.gap_rvol != null ? `gap≥${chart.gap_rvol}×` : null,
+    desk === 'chart' && chart?.trend_touches != null ? `trend≥${chart.trend_touches}` : null,
     board.scanned != null
       ? `${board.scanned}${board.universe_size ? `/${board.universe_size}` : ''}`
       : null,

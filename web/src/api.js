@@ -13,7 +13,7 @@ export function clearServerCache() {
   return getJson('/api/cache/clear')
 }
 
-export function fetchBoard({ desk, tf, universe, indicators, fresh, spurtsDate, signal }) {
+export function fetchBoard({ desk, tf, universe, indicators, fresh, spurtsDate, signal, job }) {
   const params = new URLSearchParams()
   if (desk !== 'spurts') {
     params.set('tf', String(tf || '1d').trim().toLowerCase())
@@ -26,6 +26,7 @@ export function fetchBoard({ desk, tf, universe, indicators, fresh, spurtsDate, 
   }
   if (fresh) params.set('fresh', '1')
   if (desk === 'tech' && Array.isArray(indicators)) params.set('indicators', indicators.join(','))
+  if (job) params.set('job', job)
 
   const endpoint =
     desk === 'tech'
@@ -39,6 +40,16 @@ export function fetchBoard({ desk, tf, universe, indicators, fresh, spurtsDate, 
             : '/api/board?'
 
   return getJson(endpoint + params.toString(), { signal })
+}
+
+export function fetchScanProgress(job, signal) {
+  if (!job) return Promise.resolve({ state: 'idle', done: 0, total: 0, pct: 0 })
+  return getJson('/api/scan-progress?job=' + encodeURIComponent(job), { signal })
+}
+
+export function newScanJobId() {
+  if (typeof crypto !== 'undefined' && crypto.randomUUID) return crypto.randomUUID().replace(/-/g, '')
+  return 'job' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10)
 }
 
 export function fetchSpurtsHistory() {

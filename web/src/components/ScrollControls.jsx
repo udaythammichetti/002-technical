@@ -1,61 +1,103 @@
 import { useEffect, useState } from 'react'
 
+function horizHost(panel) {
+  if (!panel) return null
+  return (
+    panel.querySelector('.scan-tape') ||
+    panel.querySelector('.spurts-tape') ||
+    panel.querySelector('.tape')
+  )
+}
+
 export default function ScrollControls({ targetRef }) {
-  const [canUp, setCanUp] = useState(false)
-  const [canDown, setCanDown] = useState(false)
+  const [canLeft, setCanLeft] = useState(false)
+  const [canRight, setCanRight] = useState(false)
 
   useEffect(() => {
-    const el = targetRef?.current
-    if (!el) return undefined
+    const panel = targetRef?.current
+    if (!panel) return undefined
 
     function sync() {
-      const top = el.scrollTop
-      const max = el.scrollHeight - el.clientHeight
-      setCanUp(top > 4)
-      setCanDown(max > 8 && top < max - 4)
+      const tape = horizHost(panel)
+      if (!tape) {
+        setCanLeft(false)
+        setCanRight(false)
+        return
+      }
+      const left = tape.scrollLeft
+      const maxX = tape.scrollWidth - tape.clientWidth
+      setCanLeft(left > 4)
+      setCanRight(maxX > 8 && left < maxX - 4)
     }
 
     sync()
-    el.addEventListener('scroll', sync, { passive: true })
     const ro = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(sync) : null
-    ro?.observe(el)
+    ro?.observe(panel)
+
+    let tapeRo = null
+    let tapeEl = null
+    function bindTape() {
+      const next = horizHost(panel)
+      if (next === tapeEl) return
+      if (tapeEl) {
+        tapeEl.removeEventListener('scroll', sync)
+        tapeRo?.disconnect()
+      }
+      tapeEl = next
+      if (tapeEl) {
+        tapeEl.addEventListener('scroll', sync, { passive: true })
+        tapeRo = typeof ResizeObserver !== 'undefined' ? new ResizeObserver(sync) : null
+        tapeRo?.observe(tapeEl)
+        if (tapeEl.firstElementChild) tapeRo?.observe(tapeEl.firstElementChild)
+      }
+      sync()
+    }
+    bindTape()
+    const mo = typeof MutationObserver !== 'undefined' ? new MutationObserver(bindTape) : null
+    mo?.observe(panel, { childList: true, subtree: true })
+
     window.addEventListener('resize', sync)
     return () => {
-      el.removeEventListener('scroll', sync)
       ro?.disconnect()
+      mo?.disconnect()
+      if (tapeEl) tapeEl.removeEventListener('scroll', sync)
+      tapeRo?.disconnect()
       window.removeEventListener('resize', sync)
     }
   }, [targetRef])
 
-  if (!canUp && !canDown) return null
+  if (!canLeft && !canRight) return null
+
+  const stepX = () => {
+    const tape = horizHost(targetRef.current)
+    return tape ? Math.max(180, tape.clientWidth * 0.7) : 220
+  }
 
   return (
-    <div className="scroll-controls" aria-label="Scroll board">
+    <div className="scroll-controls" aria-label="Scroll columns">
       <button
         type="button"
-        title="Scroll up"
-        aria-label="Scroll up"
-        disabled={!canUp}
+        title="Scroll left"
+        aria-label="Scroll left"
+        disabled={!canLeft}
         onClick={() => {
-          const el = targetRef.current
-          if (!el) return
-          el.scrollBy({ top: -Math.max(240, el.clientHeight * 0.75), behavior: 'smooth' })
+          const tape = horizHost(targetRef.current)
+          tape?.scrollBy({ left: -stepX(), behavior: 'smooth' })
         }}
       >
-        ↑
+        ←
       </button>
       <button
         type="button"
-        title="Scroll down"
-        aria-label="Scroll down"
-        disabled={!canDown}
+        title="Scroll right"
+        aria-label="Scroll right"
+        disabled={!canRight}
         onClick={() => {
-          const el = targetRef.current
-          if (!el) return
-          el.scrollBy({ top: Math.max(240, el.clientHeight * 0.75), behavior: 'smooth' })
+          const tape = horizHost(targetRef.current)
+          tape?.scrollBy({ left: stepX(), behavior: 'smooth' })
         }}
       >
-        ↓
+        →
       </button>
     </div>
   )

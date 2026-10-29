@@ -14,6 +14,18 @@ This is a research tool. It is not a forecast and not investment advice.
 | **Chart** | Support/resistance, trend, gaps, patterns, Fibonacci, and candles |
 | **Spurts** | Live NSE and BSE volume-spurt tables, with a daily archive |
 
+### Tabs (naming)
+
+| Desk | Tabs |
+| --- | --- |
+| Volume | Map · Bullish · Bearish · Spike |
+| Technical | Map · Bullish · Bearish |
+| Lab | Map · Bullish · Coil · Breakout |
+| Chart | Map · Bullish · Bearish · Breakout · S/R · Fib |
+| Spurts | All · NSE · BSE · ≥3× |
+
+Convention: Title Case labels; overview is **Map** (scan desks) or **All** (Spurts); bias tabs are full **Bullish** / **Bearish**; Lab uses **Coil** (not Consolidating); Spurts archive panel is **Archive** (By date · Reappeared).
+
 **Book** (toolbar) picks the scan universe. Groups:
 
 | Group | Books |
@@ -23,9 +35,9 @@ This is a research tool. It is not a forecast and not investment advice.
 | BSE | Group A · Group B |
 | Exchange | NSE All · BSE All |
 
-Timeframes: **15m · 1H · 4H · 1D · 1W · 1M · 3M · 6M · 1Y · 5Y · Max**.
+Volume, Technical, and Lab timeframes: **15m · 1H · 4H · 1D · 1W · 1M · 3M · 6M · 1Y · 5Y · Max**. Chart uses daily depth **6M–10Y**, swing **2Y·W / 5Y·W**, and long **5Y·M / 10Y·W**.
 
-**Common Search** opens a combined dossier (Volume · Technical · Lab · Chart — Spurts excluded) with an **NSE · BSE volume** table for the last 15 sessions (Total, Avg10, Δ Tot/NSE/BSE, RVOL, Mix, Spike, Delivery).
+**Common Search** opens a combined dossier (Volume · Technical · Lab · Chart · Spurts) with **Day** (1-day window) and **Long** (5-year daily). The **NSE · BSE volume** table shows the last 15 sessions (Total, Avg50, Δ Tot/NSE/BSE, RVOL, Mix, Spike, Delivery).
 
 Each desk keeps its own board cache until you hit **Refresh** or **Clear all**.
 

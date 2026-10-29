@@ -14,13 +14,13 @@ const TECH_TABS = [
 const SCI_TABS = [
   ["trend", "Map", "all"],
   ["bullish", "Bullish", "bullish"],
-  ["bearish", "Bearish", "bearish"],
-  ["spike", "Spike", "spike"],
+  ["consolidating", "Coil", "consolidating"],
+  ["breakout", "Breakout", "breakout"],
 ];
 
 const VOLUME_LEGEND = [
-  ["Bull ≥+30", "Bias score ≥ +30 — price up with volume confirmation"],
-  ["Bear ≤−30", "Bias score ≤ −30 — price down with volume confirmation"],
+  ["Bullish ≥+30", "Bias score ≥ +30 — price up with volume confirmation"],
+  ["Bearish ≤−30", "Bias score ≤ −30 — price down with volume confirmation"],
   ["RVOL", "Relative volume: bar volume ÷ average of prior N bars (≥1.5× = spike)"],
   ["OBV", "On-Balance Volume — rising = accumulation, falling = distribution"],
   ["UV/DV", "Up-bar volume ÷ down-bar volume over the lookback window"],

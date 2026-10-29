@@ -1,6 +1,26 @@
-import { displayStock, fmtNum, fmtVol, tradingViewUrl } from '../utils'
+import { useMemo, useState } from 'react'
+import { displayStock, fmtNum, fmtVol, sortRowsBy, tradingViewUrl } from '../utils'
 import { useDesk } from '../store'
 import Sparkline from './Sparkline'
+
+function xvolCols(rvolN) {
+  const n = rvolN != null && Number(rvolN) > 0 ? Number(rvolN) : 50
+  return [
+    { key: 'date', label: 'Date', type: 'text' },
+    { key: 'nse_volume', label: 'NSE', type: 'num' },
+    { key: 'bse_volume', label: 'BSE', type: 'num' },
+    { key: 'total_volume', label: 'Total', type: 'num' },
+    { key: 'avg_volume', label: `Avg${n}`, type: 'num' },
+    { key: 'vol_chg_pct', label: 'Δ Tot', type: 'num' },
+    { key: 'nse_chg_pct', label: 'Δ NSE', type: 'num' },
+    { key: 'bse_chg_pct', label: 'Δ BSE', type: 'num' },
+    { key: 'rvol', label: 'RVOL', type: 'num' },
+    { key: 'nse_bse_ratio', label: 'Mix', type: 'num' },
+    { key: 'spike', label: 'Spike', type: 'num' },
+    { key: 'delivery', label: 'Delivery', type: 'num' },
+    { key: 'delivery_pct', label: 'Del %', type: 'num' },
+  ]
+}
 
 /** Volume in thousands (matches exchange volume tables). */
 function fmtVolK(value) {
@@ -23,7 +43,7 @@ function fmtSignedPct(value, digits = 1) {
 }
 
 /** Prefer server KPIs; fill gaps client-side so older caches still compare. */
-function withVolumeKpis(rows, rvolWindow = 10) {
+function withVolumeKpis(rows, rvolWindow = 50) {
   const list = Array.isArray(rows) ? rows : []
   const totals = []
   const nseHist = []
@@ -114,6 +134,23 @@ export default function CombinedDossier() {
   const dossier = useDesk((s) => s.dossier)
   const loading = useDesk((s) => s.loading)
   const symbol = useDesk((s) => s.symbol)
+  const spurtsBoard = useDesk((s) => s.boardsByDesk?.spurts?.board)
+  const horizon = useDesk((s) => s.dossierHorizon)
+  const setDossierHorizon = useDesk((s) => s.setDossierHorizon)
+  const [xvolSort, setXvolSort] = useState({ key: 'date', dir: 'desc', type: 'text' })
+
+  const rvolN = dossier?.tf_meta?.rvol_window ?? 50
+  const xvolColsList = useMemo(() => xvolCols(rvolN), [rvolN])
+  const xvolRaw = Array.isArray(dossier?.exchange_volume) ? dossier.exchange_volume : []
+  const xvolRows = useMemo(() => {
+    const enriched = withVolumeKpis(xvolRaw, rvolN).slice(-15)
+    return sortRowsBy(enriched, xvolSort.key, xvolSort.dir, (bar) => {
+      if (xvolSort.key === 'date') return bar.date || bar.label || ''
+      if (xvolSort.key === 'spike') return bar.spike ? 1 : 0
+      const v = bar[xvolSort.key]
+      return v == null || Number.isNaN(Number(v)) ? null : Number(v)
+    })
+  }, [xvolRaw, xvolSort, rvolN])
 
   if (loading && !dossier) return <p className="empty">Loading combined signal · {symbol || 'symbol'}…</p>
   if (!dossier) return <p className="empty">No combined signal for this symbol.</p>
@@ -129,10 +166,22 @@ export default function CombinedDossier() {
   const vol = dossier.volume || {}
   const stats = vol.stats || {}
   const study = vol.study || {}
-  const xvol = Array.isArray(dossier.exchange_volume) ? dossier.exchange_volume : []
+  const xvol = xvolRaw
   const tech = dossier.tech || null
   const sci = dossier.sci || null
   const chart = dossier.chart || null
+  const spurtsHits = (spurtsBoard?.rows || []).filter((row) => {
+    const id = String(row.nse || row.id || '').toUpperCase()
+    return id && id === String(sym || symbol || '').toUpperCase()
+  })
+
+  function toggleXvolSort(key, type) {
+    setXvolSort((prev) =>
+      prev.key === key
+        ? { ...prev, dir: prev.dir === 'asc' ? 'desc' : 'asc' }
+        : { key, dir: type === 'text' ? 'asc' : 'desc', type },
+    )
+  }
 
   return (
     <div className="dossier">
@@ -152,7 +201,41 @@ export default function CombinedDossier() {
         ) : null}
         {dossier.cached ? ' · cached' : ' · fresh'}
       </p>
-      <p className="dossier-blurb">Combined Volume · Technical · Lab · Chart (Spurts excluded)</p>
+      <div className="view-toggle dossier-horizon" role="group" aria-label="Trader horizon">
+        <button type="button" className={horizon !== 'long' ? 'is-on' : ''} onClick={() => setDossierHorizon('day')}>
+          Day
+        </button>
+        <button type="button" className={horizon === 'long' ? 'is-on' : ''} onClick={() => setDossierHorizon('long')}>
+          Long
+        </button>
+        <span>
+          {horizon === 'long'
+            ? '5-year daily · 50/200 · trend · demand and supply · ADX'
+            : '1-day window · RVOL · gap · candle · near support · Spurts'}
+        </span>
+      </div>
+      <p className="dossier-blurb">
+        {[
+          chart?.at_demand
+            ? 'Chart Demand'
+            : chart?.at_supply
+              ? 'Chart Supply'
+              : chart?.range_pos_pct != null
+                ? `Chart mid ${Number(chart.range_pos_pct).toFixed(0)}%`
+                : null,
+          chart?.score != null ? `Chart ${chart.score}` : null,
+          stats.rvol != null ? `RVOL ${Number(stats.rvol).toFixed(2)}×` : null,
+          tech?.bias ? `Tech ${tech.bias}` : null,
+          spurtsHits.length
+            ? 'Spurts ' +
+              spurtsHits
+                .map((hit) => `${hit.exchange} ${hit.vol_x != null ? Number(hit.vol_x).toFixed(1) + '×' : '—'}`)
+                .join(' · ')
+            : null,
+        ]
+          .filter(Boolean)
+          .join(' · ') || 'Volume · Technical · Lab · Chart · Spurts'}
+      </p>
 
       <div className="dossier-grid">
         <DeskPanel title="Volume" empty={dossier.volume_error || (!vol.stats && !vol.study ? 'No volume data.' : null)}>
@@ -169,6 +252,26 @@ export default function CombinedDossier() {
             label="OBV"
             value={stats.obv_rising === true ? '↑' : stats.obv_rising === false ? '↓' : '—'}
             tone={stats.obv_rising === true ? 'pos' : stats.obv_rising === false ? 'neg' : ''}
+          />
+          <Metric
+            label="VolZ"
+            value={stats.vol_z != null ? ((stats.vol_z >= 0 ? '+' : '') + Number(stats.vol_z).toFixed(1) + 'σ') : '—'}
+            tone={stats.vol_z != null && stats.vol_z >= 2 ? 'pos' : stats.vol_z != null && stats.vol_z <= -1 ? 'neg' : ''}
+          />
+          <Metric
+            label="Force"
+            value={stats.force != null ? fmtNum(stats.force) : '—'}
+            tone={scoreTone(stats.force)}
+          />
+          <Metric
+            label="EMV"
+            value={stats.emv != null ? Number(stats.emv).toFixed(2) : '—'}
+            tone={scoreTone(stats.emv)}
+          />
+          <Metric
+            label="VOsc"
+            value={stats.vol_osc != null ? Number(stats.vol_osc).toFixed(1) + '%' : '—'}
+            tone={scoreTone(stats.vol_osc)}
           />
           <Metric
             label="NSE Vol"
@@ -205,8 +308,11 @@ export default function CombinedDossier() {
               <Metric label="Bias" value={tech.bias || '—'} />
               <Metric label="RSI" value={tech.rsi != null ? tech.rsi.toFixed(0) : '—'} tone={tech.rsi != null && tech.rsi >= 55 ? 'pos' : tech.rsi != null && tech.rsi <= 45 ? 'neg' : ''} />
               <Metric label="MACD" value={tech.macd_hist != null ? tech.macd_hist.toFixed(2) : '—'} tone={scoreTone(tech.macd_hist)} />
+              <Metric label="PPO" value={tech.ppo_hist != null ? tech.ppo_hist.toFixed(3) : '—'} tone={scoreTone(tech.ppo_hist)} />
               <Metric label="SMA20" value={tech.sma20 != null ? fmtNum(tech.sma20) : '—'} />
-              <Metric label="SMA50" value={tech.sma50 != null ? fmtNum(tech.sma50) : '—'} />
+              <Metric label="50/200" value={tech.sma50 != null && tech.sma200 != null ? (tech.sma50 > tech.sma200 ? 'Gold' : tech.sma50 < tech.sma200 ? 'Death' : 'flat') : '—'} tone={tech.sma50 != null && tech.sma200 != null ? (tech.sma50 > tech.sma200 ? 'pos' : tech.sma50 < tech.sma200 ? 'neg' : '') : ''} />
+              <Metric label="Aroon" value={tech.aroon_osc != null ? tech.aroon_osc.toFixed(0) : '—'} tone={tech.aroon_osc != null && tech.aroon_osc >= 50 ? 'pos' : tech.aroon_osc != null && tech.aroon_osc <= -50 ? 'neg' : ''} />
+              <Metric label="ADX" value={tech.adx != null ? Number(tech.adx).toFixed(0) : '—'} tone={tech.adx != null && tech.adx >= 25 ? 'pos' : ''} />
               <Metric label="EMA20" value={tech.ema20 != null ? fmtNum(tech.ema20) : '—'} />
               <Metric label="Stoch" value={tech.stoch_k != null ? tech.stoch_k.toFixed(0) : '—'} />
             </>
@@ -216,13 +322,40 @@ export default function CombinedDossier() {
         <DeskPanel title="Lab" empty={!sci ? 'No lab pattern for this TF.' : null}>
           {sci ? (
             <>
-              <Metric label="Pattern" value={(sci.pattern || 'none').replace(/_/g, ' ')} />
+              <Metric
+                label="Pattern"
+                value={
+                  sci.pattern === 'bull_breakout'
+                    ? 'Breakout'
+                    : sci.pattern === 'bull_base'
+                      ? 'Bull base'
+                      : sci.pattern === 'consolidating'
+                        ? 'Coil'
+                        : (sci.pattern || 'none').replace(/_/g, ' ')
+                }
+              />
               <Metric label="Score" value={sci.score != null ? String(sci.score) : '—'} tone={scoreTone(sci.score)} />
-              <Metric label="Bull" value={sci.bull_score != null ? Number(sci.bull_score).toFixed(0) : '—'} />
-              <Metric label="Coil" value={sci.consol_score != null ? Number(sci.consol_score).toFixed(0) : '—'} />
+              <Metric
+                label="Bullish"
+                value={sci.bull_score != null ? Number(sci.bull_score).toFixed(0) : '—'}
+              />
+              <Metric
+                label="Coil"
+                value={sci.consol_score != null ? Number(sci.consol_score).toFixed(0) : '—'}
+              />
               <Metric label="Range%" value={sci.range_pct != null ? sci.range_pct.toFixed(1) : '—'} />
               <Metric label="RVOL" value={sci.rvol != null ? sci.rvol.toFixed(1) + '×' : '—'} />
               <Metric label="CMF" value={sci.cmf != null ? sci.cmf.toFixed(2) : '—'} tone={scoreTone(sci.cmf)} />
+              <Metric label="ATR%" value={sci.atr_pct != null ? sci.atr_pct.toFixed(2) + '%' : '—'} />
+              <Metric label="Squeeze" value={sci.squeeze === true ? 'Yes' : sci.squeeze === false ? 'No' : '—'} />
+              <Metric
+                label="Lookback"
+                value={
+                  sci.periods
+                    ? `D${sci.periods.donchian} · R${sci.periods.rvol} · CMF${sci.periods.cmf} · BB(${sci.periods.bb}) · ATR${sci.periods.atr}`
+                    : sci.history || '—'
+                }
+              />
               {sci.spark?.length > 1 ? (
                 <div className="dossier-spark">
                   <Sparkline points={sci.spark} up={sci.spark_up !== false} />
@@ -236,13 +369,136 @@ export default function CombinedDossier() {
           {chart ? (
             <>
               <Metric label="Setup" value={(chart.setup || '—').replace(/_/g, ' ')} />
-              <Metric label="Score" value={chart.score != null ? String(chart.score) : '—'} tone={scoreTone(chart.score, 50)} />
+              <Metric
+                label="Score"
+                value={chart.score != null ? String(chart.score) : '—'}
+                tone={
+                  chart.score == null
+                    ? ''
+                    : chart.score >= 60
+                      ? 'pos'
+                      : chart.score <= 40
+                        ? 'neg'
+                        : ''
+                }
+              />
+              <Metric label="Edge" value={chart.high_edge ? 'High' : '—'} tone={chart.high_edge ? 'pos' : ''} />
+              <Metric
+                label="Conf"
+                value={
+                  chart.confluence != null
+                    ? (chart.confluence > 0 ? '+' : '') + String(chart.confluence)
+                    : '—'
+                }
+                tone={chart.confluence != null && chart.confluence >= 2 ? 'pos' : chart.confluence != null && chart.confluence <= -2 ? 'neg' : ''}
+              />
+              <Metric label="Bias" value={chart.bias || '—'} />
+              {Array.isArray(chart.edges) && chart.edges.length ? (
+                <Metric label="Edges" value={chart.edges.slice(0, 6).join(' · ')} />
+              ) : null}
               <Metric label="Trend" value={chart.trend || '—'} tone={chart.trend === 'up' ? 'pos' : chart.trend === 'down' ? 'neg' : ''} />
-              <Metric label="Pattern" value={(chart.pattern || 'none').replace(/_/g, ' ')} />
+              <Metric
+                label="Touches"
+                value={
+                  chart.trend_touches != null
+                    ? `${chart.trend_touches}${chart.trend_valid ? ' ✓' : ''}`
+                    : '—'
+                }
+              />
+              <Metric
+                label="Pattern"
+                value={
+                  (chart.pattern && chart.pattern !== 'none'
+                    ? String(chart.pattern).replace(/_/g, ' ') + (chart.pattern_confirmed ? ' ✓' : '')
+                    : '—')
+                }
+                tone={
+                  chart.pattern_confirmed && String(chart.pattern || '').match(/bull|asc|bottom/)
+                    ? 'pos'
+                    : chart.pattern_confirmed && String(chart.pattern || '').match(/bear|desc|top/)
+                      ? 'neg'
+                      : ''
+                }
+              />
+              <Metric
+                label="Gap"
+                value={
+                  !chart.gap || chart.gap === 'none'
+                    ? '—'
+                    : String(chart.gap).replace(/_/g, ' ') + (chart.gap_pct != null ? ` ${Number(chart.gap_pct).toFixed(1)}%` : '')
+                }
+                tone={String(chart.gap || '').startsWith('up') ? 'pos' : String(chart.gap || '').startsWith('down') ? 'neg' : ''}
+              />
+              <Metric
+                label="HL / LH"
+                value={[chart.higher_lows ? 'HL' : null, chart.lower_highs ? 'LH' : null].filter(Boolean).join(' · ') || '—'}
+                tone={chart.higher_lows ? 'pos' : chart.lower_highs ? 'neg' : ''}
+              />
+              <Metric label="Close" value={chart.close != null ? fmtNum(chart.close) : '—'} />
               <Metric label="Support" value={chart.support != null ? fmtNum(chart.support) : '—'} />
               <Metric label="Resist" value={chart.resistance != null ? fmtNum(chart.resistance) : '—'} />
+              <Metric
+                label="Demand"
+                value={
+                  chart.demand_lo != null && chart.demand_hi != null
+                    ? `${fmtNum(chart.demand_lo)}–${fmtNum(chart.demand_hi)}`
+                    : '—'
+                }
+                tone={chart.at_demand ? 'pos' : ''}
+              />
+              <Metric
+                label="Supply"
+                value={
+                  chart.supply_lo != null && chart.supply_hi != null
+                    ? `${fmtNum(chart.supply_lo)}–${fmtNum(chart.supply_hi)}`
+                    : '—'
+                }
+                tone={chart.at_supply ? 'neg' : ''}
+              />
+              <Metric
+                label="Loc"
+                value={
+                  chart.at_demand
+                    ? 'Demand'
+                    : chart.at_supply
+                      ? 'Supply'
+                      : chart.range_pos_pct != null
+                        ? `Mid ${Number(chart.range_pos_pct).toFixed(0)}%`
+                        : '—'
+                }
+                tone={chart.at_demand ? 'pos' : chart.at_supply ? 'neg' : ''}
+              />
+              <Metric
+                label="Dist S%"
+                value={chart.dist_support_pct != null ? chart.dist_support_pct.toFixed(2) + '%' : '—'}
+                tone={chart.near_support ? 'pos' : ''}
+              />
+              <Metric
+                label="Dist R%"
+                value={chart.dist_resistance_pct != null ? chart.dist_resistance_pct.toFixed(2) + '%' : '—'}
+                tone={chart.near_resistance ? 'neg' : ''}
+              />
+              <Metric
+                label="S/R%"
+                value={chart.range_width_pct != null ? Number(chart.range_width_pct).toFixed(1) : '—'}
+              />
               <Metric label="Fib" value={chart.fib_nearest ? chart.fib_nearest + '%' : '—'} tone={chart.fib_zone ? 'pos' : ''} />
               <Metric label="Candle" value={(chart.candle || 'none').replace(/_/g, ' ')} />
+              <Metric label="RVOL" value={chart.rvol != null ? chart.rvol.toFixed(1) + '×' : '—'} />
+              <Metric
+                label="Lookback"
+                value={
+                  [
+                    chart.periods
+                      ? `${chart.periods.sr_look || chart.periods.available || '—'} bars`
+                      : null,
+                    chart.history && chart.history !== 'full' ? chart.history : null,
+                    chart.periods ? `RVOL ${chart.periods.rvol}` : null,
+                  ]
+                    .filter(Boolean)
+                    .join(' · ') || '—'
+                }
+              />
               {chart.spark?.length > 1 ? (
                 <div className="dossier-spark">
                   <Sparkline points={chart.spark} up={chart.spark_up !== false} />
@@ -251,13 +507,42 @@ export default function CombinedDossier() {
             </>
           ) : null}
         </DeskPanel>
+
+        <DeskPanel
+          title="Spurts"
+          empty={
+            spurtsHits.length
+              ? null
+              : 'Not on the loaded Spurts list. Refresh Spurts to check today’s NSE and BSE gainers.'
+          }
+        >
+          {spurtsHits.map((hit) => (
+            <span key={(hit.exchange || '') + (hit.nse || hit.id || '')} style={{ display: 'contents' }}>
+              <Metric
+                label={`${hit.exchange || 'Vol'} ×`}
+                value={hit.vol_x != null ? Number(hit.vol_x).toFixed(2) + '×' : '—'}
+                tone={hit.vol_x != null && hit.vol_x >= 3 ? 'pos' : ''}
+              />
+              <Metric
+                label="2W×"
+                value={hit.exchange === 'BSE' ? '—' : hit.vol_x_2w != null ? Number(hit.vol_x_2w).toFixed(2) + '×' : '—'}
+              />
+              <Metric
+                label="Chg"
+                value={hit.change_pct != null ? (hit.change_pct >= 0 ? '+' : '') + Number(hit.change_pct).toFixed(1) + '%' : '—'}
+                tone={hit.change_pct == null ? '' : hit.change_pct >= 0 ? 'pos' : 'neg'}
+              />
+              <Metric label="Score" value={hit.score != null ? String(hit.score) : '—'} tone={scoreTone(hit.score)} />
+            </span>
+          ))}
+        </DeskPanel>
       </div>
 
       <div className="dossier-bars">
         <header className="dossier-panel-head">
           <h3>NSE · BSE volume</h3>
           <p className="dossier-xvol-note">
-            Last 15 · Avg10 · Δ Tot/NSE/BSE · RVOL · Mix · Spike (≥1.5×) · Delivery
+            Last 15 · Avg{rvolN} (ChartSchool RVOL) · Δ Tot/NSE/BSE · Mix · Spike ≥1.5× · Delivery
           </p>
         </header>
         {!xvol.length ? (
@@ -267,50 +552,46 @@ export default function CombinedDossier() {
             <table>
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>NSE</th>
-                  <th>BSE</th>
-                  <th>Total</th>
-                  <th title="Average total volume of prior 10 sessions">Avg10</th>
-                  <th title="Total volume vs prior session">Δ Tot</th>
-                  <th title="NSE volume vs prior session">Δ NSE</th>
-                  <th title="BSE volume vs prior session">Δ BSE</th>
-                  <th title="Total ÷ Avg10">RVOL</th>
-                  <th title="NSE volume ÷ BSE volume">Mix</th>
-                  <th title="RVOL ≥ 1.5×">Spike</th>
-                  <th>Delivery</th>
-                  <th title="Delivery ÷ NSE volume">Del %</th>
+                  {xvolColsList.map((c) => (
+                    <th key={c.key} title={c.label}>
+                      <button
+                        type="button"
+                        className={'sort-btn' + (xvolSort.key === c.key ? ' is-on' : '')}
+                        onClick={() => toggleXvolSort(c.key, c.type)}
+                      >
+                        {c.label}
+                        {xvolSort.key === c.key ? (xvolSort.dir === 'asc' ? ' ↑' : ' ↓') : ''}
+                      </button>
+                    </th>
+                  ))}
                 </tr>
               </thead>
               <tbody>
-                {[...withVolumeKpis(xvol)]
-                  .reverse()
-                  .slice(0, 15)
-                  .map((bar, i) => (
-                    <tr key={(bar.date || bar.label || 'd') + '-' + i} className={bar.spike ? 'is-vol-spike' : ''}>
-                      <td>{bar.label || bar.date}</td>
-                      <td>{fmtVolK(bar.nse_volume)}</td>
-                      <td>{fmtVolK(bar.bse_volume)}</td>
-                      <td>{fmtVolK(bar.total_volume)}</td>
-                      <td>{fmtVolK(bar.avg_volume)}</td>
-                      <td className={scoreTone(bar.vol_chg_pct) ? 'tone-' + scoreTone(bar.vol_chg_pct) : ''}>
-                        {fmtSignedPct(bar.vol_chg_pct, 1)}
-                      </td>
-                      <td className={scoreTone(bar.nse_chg_pct) ? 'tone-' + scoreTone(bar.nse_chg_pct) : ''}>
-                        {fmtSignedPct(bar.nse_chg_pct, 1)}
-                      </td>
-                      <td className={scoreTone(bar.bse_chg_pct) ? 'tone-' + scoreTone(bar.bse_chg_pct) : ''}>
-                        {fmtSignedPct(bar.bse_chg_pct, 1)}
-                      </td>
-                      <td className={bar.rvol != null && bar.rvol >= 1.5 ? 'tone-pos' : ''}>
-                        {bar.rvol != null ? bar.rvol.toFixed(2) + '×' : '—'}
-                      </td>
-                      <td>{bar.nse_bse_ratio != null ? bar.nse_bse_ratio.toFixed(1) + '×' : '—'}</td>
-                      <td>{bar.spike ? 'Yes' : '—'}</td>
-                      <td>{fmtVolK(bar.delivery)}</td>
-                      <td>{fmtPct(bar.delivery_pct, 1)}</td>
-                    </tr>
-                  ))}
+                {xvolRows.map((bar, i) => (
+                  <tr key={(bar.date || bar.label || 'd') + '-' + i} className={bar.spike ? 'is-vol-spike' : ''}>
+                    <td>{bar.label || bar.date}</td>
+                    <td>{fmtVolK(bar.nse_volume)}</td>
+                    <td>{fmtVolK(bar.bse_volume)}</td>
+                    <td>{fmtVolK(bar.total_volume)}</td>
+                    <td>{fmtVolK(bar.avg_volume)}</td>
+                    <td className={scoreTone(bar.vol_chg_pct) ? 'tone-' + scoreTone(bar.vol_chg_pct) : ''}>
+                      {fmtSignedPct(bar.vol_chg_pct, 1)}
+                    </td>
+                    <td className={scoreTone(bar.nse_chg_pct) ? 'tone-' + scoreTone(bar.nse_chg_pct) : ''}>
+                      {fmtSignedPct(bar.nse_chg_pct, 1)}
+                    </td>
+                    <td className={scoreTone(bar.bse_chg_pct) ? 'tone-' + scoreTone(bar.bse_chg_pct) : ''}>
+                      {fmtSignedPct(bar.bse_chg_pct, 1)}
+                    </td>
+                    <td className={bar.rvol != null && bar.rvol >= 1.5 ? 'tone-pos' : ''}>
+                      {bar.rvol != null ? bar.rvol.toFixed(2) + '×' : '—'}
+                    </td>
+                    <td>{bar.nse_bse_ratio != null ? bar.nse_bse_ratio.toFixed(1) + '×' : '—'}</td>
+                    <td>{bar.spike ? 'Yes' : '—'}</td>
+                    <td>{fmtVolK(bar.delivery)}</td>
+                    <td>{fmtPct(bar.delivery_pct, 1)}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { BOOK_GROUPS, TECH_CORE_IDS, TECH_INDICATORS, TF_GROUPS } from '../constants'
+import { BOOK_GROUPS, TECH_CORE_IDS, TECH_INDICATORS, tfGroupsForDesk } from '../constants'
 import { useDesk } from '../store'
 
 function bookOptions(universes) {
@@ -35,6 +35,10 @@ export default function Toolbar() {
   const applyTechFilter = useDesk((s) => s.applyTechFilter)
   const loadBoard = useDesk((s) => s.loadBoard)
   const loading = useDesk((s) => s.loading)
+  const boardInFlight = useDesk((s) => s.boardInFlight)
+  const scanProgress = useDesk((s) => s.scanProgress)
+  const board = useDesk((s) => s.board)
+  const boardsByDesk = useDesk((s) => s.boardsByDesk)
   const backToScan = useDesk((s) => s.backToScan)
   const mode = useDesk((s) => s.mode)
   const spurtsDate = useDesk((s) => s.spurtsDate)
@@ -45,6 +49,17 @@ export default function Toolbar() {
   const [draft, setDraft] = useState(techIndicators)
 
   const hideTf = desk === 'spurts'
+  const tfGroups = tfGroupsForDesk(desk)
+  const cached = boardsByDesk?.[desk]
+  const selectionStale =
+    mode === 'scan' &&
+    Boolean(
+      !board ||
+        (cached &&
+          ((cached.tf && String(cached.tf).toLowerCase() !== String(tf).toLowerCase()) ||
+            (cached.universe && cached.universe !== universe) ||
+            (desk === 'spurts' && (cached.spurtsDate || 'live') !== (spurtsDate || 'live')))),
+    )
   // Highlight the TF the board actually returned (guards against stale/race UI).
   const activeTf =
     !hideTf && boardTf && String(boardTf).toLowerCase() === String(tf).toLowerCase()
@@ -52,9 +67,9 @@ export default function Toolbar() {
       : String(tf || '1d').toLowerCase()
   return (
     <div className="chrome-bar">
-      {!hideTf && (
+      {!hideTf && tfGroups.length > 0 && (
         <div className="tf-panel" aria-label="Timeframe">
-          {TF_GROUPS.map((group) => (
+          {tfGroups.map((group) => (
             <div key={group.id} className="tf-group">
               <span className="tf-group-label">{group.label}</span>
               <div className="tf-chips" role="group" aria-label={group.label}>
@@ -63,7 +78,12 @@ export default function Toolbar() {
                     key={item.id}
                     type="button"
                     className={activeTf === item.id ? 'is-on' : ''}
-                    title={item.label}
+                    title={
+                      item.title ||
+                      (desk === 'chart'
+                        ? `${item.label} · ChartSchool pattern bars on this resolution`
+                        : item.label)
+                    }
                     onClick={() => setTf(item.id)}
                   >
                     {item.label}
@@ -111,7 +131,11 @@ export default function Toolbar() {
                 ))}
               </div>
               <div className="ind-filter-actions">
-                <button type="button" onClick={() => setDraft([...TECH_CORE_IDS])} title="RSI · MACD · SMA · EMA">
+                <button
+                  type="button"
+                  onClick={() => setDraft([...TECH_CORE_IDS])}
+                  title="RSI · MACD · PPO · SMA · 50/200 · EMA · Stoch · ADX · Aroon · %B · ROC"
+                >
                   Core
                 </button>
                 <button type="button" onClick={() => setDraft(TECH_INDICATORS.map((i) => i.id))}>
@@ -186,11 +210,28 @@ export default function Toolbar() {
         )}
         <button
           type="button"
-          className="chip-btn"
+          className={
+            'chip-btn' +
+            (selectionStale && !loading && !boardInFlight ? ' is-pending' : '') +
+            (loading || boardInFlight ? ' is-running' : '')
+          }
           onClick={() => loadBoard(true)}
-          title="Rebuild this dashboard only and replace its cache"
+          disabled={loading || boardInFlight}
+          title={
+            loading || boardInFlight
+              ? 'Scan in progress'
+              : selectionStale
+                ? 'Selection changed — click Refresh to scan'
+                : 'Rebuild this dashboard only and replace its cache'
+          }
         >
-          {loading ? 'Running…' : 'Refresh'}
+          {loading || boardInFlight
+            ? scanProgress?.total
+              ? `Scanning ${scanProgress.done}/${scanProgress.total}`
+              : 'Scanning…'
+            : selectionStale
+              ? 'Refresh · scan'
+              : 'Refresh'}
         </button>
         {desk === 'spurts' && spurtsDate === 'live' ? (
           <button

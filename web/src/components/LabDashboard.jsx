@@ -6,12 +6,31 @@ export default function LabDashboard() {
 
   const dash = board.dashboard || {}
   const sources = board.chart_sources || []
-  const meta = [board.universe_label, board.timeframe_label, board.scanned != null ? `${board.scanned}` : null]
+  const lab = board.tf_meta?.lab
+  const res = board.tf_meta?.resolution_label
+  const lookback = lab
+    ? [
+        res,
+        `Donchian=${lab.donchian}`,
+        `RVOL=${lab.rvol}`,
+        `CMF=${lab.cmf}`,
+        `BB=${lab.bb}`,
+        `ATR=${lab.atr}`,
+        `break≥${lab.break_rvol}×`,
+      ]
+        .filter(Boolean)
+        .join(' · ')
+    : null
+  const meta = [
+    board.universe_label,
+    board.timeframe_label,
+    board.scanned != null ? `${board.scanned}` : null,
+  ]
     .filter(Boolean)
     .join(' · ')
 
   const tiles = [
-    { label: 'Break↑', value: dash.bull_breakout ?? 0, tone: 'pos' },
+    { label: 'Breakout', value: dash.bull_breakout ?? 0, tone: 'pos' },
     { label: 'Bull base', value: dash.bull_base ?? 0, tone: 'pos' },
     { label: 'Coil', value: dash.consolidating ?? 0, tone: '' },
     { label: 'Squeeze', value: dash.squeeze ?? 0, tone: '' },
@@ -25,6 +44,7 @@ export default function LabDashboard() {
       <div className="desk-dash-head">
         <h2 className="desk-dash-title">Lab</h2>
         <p className="desk-dash-meta">{meta}</p>
+        {lookback ? <p className="desk-dash-meta lookback">{lookback}</p> : null}
       </div>
       <div className="desk-dash-kpis" role="list">
         {tiles.map((t) => (

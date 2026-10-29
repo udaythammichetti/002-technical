@@ -106,7 +106,8 @@ export function techDerived(row) {
   return { ...row, sma_stack: smaStack, ema_bias: emaBias }
 }
 
-export function filterRows(rows, desk, tab, filters = {}) {
+/** Tab views only (Map / Bullish / Bearish / Spike …) — no client filter bar. */
+export function filterRows(rows, desk, tab) {
   if (!rows) return []
   let out = rows
 
@@ -134,59 +135,36 @@ export function filterRows(rows, desk, tab, filters = {}) {
     else if (tab === 'spike') out = out.filter((r) => r.spike)
   }
 
-  const {
-    nameFilter,
-    strengthFilter,
-    minRvol,
-    minVolX,
-    chartPattern,
-    chartSetup,
-    chartTrend,
-    chartGap,
-    chartFib,
-    chartCandle,
-  } = filters
-  if (nameFilter) out = out.filter((r) => rowMatchesQuery(r, nameFilter))
-  if (desk === 'chart') {
-    if (strengthFilter === 'strong') out = out.filter((r) => r.strength === 'strong')
-    if (strengthFilter === 'moderate') out = out.filter((r) => r.strength === 'moderate')
-  } else {
-    if (strengthFilter === 'strong')
-      out = out.filter((r) => r.strength === 'strong' || Math.abs(r.score || 0) >= 60)
-    if (strengthFilter === 'moderate')
-      out = out.filter(
-        (r) => r.strength === 'moderate' || (Math.abs(r.score || 0) >= 30 && Math.abs(r.score || 0) < 60),
-      )
-  }
-
-  if (desk === 'chart') {
-    if (chartPattern && chartPattern !== 'all') out = out.filter((r) => (r.pattern || 'none') === chartPattern)
-    if (chartSetup && chartSetup !== 'all') out = out.filter((r) => (r.setup || 'mid_range') === chartSetup)
-    if (chartTrend === 'valid') out = out.filter((r) => r.trend_valid)
-    else if (chartTrend && chartTrend !== 'all') out = out.filter((r) => (r.trend || 'sideways') === chartTrend)
-    if (chartGap === 'any') out = out.filter((r) => r.gap && r.gap !== 'none')
-    else if (chartGap === 'none') out = out.filter((r) => !r.gap || r.gap === 'none')
-    else if (chartGap === 'breakaway') out = out.filter((r) => String(r.gap || '').includes('breakaway'))
-    else if (chartGap === 'runaway') out = out.filter((r) => String(r.gap || '').includes('runaway'))
-    else if (chartGap === 'exhaustion') out = out.filter((r) => String(r.gap || '').includes('exhaustion'))
-    if (chartFib === 'zone') out = out.filter((r) => r.fib_zone)
-    else if (chartFib === 'pullback') out = out.filter((r) => r.fib_zone && r.fib_context === 'pullback')
-    else if (chartFib === 'bounce') out = out.filter((r) => r.fib_zone && r.fib_context === 'bounce')
-    if (chartCandle === 'signal') out = out.filter((r) => r.candle && r.candle !== 'none')
-    else if (chartCandle === 'bull')
-      out = out.filter((r) => r.candle === 'hammer' || r.candle === 'engulfing_bull')
-    else if (chartCandle === 'bear')
-      out = out.filter((r) => r.candle === 'shooting_star' || r.candle === 'engulfing_bear')
-  }
-
-  const rvolMin = Number(minRvol)
-  if (Number.isFinite(rvolMin) && minRvol !== '' && minRvol != null) {
-    out = out.filter((r) => (r.rvol || 0) >= rvolMin)
-  }
-  const volxMin = Number(minVolX)
-  if (Number.isFinite(volxMin) && minVolX !== '' && minVolX != null) {
-    out = out.filter((r) => (r.vol_x || 0) >= volxMin)
-  }
-
   return out
+}
+
+/** Shared table sort: nulls last; strings localeCompare; numbers numeric. */
+export function compareSortValues(av, bv, dir = 'desc') {
+  const d = dir === 'asc' ? 1 : -1
+  if (av == null && bv == null) return 0
+  if (av == null) return 1
+  if (bv == null) return -1
+  if (typeof av === 'string' || typeof bv === 'string') {
+    return String(av).localeCompare(String(bv), undefined, { numeric: true, sensitivity: 'base' }) * d
+  }
+  if (av === bv) return 0
+  return (av < bv ? -1 : 1) * d
+}
+
+export function sortRowsBy(rows, key, dir, getValue) {
+  const getter =
+    getValue ||
+    ((row) => {
+      const v = row?.[key]
+      if (v == null || v === '') return null
+      if (typeof v === 'number') return Number.isFinite(v) ? v : null
+      if (typeof v === 'boolean') return v ? 1 : 0
+      const n = Number(v)
+      return Number.isFinite(n) && String(v).trim() !== '' && !/^[A-Za-z]/.test(String(v)) ? n : String(v).toUpperCase()
+    })
+  return (rows || []).slice().sort((a, b) => {
+    const c = compareSortValues(getter(a), getter(b), dir)
+    if (c !== 0) return c
+    return String(a.nse || a.date || a.label || '').localeCompare(String(b.nse || b.date || b.label || ''))
+  })
 }

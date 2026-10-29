@@ -25,12 +25,12 @@ export default function StockGrid({ rows }) {
   // Chart Analysis: group by setup
   if (desk === 'chart') {
     const groups = [
-      ['breakout', 'Resistance breakout', '↑'],
+      ['breakout', 'Breakout', '↑'],
       ['near_support', 'Near support', '▭'],
-      ['fib_zone', 'Fibonacci alert zone', 'φ'],
+      ['fib_zone', 'Fib zone', 'φ'],
       ['mid_range', 'Mid-range', '·'],
       ['near_resistance', 'Near resistance', '▬'],
-      ['breakdown', 'Support breakdown', '↓'],
+      ['breakdown', 'Breakdown', '↓'],
     ]
     return (
       <div className="stock-board">
@@ -65,9 +65,9 @@ export default function StockGrid({ rows }) {
   // Lab: group by chart pattern; other desks by bias
   if (desk === 'sci') {
     const groups = [
-      ['bull_breakout', 'Bull breakout', '↑'],
-      ['bull_base', 'Bull base (coil + volume)', '◎'],
-      ['consolidating', 'Consolidating', '▭'],
+      ['bull_breakout', 'Breakout', '↑'],
+      ['bull_base', 'Bull base', '◎'],
+      ['consolidating', 'Coil', '▭'],
       ['none', 'No clear pattern', '·'],
     ]
     return (
