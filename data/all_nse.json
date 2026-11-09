@@ -348,9 +348,9 @@
 "sc_id": "ABC07"
 },
 {
-"id": "ABCOTS",
-"label": "A B Cotspin India Limited",
-"nse": "ABCOTS",
+"id": "ABCIND",
+"label": "ABC Industries India Limited",
+"nse": "ABCIND",
 "bse": "",
 "isin": "INE08PH01015",
 "exchange": "NSE",
@@ -2218,6 +2218,18 @@
 "industry": "",
 "group": "",
 "sc_id": "AI64"
+},
+{
+"id": "ARHAM",
+"label": "Arham Technologies Limited",
+"nse": "ARHAM",
+"bse": "",
+"isin": "INE0L2Y01011",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "AT21"
 },
 {
 "id": "ARIES",
@@ -4642,6 +4654,18 @@
 "industry": "",
 "group": "",
 "sc_id": "BDM"
+},
+{
+"id": "BONDADA",
+"label": "Bondada Engineering Limited",
+"nse": "BONDADA",
+"bse": "",
+"isin": "INE0Q8P01029",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BE11"
 },
 {
 "id": "BONFIG",
@@ -7788,6 +7812,18 @@
 "sc_id": "EIMHL"
 },
 {
+"id": "EDELALTS",
+"label": "EAAA India Alternatives Limited",
+"nse": "EDELALTS",
+"bse": "",
+"isin": "INE528L01027",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "EIA"
+},
+{
 "id": "EDELWEISS",
 "label": "Edelweiss Financial Services Limited",
 "nse": "EDELWEISS",
@@ -7938,7 +7974,7 @@
 "bse": "",
 "isin": "INE927X01018",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "EIL"
@@ -9246,7 +9282,7 @@
 "bse": "",
 "isin": "INE388A01029",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GB01"
@@ -9534,7 +9570,7 @@
 "bse": "",
 "isin": "INE538A01037",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "GF07"
@@ -11334,7 +11370,7 @@
 "bse": "",
 "isin": "INE00RL01028",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "H05"
@@ -12588,6 +12624,18 @@
 "sc_id": "ITF"
 },
 {
+"id": "INDTONER",
+"label": "Indian Toners & Developers Limited",
+"nse": "INDTONER",
+"bse": "",
+"isin": "INE826B01026",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "ITD01"
+},
+{
 "id": "INDUSINDBK",
 "label": "IndusInd Bank Limited",
 "nse": "INDUSINDBK",
@@ -13692,6 +13740,18 @@
 "sc_id": "J01"
 },
 {
+"id": "JPL",
+"label": "Jio Platforms Limited",
+"nse": "JPL",
+"bse": "",
+"isin": "INE0BJO01010",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "JPL"
+},
+{
 "id": "JPOLYINVST",
 "label": "Jindal Poly Investment and Finance Company Limited",
 "nse": "JPOLYINVST",
@@ -14094,7 +14154,7 @@
 "bse": "",
 "isin": "INE411F01010",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -14562,7 +14622,7 @@
 "bse": "",
 "isin": "INE029L01018",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "KIC02"
@@ -16386,7 +16446,7 @@
 "bse": "",
 "isin": "INE288A01013",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "MS01"
@@ -19230,7 +19290,7 @@
 "bse": "",
 "isin": "INE023A01030",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "JS02"
@@ -19462,18 +19522,6 @@
 "industry": "",
 "group": "",
 "sc_id": "OEM"
-},
-{
-"id": "OLAELEC-RE",
-"label": "Ola Electric Mobility Ltd-RE",
-"nse": "OLAELEC-RE",
-"bse": "",
-"isin": "INE0LXG20016",
-"exchange": "NSE",
-"series": "BE",
-"industry": "",
-"group": "",
-"sc_id": "OEM01"
 },
 {
 "id": "OLECTRA",
@@ -19830,7 +19878,7 @@
 "bse": "",
 "isin": "INE609C01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "OP02"
@@ -20170,6 +20218,18 @@
 "industry": "",
 "group": "",
 "sc_id": "PDS01"
+},
+{
+"id": "PARASHLTH",
+"label": "Paras Healthcare Limited",
+"nse": "PARASHLTH",
+"bse": "",
+"isin": "INE661T01029",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "PHL01"
 },
 {
 "id": "PARASPETRO",
@@ -20658,7 +20718,7 @@
 "bse": "",
 "isin": "INE417C01014",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "PII03"
@@ -20706,7 +20766,7 @@
 "bse": "",
 "isin": "INE746D01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -22662,7 +22722,7 @@
 "bse": "",
 "isin": "INE219Y01026",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DSS03"
@@ -24636,6 +24696,18 @@
 "sc_id": "SR07"
 },
 {
+"id": "SHIVAM-RE1",
+"label": "Shivam Autotech Ltd-RE",
+"nse": "SHIVAM-RE1",
+"bse": "",
+"isin": "INE637H20024",
+"exchange": "NSE",
+"series": "BE",
+"industry": "",
+"group": "",
+"sc_id": "SAR03"
+},
+{
 "id": "SHIVAMAUTO",
 "label": "Shivam Autotech Limited",
 "nse": "SHIVAMAUTO",
@@ -24786,7 +24858,7 @@
 "bse": "",
 "isin": "INE879A01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SRI01"
@@ -24942,7 +25014,7 @@
 "bse": "",
 "isin": "INE075B01020",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SA05"
@@ -25098,7 +25170,7 @@
 "bse": "",
 "isin": "INE923A01015",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SI51"
@@ -27006,7 +27078,7 @@
 "bse": "",
 "isin": "INE356B01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SCS05"
@@ -28410,7 +28482,7 @@
 "bse": "",
 "isin": "INE2WKE01011",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TPTL"
@@ -28542,7 +28614,7 @@
 "bse": "",
 "isin": "INE105A01035",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SC"
@@ -29490,7 +29562,7 @@
 "bse": "",
 "isin": "INE411B01019",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "VR01"
@@ -30546,7 +30618,7 @@
 "bse": "",
 "isin": "INE210A01017",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "WMC"

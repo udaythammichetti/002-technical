@@ -1,8 +1,8 @@
 {
-"as_of": "2026-10-26T22:37:14+05:30",
-"as_of_ist": "Mon 26 Oct 2026 \u00b7 10:37 pm IST",
-"refreshed_for": "2026-10-26T07:00:00+05:30",
-"next_refresh": "2026-11-02T07:00:00+05:30",
+"as_of": "2026-11-02T10:13:06+05:30",
+"as_of_ist": "Mon 2 Nov 2026 \u00b7 10:13 am IST",
+"refreshed_for": "2026-11-02T07:00:00+05:30",
+"next_refresh": "2026-11-09T07:00:00+05:30",
 "schedule": "Every Monday 07:00 Asia/Kolkata",
 "sources": {
 "nse_indices": {
@@ -54,7 +54,7 @@
 "microcap": {
 "url": "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv",
 "label": "Nifty Microcap 250",
-"count": 254
+"count": 253
 },
 "largemidcap": {
 "url": "https://nsearchives.nseindia.com/content/indices/ind_niftylargemidcap250list.csv",
@@ -68,11 +68,11 @@
 "BE",
 "EQ"
 ],
-"nse_equity_count": 2587,
-"bse_equity_count": 5245,
-"sc_id_backfill_nse": 11,
-"sc_id_backfill_bse": 0,
-"sc_id_cache_size": 2855
+"nse_equity_count": 2593,
+"bse_equity_count": 5252,
+"sc_id_backfill_nse": 8,
+"sc_id_backfill_bse": 9,
+"sc_id_cache_size": 2872
 },
 "meta": [
 {
@@ -162,8 +162,8 @@
 "group": "Cap",
 "enrich_limit": 250,
 "exchange": "NSE",
-"count": 254,
-"scanable": 251
+"count": 253,
+"scanable": 250
 },
 {
 "id": "largemidcap",
@@ -181,8 +181,8 @@
 "enrich_limit": 700,
 "exchange": "BSE",
 "large": true,
-"count": 703,
-"scanable": 703
+"count": 702,
+"scanable": 702
 },
 {
 "id": "bse_mid",
@@ -191,8 +191,8 @@
 "enrich_limit": 1200,
 "exchange": "BSE",
 "large": true,
-"count": 1906,
-"scanable": 1811
+"count": 1915,
+"scanable": 1820
 },
 {
 "id": "nse_all",
@@ -201,8 +201,8 @@
 "enrich_limit": 1200,
 "exchange": "NSE",
 "large": true,
-"count": 2587,
-"scanable": 2567
+"count": 2593,
+"scanable": 2573
 },
 {
 "id": "bse_all",
@@ -211,8 +211,8 @@
 "enrich_limit": 1200,
 "exchange": "BSE",
 "large": true,
-"count": 5245,
-"scanable": 2729
+"count": 5252,
+"scanable": 2738
 },
 {
 "id": "all",
@@ -222,8 +222,8 @@
 "exchange": "NSE",
 "large": true,
 "alias_of": "nse_all",
-"count": 2587,
-"scanable": 2567
+"count": 2593,
+"scanable": 2573
 }
 ],
 "universes": {
@@ -19843,18 +19843,6 @@
 "sc_id": "TLL01"
 },
 {
-"id": "TRIVENIPT",
-"label": "Triveni Power Transmission Ltd.",
-"nse": "TRIVENIPT",
-"bse": "",
-"isin": "INE2WKE01011",
-"exchange": "NSE",
-"series": "BE",
-"industry": "Capital Goods",
-"group": "",
-"sc_id": "TPTL"
-},
-{
 "id": "UJJIVANSFB",
 "label": "Ujjivan Small Finance Bank Ltd.",
 "nse": "UJJIVANSFB",
@@ -23471,9 +23459,9 @@
 "sc_id": "ABC07"
 },
 {
-"id": "ABCOTS",
-"label": "A B Cotspin India Limited",
-"nse": "ABCOTS",
+"id": "ABCIND",
+"label": "ABC Industries India Limited",
+"nse": "ABCIND",
 "bse": "",
 "isin": "INE08PH01015",
 "exchange": "NSE",
@@ -25341,6 +25329,18 @@
 "industry": "",
 "group": "",
 "sc_id": "AI64"
+},
+{
+"id": "ARHAM",
+"label": "Arham Technologies Limited",
+"nse": "ARHAM",
+"bse": "",
+"isin": "INE0L2Y01011",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "AT21"
 },
 {
 "id": "ARIES",
@@ -27765,6 +27765,18 @@
 "industry": "",
 "group": "",
 "sc_id": "BDM"
+},
+{
+"id": "BONDADA",
+"label": "Bondada Engineering Limited",
+"nse": "BONDADA",
+"bse": "",
+"isin": "INE0Q8P01029",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BE11"
 },
 {
 "id": "BONFIG",
@@ -30911,6 +30923,18 @@
 "sc_id": "EIMHL"
 },
 {
+"id": "EDELALTS",
+"label": "EAAA India Alternatives Limited",
+"nse": "EDELALTS",
+"bse": "",
+"isin": "INE528L01027",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "EIA"
+},
+{
 "id": "EDELWEISS",
 "label": "Edelweiss Financial Services Limited",
 "nse": "EDELWEISS",
@@ -31061,7 +31085,7 @@
 "bse": "",
 "isin": "INE927X01018",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "EIL"
@@ -32369,7 +32393,7 @@
 "bse": "",
 "isin": "INE388A01029",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GB01"
@@ -32657,7 +32681,7 @@
 "bse": "",
 "isin": "INE538A01037",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "GF07"
@@ -34457,7 +34481,7 @@
 "bse": "",
 "isin": "INE00RL01028",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "H05"
@@ -35711,6 +35735,18 @@
 "sc_id": "ITF"
 },
 {
+"id": "INDTONER",
+"label": "Indian Toners & Developers Limited",
+"nse": "INDTONER",
+"bse": "",
+"isin": "INE826B01026",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "ITD01"
+},
+{
 "id": "INDUSINDBK",
 "label": "IndusInd Bank Limited",
 "nse": "INDUSINDBK",
@@ -36815,6 +36851,18 @@
 "sc_id": "J01"
 },
 {
+"id": "JPL",
+"label": "Jio Platforms Limited",
+"nse": "JPL",
+"bse": "",
+"isin": "INE0BJO01010",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "JPL"
+},
+{
 "id": "JPOLYINVST",
 "label": "Jindal Poly Investment and Finance Company Limited",
 "nse": "JPOLYINVST",
@@ -37217,7 +37265,7 @@
 "bse": "",
 "isin": "INE411F01010",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -37685,7 +37733,7 @@
 "bse": "",
 "isin": "INE029L01018",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "KIC02"
@@ -39509,7 +39557,7 @@
 "bse": "",
 "isin": "INE288A01013",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "MS01"
@@ -42353,7 +42401,7 @@
 "bse": "",
 "isin": "INE023A01030",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "JS02"
@@ -42585,18 +42633,6 @@
 "industry": "",
 "group": "",
 "sc_id": "OEM"
-},
-{
-"id": "OLAELEC-RE",
-"label": "Ola Electric Mobility Ltd-RE",
-"nse": "OLAELEC-RE",
-"bse": "",
-"isin": "INE0LXG20016",
-"exchange": "NSE",
-"series": "BE",
-"industry": "",
-"group": "",
-"sc_id": "OEM01"
 },
 {
 "id": "OLECTRA",
@@ -42953,7 +42989,7 @@
 "bse": "",
 "isin": "INE609C01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "OP02"
@@ -43293,6 +43329,18 @@
 "industry": "",
 "group": "",
 "sc_id": "PDS01"
+},
+{
+"id": "PARASHLTH",
+"label": "Paras Healthcare Limited",
+"nse": "PARASHLTH",
+"bse": "",
+"isin": "INE661T01029",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "PHL01"
 },
 {
 "id": "PARASPETRO",
@@ -43781,7 +43829,7 @@
 "bse": "",
 "isin": "INE417C01014",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "PII03"
@@ -43829,7 +43877,7 @@
 "bse": "",
 "isin": "INE746D01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -45785,7 +45833,7 @@
 "bse": "",
 "isin": "INE219Y01026",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DSS03"
@@ -47759,6 +47807,18 @@
 "sc_id": "SR07"
 },
 {
+"id": "SHIVAM-RE1",
+"label": "Shivam Autotech Ltd-RE",
+"nse": "SHIVAM-RE1",
+"bse": "",
+"isin": "INE637H20024",
+"exchange": "NSE",
+"series": "BE",
+"industry": "",
+"group": "",
+"sc_id": "SAR03"
+},
+{
 "id": "SHIVAMAUTO",
 "label": "Shivam Autotech Limited",
 "nse": "SHIVAMAUTO",
@@ -47909,7 +47969,7 @@
 "bse": "",
 "isin": "INE879A01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SRI01"
@@ -48065,7 +48125,7 @@
 "bse": "",
 "isin": "INE075B01020",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SA05"
@@ -48221,7 +48281,7 @@
 "bse": "",
 "isin": "INE923A01015",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SI51"
@@ -50129,7 +50189,7 @@
 "bse": "",
 "isin": "INE356B01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SCS05"
@@ -51533,7 +51593,7 @@
 "bse": "",
 "isin": "INE2WKE01011",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TPTL"
@@ -51665,7 +51725,7 @@
 "bse": "",
 "isin": "INE105A01035",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SC"
@@ -52613,7 +52673,7 @@
 "bse": "",
 "isin": "INE411B01019",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "VR01"
@@ -53669,7 +53729,7 @@
 "bse": "",
 "isin": "INE210A01017",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "WMC"
@@ -54517,9 +54577,9 @@
 "sc_id": "ABC07"
 },
 {
-"id": "ABCOTS",
-"label": "A B Cotspin India Limited",
-"nse": "ABCOTS",
+"id": "ABCIND",
+"label": "ABC Industries India Limited",
+"nse": "ABCIND",
 "bse": "",
 "isin": "INE08PH01015",
 "exchange": "NSE",
@@ -56387,6 +56447,18 @@
 "industry": "",
 "group": "",
 "sc_id": "AI64"
+},
+{
+"id": "ARHAM",
+"label": "Arham Technologies Limited",
+"nse": "ARHAM",
+"bse": "",
+"isin": "INE0L2Y01011",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "AT21"
 },
 {
 "id": "ARIES",
@@ -58811,6 +58883,18 @@
 "industry": "",
 "group": "",
 "sc_id": "BDM"
+},
+{
+"id": "BONDADA",
+"label": "Bondada Engineering Limited",
+"nse": "BONDADA",
+"bse": "",
+"isin": "INE0Q8P01029",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BE11"
 },
 {
 "id": "BONFIG",
@@ -61957,6 +62041,18 @@
 "sc_id": "EIMHL"
 },
 {
+"id": "EDELALTS",
+"label": "EAAA India Alternatives Limited",
+"nse": "EDELALTS",
+"bse": "",
+"isin": "INE528L01027",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "EIA"
+},
+{
 "id": "EDELWEISS",
 "label": "Edelweiss Financial Services Limited",
 "nse": "EDELWEISS",
@@ -62107,7 +62203,7 @@
 "bse": "",
 "isin": "INE927X01018",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "EIL"
@@ -63415,7 +63511,7 @@
 "bse": "",
 "isin": "INE388A01029",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GB01"
@@ -63703,7 +63799,7 @@
 "bse": "",
 "isin": "INE538A01037",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "GF07"
@@ -65503,7 +65599,7 @@
 "bse": "",
 "isin": "INE00RL01028",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "H05"
@@ -66757,6 +66853,18 @@
 "sc_id": "ITF"
 },
 {
+"id": "INDTONER",
+"label": "Indian Toners & Developers Limited",
+"nse": "INDTONER",
+"bse": "",
+"isin": "INE826B01026",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "ITD01"
+},
+{
 "id": "INDUSINDBK",
 "label": "IndusInd Bank Limited",
 "nse": "INDUSINDBK",
@@ -67861,6 +67969,18 @@
 "sc_id": "J01"
 },
 {
+"id": "JPL",
+"label": "Jio Platforms Limited",
+"nse": "JPL",
+"bse": "",
+"isin": "INE0BJO01010",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "JPL"
+},
+{
 "id": "JPOLYINVST",
 "label": "Jindal Poly Investment and Finance Company Limited",
 "nse": "JPOLYINVST",
@@ -68263,7 +68383,7 @@
 "bse": "",
 "isin": "INE411F01010",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -68731,7 +68851,7 @@
 "bse": "",
 "isin": "INE029L01018",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "KIC02"
@@ -70555,7 +70675,7 @@
 "bse": "",
 "isin": "INE288A01013",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "MS01"
@@ -73399,7 +73519,7 @@
 "bse": "",
 "isin": "INE023A01030",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "JS02"
@@ -73631,18 +73751,6 @@
 "industry": "",
 "group": "",
 "sc_id": "OEM"
-},
-{
-"id": "OLAELEC-RE",
-"label": "Ola Electric Mobility Ltd-RE",
-"nse": "OLAELEC-RE",
-"bse": "",
-"isin": "INE0LXG20016",
-"exchange": "NSE",
-"series": "BE",
-"industry": "",
-"group": "",
-"sc_id": "OEM01"
 },
 {
 "id": "OLECTRA",
@@ -73999,7 +74107,7 @@
 "bse": "",
 "isin": "INE609C01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "OP02"
@@ -74339,6 +74447,18 @@
 "industry": "",
 "group": "",
 "sc_id": "PDS01"
+},
+{
+"id": "PARASHLTH",
+"label": "Paras Healthcare Limited",
+"nse": "PARASHLTH",
+"bse": "",
+"isin": "INE661T01029",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "PHL01"
 },
 {
 "id": "PARASPETRO",
@@ -74827,7 +74947,7 @@
 "bse": "",
 "isin": "INE417C01014",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "PII03"
@@ -74875,7 +74995,7 @@
 "bse": "",
 "isin": "INE746D01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -76831,7 +76951,7 @@
 "bse": "",
 "isin": "INE219Y01026",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DSS03"
@@ -78805,6 +78925,18 @@
 "sc_id": "SR07"
 },
 {
+"id": "SHIVAM-RE1",
+"label": "Shivam Autotech Ltd-RE",
+"nse": "SHIVAM-RE1",
+"bse": "",
+"isin": "INE637H20024",
+"exchange": "NSE",
+"series": "BE",
+"industry": "",
+"group": "",
+"sc_id": "SAR03"
+},
+{
 "id": "SHIVAMAUTO",
 "label": "Shivam Autotech Limited",
 "nse": "SHIVAMAUTO",
@@ -78955,7 +79087,7 @@
 "bse": "",
 "isin": "INE879A01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SRI01"
@@ -79111,7 +79243,7 @@
 "bse": "",
 "isin": "INE075B01020",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SA05"
@@ -79267,7 +79399,7 @@
 "bse": "",
 "isin": "INE923A01015",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SI51"
@@ -81175,7 +81307,7 @@
 "bse": "",
 "isin": "INE356B01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SCS05"
@@ -82579,7 +82711,7 @@
 "bse": "",
 "isin": "INE2WKE01011",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TPTL"
@@ -82711,7 +82843,7 @@
 "bse": "",
 "isin": "INE105A01035",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SC"
@@ -83659,7 +83791,7 @@
 "bse": "",
 "isin": "INE411B01019",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "VR01"
@@ -84715,7 +84847,7 @@
 "bse": "",
 "isin": "INE210A01017",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "WMC"
@@ -85360,7 +85492,7 @@
 },
 {
 "id": "BAJAJELEC",
-"label": "Bajaj Electricals Ltd-$",
+"label": "Bajaj Electricals Ltd",
 "nse": "BAJAJELEC",
 "bse": "500031",
 "isin": "INE193E01025",
@@ -85384,7 +85516,7 @@
 },
 {
 "id": "FORCEMOT",
-"label": "Force Motors Ltd-$",
+"label": "Force Motors Ltd",
 "nse": "FORCEMOT",
 "bse": "500033",
 "isin": "INE451A01017",
@@ -85420,7 +85552,7 @@
 },
 {
 "id": "BANCOINDIA",
-"label": "Banco Products (India) Ltd-$",
+"label": "Banco Products (India) Ltd",
 "nse": "BANCOINDIA",
 "bse": "500039",
 "isin": "INE213C01025",
@@ -85516,7 +85648,7 @@
 },
 {
 "id": "BEPL",
-"label": "Bhansali Engineering Polymers Ltd-$",
+"label": "Bhansali Engineering Polymers Ltd",
 "nse": "BEPL",
 "bse": "500052",
 "isin": "INE922A01025",
@@ -85612,7 +85744,7 @@
 },
 {
 "id": "OAL",
-"label": "Oriental Aromatics Ltd-$",
+"label": "Oriental Aromatics Ltd",
 "nse": "OAL",
 "bse": "500078",
 "isin": "INE959C01023",
@@ -85900,7 +86032,7 @@
 },
 {
 "id": "DIAMINESQ",
-"label": "Diamines & Chemicals Ltd-$",
+"label": "Diamines & Chemicals Ltd",
 "nse": "DIAMINESQ",
 "bse": "500120",
 "isin": "INE591D01014",
@@ -85912,7 +86044,7 @@
 },
 {
 "id": "ELANTAS",
-"label": "Elantas Beck India Ltd-$",
+"label": "Elantas Beck India Ltd",
 "nse": "ELANTAS",
 "bse": "500123",
 "isin": "INE280B01018",
@@ -86044,7 +86176,7 @@
 },
 {
 "id": "COCKERILL",
-"label": "John Cockerill India Ltd-$",
+"label": "John Cockerill India Ltd",
 "nse": "COCKERILL",
 "bse": "500147",
 "isin": "INE515A01019",
@@ -86099,7 +86231,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "GB01"
 },
 {
@@ -86219,7 +86351,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "GF07"
 },
 {
@@ -86488,7 +86620,7 @@
 },
 {
 "id": "ITHL",
-"label": "International Travel House Ltd-$",
+"label": "International Travel House Ltd",
 "nse": "ITHL",
 "bse": "500213",
 "isin": "INE262B01016",
@@ -86500,7 +86632,7 @@
 },
 {
 "id": "IONEXCHANG",
-"label": "Ion Exchange India Ltd-$",
+"label": "Ion Exchange India Ltd",
 "nse": "IONEXCHANG",
 "bse": "500214",
 "isin": "INE570A01022",
@@ -86656,7 +86788,7 @@
 },
 {
 "id": "KIRLOSBROS",
-"label": "Kirloskar Brothers Ltd-$",
+"label": "Kirloskar Brothers Ltd",
 "nse": "KIRLOSBROS",
 "bse": "500241",
 "isin": "INE732A01036",
@@ -86836,7 +86968,7 @@
 },
 {
 "id": "MAFATIND",
-"label": "Mafatlal Industries Ltd-$",
+"label": "Mafatlal Industries Ltd",
 "nse": "MAFATIND",
 "bse": "500264",
 "isin": "INE270B01035",
@@ -86867,12 +86999,12 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "A",
+"group": "T",
 "sc_id": "MS01"
 },
 {
 "id": "MAJESAUT",
-"label": "Majestic Auto Ltd-$",
+"label": "Majestic Auto Ltd",
 "nse": "MAJESAUT",
 "bse": "500267",
 "isin": "INE201B01022",
@@ -87340,7 +87472,7 @@
 },
 {
 "id": "PUNJCOMMU",
-"label": "Punjab Communications Ltd-$",
+"label": "Punjab Communications Ltd",
 "nse": "PUNJCOMMU",
 "bse": "500346",
 "isin": "INE609A01010",
@@ -87484,7 +87616,7 @@
 },
 {
 "id": "SAMTELIN",
-"label": "Samtel India Ltd-$",
+"label": "Samtel India Ltd",
 "nse": "SAMTELIN",
 "bse": "500371",
 "isin": "INE538C01017",
@@ -87700,7 +87832,7 @@
 },
 {
 "id": "TIMEX",
-"label": "Timex Group India Ltd-$",
+"label": "Timex Group India Ltd",
 "nse": "TIMEX",
 "bse": "500414",
 "isin": "INE064A01026",
@@ -87748,7 +87880,7 @@
 },
 {
 "id": "TRANSCHEM",
-"label": "Transchem Ltd-$",
+"label": "Transchem Ltd",
 "nse": "TRANSCHEM",
 "bse": "500422",
 "isin": "INE019B01010",
@@ -88660,7 +88792,7 @@
 },
 {
 "id": "JAYBHCR",
-"label": "Jayabharat Credit Ltd-$",
+"label": "Jayabharat Credit Ltd",
 "nse": "JAYBHCR",
 "bse": "501311",
 "isin": "INE998D01011",
@@ -88888,7 +89020,7 @@
 },
 {
 "id": "GARWAOFFS",
-"label": "Garware Offshore Services Ltd-$",
+"label": "Garware Offshore Services Ltd",
 "nse": "GARWAOFFS",
 "bse": "501848",
 "isin": "INE446C01013",
@@ -88924,7 +89056,7 @@
 },
 {
 "id": "SAGCEM",
-"label": "Sagar Cements Ltd-$",
+"label": "Sagar Cements Ltd",
 "nse": "SAGCEM",
 "bse": "502090",
 "isin": "INE229C01021",
@@ -88936,7 +89068,7 @@
 },
 {
 "id": "DECCANCE",
-"label": "Deccan Cements Ltd-$",
+"label": "Deccan Cements Ltd",
 "nse": "DECCANCE",
 "bse": "502137",
 "isin": "INE583C01021",
@@ -88960,7 +89092,7 @@
 },
 {
 "id": "NCLIND",
-"label": "NCL Industries Ltd-$",
+"label": "NCL Industries Ltd",
 "nse": "NCLIND",
 "bse": "502168",
 "isin": "INE732C01016",
@@ -88984,7 +89116,7 @@
 },
 {
 "id": "SHREDIGCEM",
-"label": "Shree Digvijay Cement Company Ltd-$",
+"label": "Shree Digvijay Cement Company Ltd",
 "nse": "SHREDIGCEM",
 "bse": "502180",
 "isin": "INE232A01011",
@@ -89032,7 +89164,7 @@
 },
 {
 "id": "RASSIREF",
-"label": "Raasi Refractories Ltd-$",
+"label": "Raasi Refractories Ltd",
 "nse": "RASSIREF",
 "bse": "502271",
 "isin": "INE858D01017",
@@ -89044,7 +89176,7 @@
 },
 {
 "id": "TRIVENIGQ",
-"label": "Triveni Glass Ltd-$",
+"label": "Triveni Glass Ltd",
 "nse": "TRIVENIGQ",
 "bse": "502281",
 "isin": "INE094C01011",
@@ -89080,7 +89212,7 @@
 },
 {
 "id": "BALKRISIND",
-"label": "Balkrishna Industries Ltd-$",
+"label": "Balkrishna Industries Ltd",
 "nse": "BALKRISIND",
 "bse": "502355",
 "isin": "INE787D01026",
@@ -89188,7 +89320,7 @@
 },
 {
 "id": "FORBESCO",
-"label": "Forbes & Company Ltd-$",
+"label": "Forbes & Company Ltd",
 "nse": "FORBESCO",
 "bse": "502865",
 "isin": "INE518A01013",
@@ -89224,7 +89356,7 @@
 },
 {
 "id": "JAMSHRI",
-"label": "Jamshri Realty Ltd-$",
+"label": "Jamshri Realty Ltd",
 "nse": "JAMSHRI",
 "bse": "502901",
 "isin": "INE462D01034",
@@ -89260,7 +89392,7 @@
 },
 {
 "id": "LAKSHMIMIL",
-"label": "Lakshmi Mills Company Ltd-$",
+"label": "Lakshmi Mills Company Ltd",
 "nse": "LAKSHMIMIL",
 "bse": "502958",
 "isin": "INE938C01019",
@@ -89344,7 +89476,7 @@
 },
 {
 "id": "RELCHEMQ",
-"label": "Reliance Chemotex Industries Ltd-$",
+"label": "Reliance Chemotex Industries Ltd",
 "nse": "RELCHEMQ",
 "bse": "503162",
 "isin": "INE750D01016",
@@ -89543,7 +89675,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "EIL"
 },
 {
@@ -89584,7 +89716,7 @@
 },
 {
 "id": "BANSWRAS",
-"label": "Banswara Syntex Ltd-$",
+"label": "Banswara Syntex Ltd",
 "nse": "BANSWRAS",
 "bse": "503722",
 "isin": "INE629D01020",
@@ -89620,7 +89752,7 @@
 },
 {
 "id": "SHRIDINE",
-"label": "Shri Dinesh Mills Ltd-$",
+"label": "Shri Dinesh Mills Ltd",
 "nse": "SHRIDINE",
 "bse": "503804",
 "isin": "INE204C01024",
@@ -89644,7 +89776,7 @@
 },
 {
 "id": "SIYSIL",
-"label": "Siyaram Silk Mills Ltd-$",
+"label": "Siyaram Silk Mills Ltd",
 "nse": "SIYSIL",
 "bse": "503811",
 "isin": "INE076B01028",
@@ -89668,7 +89800,7 @@
 },
 {
 "id": "SHRAJSYNQ",
-"label": "Shree Rajasthan Syntex Ltd-$",
+"label": "Shree Rajasthan Syntex Ltd",
 "nse": "SHRAJSYNQ",
 "bse": "503837",
 "isin": "INE796C01011",
@@ -89704,7 +89836,7 @@
 },
 {
 "id": "BBL",
-"label": "Bharat Bijlee Ltd-$",
+"label": "Bharat Bijlee Ltd",
 "nse": "BBL",
 "bse": "503960",
 "isin": "INE464A01036",
@@ -89776,7 +89908,7 @@
 },
 {
 "id": "JYOTI",
-"label": "Jyoti Ltd-$",
+"label": "Jyoti Ltd",
 "nse": "JYOTI",
 "bse": "504076",
 "isin": "INE511D01012",
@@ -89824,7 +89956,7 @@
 },
 {
 "id": "PANAENERG",
-"label": "Panasonic Energy India Company Ltd-$",
+"label": "Panasonic Energy India Company Ltd",
 "nse": "PANAENERG",
 "bse": "504093",
 "isin": "INE795A01017",
@@ -89848,7 +89980,7 @@
 },
 {
 "id": "PERMAGN",
-"label": "Permanent Magnets Ltd-$",
+"label": "Permanent Magnets Ltd",
 "nse": "PERMAGN",
 "bse": "504132",
 "isin": "INE418E01018",
@@ -89896,7 +90028,7 @@
 },
 {
 "id": "WSI",
-"label": "W. S. Industries (India) Ltd-$",
+"label": "W. S. Industries (India) Ltd",
 "nse": "WSI",
 "bse": "504220",
 "isin": "INE100D01014",
@@ -90136,7 +90268,7 @@
 },
 {
 "id": "SARDAEN",
-"label": "Sarda Energy & Minerals Ltd-$",
+"label": "Sarda Energy & Minerals Ltd",
 "nse": "SARDAEN",
 "bse": "504614",
 "isin": "INE385C01021",
@@ -90268,7 +90400,7 @@
 },
 {
 "id": "ORIENTCER",
-"label": "Orient Ceratech Ltd-$",
+"label": "Orient Ceratech Ltd",
 "nse": "ORIENTCER",
 "bse": "504879",
 "isin": "INE569C01020",
@@ -90292,7 +90424,7 @@
 },
 {
 "id": "RATHIST",
-"label": "Rathi Steel & Power Ltd-$",
+"label": "Rathi Steel & Power Ltd",
 "nse": "RATHIST",
 "bse": "504903",
 "isin": "INE336C01016",
@@ -90304,7 +90436,7 @@
 },
 {
 "id": "DUNCANENG",
-"label": "Duncan Engineering Ltd-$",
+"label": "Duncan Engineering Ltd",
 "nse": "DUNCANENG",
 "bse": "504908",
 "isin": "INE340F01011",
@@ -90412,7 +90544,7 @@
 },
 {
 "id": "ACGL",
-"label": "Automobile Corporation of Goa Ltd-$",
+"label": "Automobile Corporation of Goa Ltd",
 "nse": "ACGL",
 "bse": "505036",
 "isin": "INE451C01013",
@@ -90448,7 +90580,7 @@
 },
 {
 "id": "ZFSTEERING",
-"label": "ZF Steering Gear India Ltd-$",
+"label": "ZF Steering Gear India Ltd",
 "nse": "ZFSTEERING",
 "bse": "505163",
 "isin": "INE116C01012",
@@ -90532,7 +90664,7 @@
 },
 {
 "id": "DYNAMATECH",
-"label": "Dynamatic Technologies Ltd-$",
+"label": "Dynamatic Technologies Ltd",
 "nse": "DYNAMATECH",
 "bse": "505242",
 "isin": "INE221B01012",
@@ -90616,7 +90748,7 @@
 },
 {
 "id": "MANUGRAPH",
-"label": "Manugraph India Ltd-$",
+"label": "Manugraph India Ltd",
 "nse": "MANUGRAPH",
 "bse": "505324",
 "isin": "INE867A01022",
@@ -90676,7 +90808,7 @@
 },
 {
 "id": "SEMAC",
-"label": "Semac Construction Ltd-$",
+"label": "Semac Construction Ltd",
 "nse": "SEMAC",
 "bse": "505368",
 "isin": "INE617A01013",
@@ -90868,7 +91000,7 @@
 },
 {
 "id": "BIMETAL",
-"label": "Bimetal Bearings Ltd-$",
+"label": "Bimetal Bearings Ltd",
 "nse": "BIMETAL",
 "bse": "505681",
 "isin": "INE469A01019",
@@ -90952,7 +91084,7 @@
 },
 {
 "id": "GRAUWEIL",
-"label": "Grauer & Weil India Ltd-$",
+"label": "Grauer & Weil India Ltd",
 "nse": "GRAUWEIL",
 "bse": "505710",
 "isin": "INE266D01021",
@@ -90976,7 +91108,7 @@
 },
 {
 "id": "GABRIEL",
-"label": "Gabriel India Ltd-$",
+"label": "Gabriel India Ltd",
 "nse": "GABRIEL",
 "bse": "505714",
 "isin": "INE524A01029",
@@ -91156,7 +91288,7 @@
 },
 {
 "id": "TRF",
-"label": "TRF Ltd-$",
+"label": "TRF Ltd",
 "nse": "TRF",
 "bse": "505854",
 "isin": "INE391D01019",
@@ -91180,7 +91312,7 @@
 },
 {
 "id": "KENNAMET",
-"label": "Kennametal India Ltd-$",
+"label": "Kennametal India Ltd",
 "nse": "KENNAMET",
 "bse": "505890",
 "isin": "INE717A01029",
@@ -91276,7 +91408,7 @@
 },
 {
 "id": "GRINDWELL",
-"label": "Grindwell Norton Ltd-$",
+"label": "Grindwell Norton Ltd",
 "nse": "GRINDWELL",
 "bse": "506076",
 "isin": "INE536A01023",
@@ -91456,7 +91588,7 @@
 },
 {
 "id": "GSLTD",
-"label": "Galaxy Supermarket Ltd-$",
+"label": "Galaxy Supermarket Ltd",
 "nse": "GSLTD",
 "bse": "506186",
 "isin": "INE403B01016",
@@ -91564,7 +91696,7 @@
 },
 {
 "id": "MODISONLTD",
-"label": "Modison Ltd-$",
+"label": "Modison Ltd",
 "nse": "MODISONLTD",
 "bse": "506261",
 "isin": "INE737D01021",
@@ -91648,7 +91780,7 @@
 },
 {
 "id": "DEEPAKNTR",
-"label": "Deepak Nitrite Ltd-$",
+"label": "Deepak Nitrite Ltd",
 "nse": "DEEPAKNTR",
 "bse": "506401",
 "isin": "INE288B01029",
@@ -91684,7 +91816,7 @@
 },
 {
 "id": "GOCLCORP",
-"label": "GOCL Corporation Ltd-$",
+"label": "GOCL Corporation Ltd",
 "nse": "GOCLCORP",
 "bse": "506480",
 "isin": "INE077F01035",
@@ -91744,7 +91876,7 @@
 },
 {
 "id": "NITTAGELA",
-"label": "Nitta Gelatin India Ltd-$",
+"label": "Nitta Gelatin India Ltd",
 "nse": "NITTAGELA",
 "bse": "506532",
 "isin": "INE265B01019",
@@ -91768,7 +91900,7 @@
 },
 {
 "id": "AGVENTURES",
-"label": "AG Ventures Ltd-$",
+"label": "AG Ventures Ltd",
 "nse": "AGVENTURES",
 "bse": "506579",
 "isin": "INE321D01016",
@@ -91828,7 +91960,7 @@
 },
 {
 "id": "PUNJABCHEM",
-"label": "Punjab Chemicals & Crop Protection Ltd-$",
+"label": "Punjab Chemicals & Crop Protection Ltd",
 "nse": "PUNJABCHEM",
 "bse": "506618",
 "isin": "INE277B01014",
@@ -91888,7 +92020,7 @@
 },
 {
 "id": "ULTRAMAR",
-"label": "Ultramarine & Pigments Ltd-$",
+"label": "Ultramarine & Pigments Ltd",
 "nse": "ULTRAMAR",
 "bse": "506685",
 "isin": "INE405A01021",
@@ -91900,7 +92032,7 @@
 },
 {
 "id": "TRANSPEK",
-"label": "Transpek Industry Ltd-$",
+"label": "Transpek Industry Ltd",
 "nse": "TRANSPEK",
 "bse": "506687",
 "isin": "INE687A01016",
@@ -91924,7 +92056,7 @@
 },
 {
 "id": "MYSORPETRO",
-"label": "Mysore Petro Chemicals Ltd-$",
+"label": "Mysore Petro Chemicals Ltd",
 "nse": "MYSORPETRO",
 "bse": "506734",
 "isin": "INE741A01011",
@@ -91936,7 +92068,7 @@
 },
 {
 "id": "ALKYLAMINE",
-"label": "Alkyl Amines Chemicals Ltd-$",
+"label": "Alkyl Amines Chemicals Ltd",
 "nse": "ALKYLAMINE",
 "bse": "506767",
 "isin": "INE150B01039",
@@ -91984,7 +92116,7 @@
 },
 {
 "id": "TANFACIND",
-"label": "TANFAC Industries Ltd-$",
+"label": "TANFAC Industries Ltd",
 "nse": "TANFACIND",
 "bse": "506854",
 "isin": "INE639B01023",
@@ -92044,7 +92176,7 @@
 },
 {
 "id": "MAKERSL",
-"label": "Makers Laboratories Ltd-$",
+"label": "Makers Laboratories Ltd",
 "nse": "MAKERSL",
 "bse": "506919",
 "isin": "INE987A01010",
@@ -92140,7 +92272,7 @@
 },
 {
 "id": "KESARENT",
-"label": "Kesar Enterprises Ltd-$",
+"label": "Kesar Enterprises Ltd",
 "nse": "KESARENT",
 "bse": "507180",
 "isin": "INE133B01027",
@@ -92152,7 +92284,7 @@
 },
 {
 "id": "TI",
-"label": "Tilaknagar Industries Ltd-$",
+"label": "Tilaknagar Industries Ltd",
 "nse": "TI",
 "bse": "507205",
 "isin": "INE133E01013",
@@ -92464,7 +92596,7 @@
 },
 {
 "id": "TTKHLTCARE",
-"label": "TTK Healthcare Ltd-$",
+"label": "TTK Healthcare Ltd",
 "nse": "TTKHLTCARE",
 "bse": "507747",
 "isin": "INE910C01018",
@@ -92596,7 +92728,7 @@
 },
 {
 "id": "ANSALHSG",
-"label": "Ansal Housing Ltd-$",
+"label": "Ansal Housing Ltd",
 "nse": "ANSALHSG",
 "bse": "507828",
 "isin": "INE880B01015",
@@ -92632,7 +92764,7 @@
 },
 {
 "id": "ADDIND",
-"label": "Addi Industries Ltd-$",
+"label": "Addi Industries Ltd",
 "nse": "ADDIND",
 "bse": "507852",
 "isin": "INE757C01021",
@@ -92651,7 +92783,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": ""
 },
 {
@@ -92680,7 +92812,7 @@
 },
 {
 "id": "VIPIND",
-"label": "VIP Industries Ltd-$",
+"label": "VIP Industries Ltd",
 "nse": "VIPIND",
 "bse": "507880",
 "isin": "INE054A01027",
@@ -92908,7 +93040,7 @@
 },
 {
 "id": "HAWKINCOOK",
-"label": "Hawkins Cookers Ltd-$",
+"label": "Hawkins Cookers Ltd",
 "nse": "HAWKINCOOK",
 "bse": "508486",
 "isin": "INE979B01015",
@@ -92920,7 +93052,7 @@
 },
 {
 "id": "WARRENTEA",
-"label": "Warren Tea Ltd-$",
+"label": "Warren Tea Ltd",
 "nse": "WARRENTEA",
 "bse": "508494",
 "isin": "INE712A01012",
@@ -93112,7 +93244,7 @@
 },
 {
 "id": "PANCARBON",
-"label": "Panasonic Carbon India Company Ltd-$",
+"label": "Panasonic Carbon India Company Ltd",
 "nse": "PANCARBON",
 "bse": "508941",
 "isin": "INE013E01017",
@@ -93436,7 +93568,7 @@
 },
 {
 "id": "INDAG",
-"label": "Indag Rubber Ltd-$",
+"label": "Indag Rubber Ltd",
 "nse": "INDAG",
 "bse": "509162",
 "isin": "INE802D01023",
@@ -93460,7 +93592,7 @@
 },
 {
 "id": "PTL",
-"label": "PTL Enterprises Ltd-$",
+"label": "PTL Enterprises Ltd",
 "nse": "PTL",
 "bse": "509220",
 "isin": "INE034D01049",
@@ -93472,7 +93604,7 @@
 },
 {
 "id": "TVSSRICHAK",
-"label": "TVS Srichakra Ltd-$",
+"label": "TVS Srichakra Ltd",
 "nse": "TVSSRICHAK",
 "bse": "509243",
 "isin": "INE421C01016",
@@ -93556,7 +93688,7 @@
 },
 {
 "id": "CAPRIHANS",
-"label": "Caprihans India Ltd-$",
+"label": "Caprihans India Ltd",
 "nse": "CAPRIHANS",
 "bse": "509486",
 "isin": "INE479A01018",
@@ -93640,7 +93772,7 @@
 },
 {
 "id": "GOACARBON",
-"label": "Goa Carbon Ltd-$",
+"label": "Goa Carbon Ltd",
 "nse": "GOACARBON",
 "bse": "509567",
 "isin": "INE426D01013",
@@ -93844,7 +93976,7 @@
 },
 {
 "id": "SHALPAINTS",
-"label": "Shalimar Paints Ltd-$",
+"label": "Shalimar Paints Ltd",
 "nse": "SHALPAINTS",
 "bse": "509874",
 "isin": "INE849C01026",
@@ -94007,7 +94139,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -94096,7 +94228,7 @@
 },
 {
 "id": "AEROENTER",
-"label": "Aeroflex Enterprises Ltd-$",
+"label": "Aeroflex Enterprises Ltd",
 "nse": "AEROENTER",
 "bse": "511076",
 "isin": "INE065D01027",
@@ -94156,7 +94288,7 @@
 },
 {
 "id": "QUADRANT",
-"label": "Quadrant Televentures Ltd-$",
+"label": "Quadrant Televentures Ltd",
 "nse": "QUADRANT",
 "bse": "511116",
 "isin": "INE527B01020",
@@ -94480,7 +94612,7 @@
 },
 {
 "id": "VAKRANGEE",
-"label": "Vakrangee Ltd-$",
+"label": "Vakrangee Ltd",
 "nse": "VAKRANGEE",
 "bse": "511431",
 "isin": "INE051B01021",
@@ -94775,7 +94907,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -94935,9 +95067,9 @@
 "sc_id": ""
 },
 {
-"id": "SUGALDAM",
-"label": "Sugal & Damani Share Brokers Ltd",
-"nse": "SUGALDAM",
+"id": "SUGALESL",
+"label": "Sugal Earthen Spaces Ventures Ltd",
+"nse": "SUGALESL",
 "bse": "511654",
 "isin": "INE309D01011",
 "exchange": "BSE",
@@ -96472,7 +96604,7 @@
 },
 {
 "id": "DONEAR",
-"label": "Donear Industries Ltd-$",
+"label": "Donear Industries Ltd",
 "nse": "DONEAR",
 "bse": "512519",
 "isin": "INE668D01028",
@@ -96484,7 +96616,7 @@
 },
 {
 "id": "SUPER",
-"label": "Super Sales India Ltd-$",
+"label": "Super Sales India Ltd",
 "nse": "SUPER",
 "bse": "512527",
 "isin": "INE091C01017",
@@ -96544,7 +96676,7 @@
 },
 {
 "id": "NEELKANTH",
-"label": "Neelkanth Ltd-$",
+"label": "Neelkanth Ltd",
 "nse": "NEELKANTH",
 "bse": "512565",
 "isin": "INE581D01015",
@@ -96556,7 +96688,7 @@
 },
 {
 "id": "AVANTIFEED",
-"label": "Avanti Feeds Ltd-$",
+"label": "Avanti Feeds Ltd",
 "nse": "AVANTIFEED",
 "bse": "512573",
 "isin": "INE871C01038",
@@ -96652,14 +96784,14 @@
 },
 {
 "id": "HARIAEXPO",
-"label": "Haria Exports Ltd-$",
+"label": "Haria Exports Ltd",
 "nse": "HARIAEXPO",
 "bse": "512604",
 "isin": "INE772B01014",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -96724,7 +96856,7 @@
 },
 {
 "id": "CHROME",
-"label": "Chrome Silicon Ltd-$",
+"label": "Chrome Silicon Ltd",
 "nse": "CHROME",
 "bse": "513005",
 "isin": "INE114E01013",
@@ -96820,7 +96952,7 @@
 },
 {
 "id": "GANDHITUBE",
-"label": "Gandhi Special Tubes Ltd-$",
+"label": "Gandhi Special Tubes Ltd",
 "nse": "GANDHITUBE",
 "bse": "513108",
 "isin": "INE524B01027",
@@ -96856,7 +96988,7 @@
 },
 {
 "id": "ORICONENT",
-"label": "Oricon Enterprises Ltd-$",
+"label": "Oricon Enterprises Ltd",
 "nse": "ORICONENT",
 "bse": "513121",
 "isin": "INE730A01022",
@@ -96892,7 +97024,7 @@
 },
 {
 "id": "PENIND",
-"label": "Pennar Industries Ltd-$",
+"label": "Pennar Industries Ltd",
 "nse": "PENIND",
 "bse": "513228",
 "isin": "INE932A01024",
@@ -96928,7 +97060,7 @@
 },
 {
 "id": "SSWL",
-"label": "Steel Strips Wheels Ltd-$",
+"label": "Steel Strips Wheels Ltd",
 "nse": "SSWL",
 "bse": "513262",
 "isin": "INE802C01033",
@@ -96940,7 +97072,7 @@
 },
 {
 "id": "MANINDS",
-"label": "Man Industries (India) Ltd-$",
+"label": "Man Industries (India) Ltd",
 "nse": "MANINDS",
 "bse": "513269",
 "isin": "INE993A01026",
@@ -96964,7 +97096,7 @@
 },
 {
 "id": "MDRNSTL",
-"label": "Modern Steels Ltd-$",
+"label": "Modern Steels Ltd",
 "nse": "MDRNSTL",
 "bse": "513303",
 "isin": "INE001F01019",
@@ -97024,7 +97156,7 @@
 },
 {
 "id": "COCHINM",
-"label": "Cochin Minerals & Rutiles Ltd-$",
+"label": "Cochin Minerals & Rutiles Ltd",
 "nse": "COCHINM",
 "bse": "513353",
 "isin": "INE105D01013",
@@ -97084,7 +97216,7 @@
 },
 {
 "id": "VALLABHSQ",
-"label": "Vallabh Steels Ltd-$",
+"label": "Vallabh Steels Ltd",
 "nse": "VALLABHSQ",
 "bse": "513397",
 "isin": "INE457E01016",
@@ -97180,7 +97312,7 @@
 },
 {
 "id": "MAHALXSE",
-"label": "Mahalaxmi Seamless Ltd-$",
+"label": "Mahalaxmi Seamless Ltd",
 "nse": "MAHALXSE",
 "bse": "513460",
 "isin": "INE257F01017",
@@ -97312,7 +97444,7 @@
 },
 {
 "id": "PITTIENG",
-"label": "Pitti Engineering Ltd-$",
+"label": "Pitti Engineering Ltd",
 "nse": "PITTIENG",
 "bse": "513519",
 "isin": "INE450D01021",
@@ -97456,7 +97588,7 @@
 },
 {
 "id": "TULSYAN",
-"label": "Tulsyan NEC Ltd-$",
+"label": "Tulsyan NEC Ltd",
 "nse": "TULSYAN",
 "bse": "513629",
 "isin": "INE463D01016",
@@ -97528,7 +97660,7 @@
 },
 {
 "id": "SHILGRAVQ",
-"label": "Shilp Gravures Ltd-$",
+"label": "Shilp Gravures Ltd",
 "nse": "SHILGRAVQ",
 "bse": "513709",
 "isin": "INE960A01017",
@@ -97564,7 +97696,7 @@
 },
 {
 "id": "AROGRANITE",
-"label": "Aro Granite Industries Ltd-$",
+"label": "Aro Granite Industries Ltd",
 "nse": "AROGRANITE",
 "bse": "513729",
 "isin": "INE210C01013",
@@ -97600,7 +97732,7 @@
 },
 {
 "id": "DEEPAKSP",
-"label": "Deepak Spinners Ltd-$",
+"label": "Deepak Spinners Ltd",
 "nse": "DEEPAKSP",
 "bse": "514030",
 "isin": "INE272C01013",
@@ -97612,7 +97744,7 @@
 },
 {
 "id": "LOYALTEX",
-"label": "Loyal Textile Mills Ltd-$",
+"label": "Loyal Textile Mills Ltd",
 "nse": "LOYALTEX",
 "bse": "514036",
 "isin": "INE970D01010",
@@ -97660,7 +97792,7 @@
 },
 {
 "id": "PBMPOLY",
-"label": "PBM Polytex Ltd-$",
+"label": "PBM Polytex Ltd",
 "nse": "PBMPOLY",
 "bse": "514087",
 "isin": "INE501F01018",
@@ -97684,7 +97816,7 @@
 },
 {
 "id": "SURYALA",
-"label": "Suryalata Spinning Mills Ltd-$",
+"label": "Suryalata Spinning Mills Ltd",
 "nse": "SURYALA",
 "bse": "514138",
 "isin": "INE132C01027",
@@ -97696,7 +97828,7 @@
 },
 {
 "id": "SURYVANSP",
-"label": "Suryavanshi Spinning Mills Ltd-$",
+"label": "Suryavanshi Spinning Mills Ltd",
 "nse": "SURYVANSP",
 "bse": "514140",
 "isin": "INE431C01023",
@@ -97708,7 +97840,7 @@
 },
 {
 "id": "TTL",
-"label": "T T Ltd-$",
+"label": "T T Ltd",
 "nse": "TTL",
 "bse": "514142",
 "isin": "INE592B01024",
@@ -97816,7 +97948,7 @@
 },
 {
 "id": "SUMEETINDS",
-"label": "Sumeet Industries Ltd-$",
+"label": "Sumeet Industries Ltd",
 "nse": "SUMEETINDS",
 "bse": "514211",
 "isin": "INE235C01036",
@@ -97924,7 +98056,7 @@
 },
 {
 "id": "SEASONST",
-"label": "Seasons Textiles Ltd-$",
+"label": "Seasons Textiles Ltd",
 "nse": "SEASONST",
 "bse": "514264",
 "isin": "INE707B01010",
@@ -97936,7 +98068,7 @@
 },
 {
 "id": "ZENIFIB",
-"label": "Zenith Fibres Ltd-$",
+"label": "Zenith Fibres Ltd",
 "nse": "ZENIFIB",
 "bse": "514266",
 "isin": "INE106C01013",
@@ -97996,7 +98128,7 @@
 },
 {
 "id": "PIONEEREMB",
-"label": "Pioneer Embroideries Ltd-$",
+"label": "Pioneer Embroideries Ltd",
 "nse": "PIONEEREMB",
 "bse": "514300",
 "isin": "INE156C01018",
@@ -98056,7 +98188,7 @@
 },
 {
 "id": "KAMADGIRI",
-"label": "Kamadgiri Fashion Ltd-$",
+"label": "Kamadgiri Fashion Ltd",
 "nse": "KAMADGIRI",
 "bse": "514322",
 "isin": "INE535C01013",
@@ -98212,7 +98344,7 @@
 },
 {
 "id": "SARUPINDUS",
-"label": "Sarup Industries Ltd-$",
+"label": "Sarup Industries Ltd",
 "nse": "SARUPINDUS",
 "bse": "514412",
 "isin": "INE305D01019",
@@ -98332,7 +98464,7 @@
 },
 {
 "id": "WINSOMTX",
-"label": "Winsome Textile Industries Ltd-$",
+"label": "Winsome Textile Industries Ltd",
 "nse": "WINSOMTX",
 "bse": "514470",
 "isin": "INE837B01031",
@@ -98404,7 +98536,7 @@
 },
 {
 "id": "ANANTRAJ",
-"label": "Anant Raj Ltd-$",
+"label": "Anant Raj Ltd",
 "nse": "ANANTRAJ",
 "bse": "515055",
 "isin": "INE242C01024",
@@ -98452,7 +98584,7 @@
 },
 {
 "id": "HALDYNGL",
-"label": "Haldyn Glass Ltd-$",
+"label": "Haldyn Glass Ltd",
 "nse": "HALDYNGL",
 "bse": "515147",
 "isin": "INE506D01020",
@@ -98476,7 +98608,7 @@
 },
 {
 "id": "SHREYANIND",
-"label": "Shreyans Industries Ltd-$",
+"label": "Shreyans Industries Ltd",
 "nse": "SHREYANIND",
 "bse": "516016",
 "isin": "INE231C01019",
@@ -98488,7 +98620,7 @@
 },
 {
 "id": "AGIOPAPER",
-"label": "Agio Paper & Industries Ltd-$",
+"label": "Agio Paper & Industries Ltd",
 "nse": "AGIOPAPER",
 "bse": "516020",
 "isin": "INE112C01011",
@@ -98512,7 +98644,7 @@
 },
 {
 "id": "PAKKA",
-"label": "Pakka Ltd-$",
+"label": "Pakka Ltd",
 "nse": "PAKKA",
 "bse": "516030",
 "isin": "INE551D01018",
@@ -98728,7 +98860,7 @@
 },
 {
 "id": "SALZERELEC",
-"label": "Salzer Electronics Ltd-$",
+"label": "Salzer Electronics Ltd",
 "nse": "SALZERELEC",
 "bse": "517059",
 "isin": "INE457F01013",
@@ -98764,7 +98896,7 @@
 },
 {
 "id": "APLAB",
-"label": "Aplab Ltd-$",
+"label": "Aplab Ltd",
 "nse": "APLAB",
 "bse": "517096",
 "isin": "INE273A01015",
@@ -98884,7 +99016,7 @@
 },
 {
 "id": "DIGISPICE",
-"label": "Digispice Technologies Ltd-$",
+"label": "Digispice Technologies Ltd",
 "nse": "DIGISPICE",
 "bse": "517214",
 "isin": "INE927C01020",
@@ -98963,12 +99095,12 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
 "id": "HBLENGINE",
-"label": "HBL Engineering Ltd-$",
+"label": "HBL Engineering Ltd",
 "nse": "HBLENGINE",
 "bse": "517271",
 "isin": "INE292B01021",
@@ -99136,7 +99268,7 @@
 },
 {
 "id": "GUJINTRX",
-"label": "Gujarat Intrux Ltd-$",
+"label": "Gujarat Intrux Ltd",
 "nse": "GUJINTRX",
 "bse": "517372",
 "isin": "INE877E01015",
@@ -99268,7 +99400,7 @@
 },
 {
 "id": "ATHENAGLO",
-"label": "Athena Global Technologies Ltd-$",
+"label": "Athena Global Technologies Ltd",
 "nse": "ATHENAGLO",
 "bse": "517429",
 "isin": "INE576B01019",
@@ -99292,7 +99424,7 @@
 },
 {
 "id": "DUTRON",
-"label": "Dutron Polymers Ltd-$",
+"label": "Dutron Polymers Ltd",
 "nse": "DUTRON",
 "bse": "517437",
 "isin": "INE940C01015",
@@ -99316,7 +99448,7 @@
 },
 {
 "id": "MAGNAELQ",
-"label": "Magna Electro Castings Ltd-$",
+"label": "Magna Electro Castings Ltd",
 "nse": "MAGNAELQ",
 "bse": "517449",
 "isin": "INE437D01010",
@@ -99340,7 +99472,7 @@
 },
 {
 "id": "ELNET",
-"label": "Elnet Technologies Ltd-$",
+"label": "Elnet Technologies Ltd",
 "nse": "ELNET",
 "bse": "517477",
 "isin": "INE033C01019",
@@ -99400,7 +99532,7 @@
 },
 {
 "id": "DHINDIA",
-"label": "D & H India Ltd-$",
+"label": "D & H India Ltd",
 "nse": "DHINDIA",
 "bse": "517514",
 "isin": "INE589D01018",
@@ -99568,7 +99700,7 @@
 },
 {
 "id": "APCL",
-"label": "Anjani Portland Cement Ltd-$",
+"label": "Anjani Portland Cement Ltd",
 "nse": "APCL",
 "bse": "518091",
 "isin": "INE071F01012",
@@ -99647,7 +99779,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -99676,7 +99808,7 @@
 },
 {
 "id": "NAHARINDUS",
-"label": "Nahar Industrial Enterprises Ltd-$",
+"label": "Nahar Industrial Enterprises Ltd",
 "nse": "NAHARINDUS",
 "bse": "519136",
 "isin": "INE289A01011",
@@ -99700,7 +99832,7 @@
 },
 {
 "id": "VADILALIND",
-"label": "Vadilal Industries Ltd-$",
+"label": "Vadilal Industries Ltd",
 "nse": "VADILALIND",
 "bse": "519156",
 "isin": "INE694D01016",
@@ -99724,7 +99856,7 @@
 },
 {
 "id": "ADFFOODS",
-"label": "Adf Foods Ltd-$",
+"label": "Adf Foods Ltd",
 "nse": "ADFFOODS",
 "bse": "519183",
 "isin": "INE982B01027",
@@ -99779,7 +99911,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "WMC"
 },
 {
@@ -99832,7 +99964,7 @@
 },
 {
 "id": "SANWARIA",
-"label": "Sanwaria Consumer Ltd-$",
+"label": "Sanwaria Consumer Ltd",
 "nse": "SANWARIA",
 "bse": "519260",
 "isin": "INE890C01046",
@@ -100024,7 +100156,7 @@
 },
 {
 "id": "KSE",
-"label": "KSE Ltd-$",
+"label": "KSE Ltd",
 "nse": "KSE",
 "bse": "519421",
 "isin": "INE953E01022",
@@ -100120,7 +100252,7 @@
 },
 {
 "id": "TAIIND",
-"label": "TAI Industries Ltd-$",
+"label": "TAI Industries Ltd",
 "nse": "TAIIND",
 "bse": "519483",
 "isin": "INE358D01018",
@@ -100180,7 +100312,7 @@
 },
 {
 "id": "ASIANTNE",
-"label": "Asian Tea & Exports Ltd-$",
+"label": "Asian Tea & Exports Ltd",
 "nse": "ASIANTNE",
 "bse": "519532",
 "isin": "INE822B01017",
@@ -100343,7 +100475,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "A",
+"group": "T",
 "sc_id": "SC"
 },
 {
@@ -100396,7 +100528,7 @@
 },
 {
 "id": "SAMKRG",
-"label": "Samkrg Pistons & Rings Ltd-$",
+"label": "Samkrg Pistons & Rings Ltd",
 "nse": "SAMKRG",
 "bse": "520075",
 "isin": "INE706B01012",
@@ -100427,12 +100559,12 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SA05"
 },
 {
 "id": "RATNAMANI",
-"label": "Ratnamani Metals & Tubes Ltd-$",
+"label": "Ratnamani Metals & Tubes Ltd",
 "nse": "RATNAMANI",
 "bse": "520111",
 "isin": "INE703B01027",
@@ -100480,7 +100612,7 @@
 },
 {
 "id": "ABCINDQ",
-"label": "ABC India Ltd-$",
+"label": "ABC India Ltd",
 "nse": "ABCINDQ",
 "bse": "520123",
 "isin": "INE125D01011",
@@ -100756,7 +100888,7 @@
 },
 {
 "id": "NAGREEKEXP",
-"label": "Nagreeka Exports Ltd-$",
+"label": "Nagreeka Exports Ltd",
 "nse": "NAGREEKEXP",
 "bse": "521109",
 "isin": "INE123B01028",
@@ -100852,7 +100984,7 @@
 },
 {
 "id": "SLSTLQ",
-"label": "Sri Lakshmi Saraswathi Textiles Arni Ltd-$",
+"label": "Sri Lakshmi Saraswathi Textiles Arni Ltd",
 "nse": "SLSTLQ",
 "bse": "521161",
 "isin": "INE456D01010",
@@ -100888,7 +101020,7 @@
 },
 {
 "id": "SRMCL",
-"label": "Sri Ramakrishna Mills Coimbatore Ltd-$",
+"label": "Sri Ramakrishna Mills Coimbatore Ltd",
 "nse": "SRMCL",
 "bse": "521178",
 "isin": "INE306D01017",
@@ -100931,7 +101063,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "SI51"
 },
 {
@@ -100948,7 +101080,7 @@
 },
 {
 "id": "SAMTEX",
-"label": "Samtex Fashions Ltd-$",
+"label": "Samtex Fashions Ltd",
 "nse": "SAMTEX",
 "bse": "521206",
 "isin": "INE931D01020",
@@ -100984,7 +101116,7 @@
 },
 {
 "id": "DAMODARIND",
-"label": "Damodar Industries Ltd-$",
+"label": "Damodar Industries Ltd",
 "nse": "DAMODARIND",
 "bse": "521220",
 "isin": "INE497D01022",
@@ -101044,7 +101176,7 @@
 },
 {
 "id": "SRINACHA",
-"label": "Sri Nachammai Cotton Mills Ltd-$",
+"label": "Sri Nachammai Cotton Mills Ltd",
 "nse": "SRINACHA",
 "bse": "521234",
 "isin": "INE443E01016",
@@ -101068,7 +101200,7 @@
 },
 {
 "id": "SAMBANDAM",
-"label": "Sambandam Spinning Mills Ltd-$",
+"label": "Sambandam Spinning Mills Ltd",
 "nse": "SAMBANDAM",
 "bse": "521240",
 "isin": "INE304D01012",
@@ -101080,7 +101212,7 @@
 },
 {
 "id": "KANDAGIRI",
-"label": "Kandagiri Spinning Mills Ltd-$",
+"label": "Kandagiri Spinning Mills Ltd",
 "nse": "KANDAGIRI",
 "bse": "521242",
 "isin": "INE292D01019",
@@ -101140,7 +101272,7 @@
 },
 {
 "id": "BATLIBOI",
-"label": "Batliboi Ltd-$",
+"label": "Batliboi Ltd",
 "nse": "BATLIBOI",
 "bse": "522004",
 "isin": "INE177C01022",
@@ -101308,7 +101440,7 @@
 },
 {
 "id": "YUKEN",
-"label": "Yuken India Ltd-$",
+"label": "Yuken India Ltd",
 "nse": "YUKEN",
 "bse": "522108",
 "isin": "INE384C01016",
@@ -101332,7 +101464,7 @@
 },
 {
 "id": "VOITHPAPR",
-"label": "Voith Paper Fabrics India Ltd-$",
+"label": "Voith Paper Fabrics India Ltd",
 "nse": "VOITHPAPR",
 "bse": "522122",
 "isin": "INE285C01015",
@@ -101380,7 +101512,7 @@
 },
 {
 "id": "DIACABS",
-"label": "Diamond Power Infrastructure Ltd-$",
+"label": "Diamond Power Infrastructure Ltd",
 "nse": "DIACABS",
 "bse": "522163",
 "isin": "INE989C01038",
@@ -101392,7 +101524,7 @@
 },
 {
 "id": "INDSILHYD",
-"label": "Indsil Hydro Power and Manganese Ltd-$",
+"label": "Indsil Hydro Power and Manganese Ltd",
 "nse": "INDSILHYD",
 "bse": "522165",
 "isin": "INE867D01018",
@@ -101416,7 +101548,7 @@
 },
 {
 "id": "ITL",
-"label": "ITL Industries Ltd-$",
+"label": "ITL Industries Ltd",
 "nse": "ITL",
 "bse": "522183",
 "isin": "INE478D01014",
@@ -101452,7 +101584,7 @@
 },
 {
 "id": "RASANDIK",
-"label": "Rasandik Engineering Industries India Ltd-$",
+"label": "Rasandik Engineering Industries India Ltd",
 "nse": "RASANDIK",
 "bse": "522207",
 "isin": "INE682D01011",
@@ -101500,7 +101632,7 @@
 },
 {
 "id": "TANAA",
-"label": "Taneja Aerospace & Aviation Ltd-$",
+"label": "Taneja Aerospace & Aviation Ltd",
 "nse": "TANAA",
 "bse": "522229",
 "isin": "INE692C01020",
@@ -101512,7 +101644,7 @@
 },
 {
 "id": "CONART",
-"label": "Conart Engineers Ltd-$",
+"label": "Conart Engineers Ltd",
 "nse": "CONART",
 "bse": "522231",
 "isin": "INE714D01020",
@@ -101548,7 +101680,7 @@
 },
 {
 "id": "MMFL",
-"label": "MM Forgings Ltd-$",
+"label": "MM Forgings Ltd",
 "nse": "MMFL",
 "bse": "522241",
 "isin": "INE227C01017",
@@ -101572,7 +101704,7 @@
 },
 {
 "id": "MAYURUNIQ",
-"label": "Mayur Uniquoters Ltd-$",
+"label": "Mayur Uniquoters Ltd",
 "nse": "MAYURUNIQ",
 "bse": "522249",
 "isin": "INE040D01038",
@@ -101596,7 +101728,7 @@
 },
 {
 "id": "RAJOOENG",
-"label": "Rajoo Engineers Ltd-$",
+"label": "Rajoo Engineers Ltd",
 "nse": "RAJOOENG",
 "bse": "522257",
 "isin": "INE535F01024",
@@ -101608,7 +101740,7 @@
 },
 {
 "id": "DOLPHIN",
-"label": "Dolphin Offshore Enterprises (India) Ltd-$",
+"label": "Dolphin Offshore Enterprises (India) Ltd",
 "nse": "DOLPHIN",
 "bse": "522261",
 "isin": "INE920A01037",
@@ -101620,7 +101752,7 @@
 },
 {
 "id": "VJLAXMIE",
-"label": "Veejay Lakshmi Engineering Works Ltd-$",
+"label": "Veejay Lakshmi Engineering Works Ltd",
 "nse": "VJLAXMIE",
 "bse": "522267",
 "isin": "INE466D01019",
@@ -101656,7 +101788,7 @@
 },
 {
 "id": "RAMRAT",
-"label": "Ram Ratna Wires Ltd-$",
+"label": "Ram Ratna Wires Ltd",
 "nse": "RAMRAT",
 "bse": "522281",
 "isin": "INE207E01023",
@@ -101728,7 +101860,7 @@
 },
 {
 "id": "CONTROLPR",
-"label": "Control Print Ltd-$",
+"label": "Control Print Ltd",
 "nse": "CONTROLPR",
 "bse": "522295",
 "isin": "INE663B01015",
@@ -101752,7 +101884,7 @@
 },
 {
 "id": "ANSALBU",
-"label": "Ansal Buildwell Ltd-$",
+"label": "Ansal Buildwell Ltd",
 "nse": "ANSALBU",
 "bse": "523007",
 "isin": "INE030C01015",
@@ -101800,7 +101932,7 @@
 },
 {
 "id": "SINCLAIR",
-"label": "Sinclairs Hotels Ltd-$",
+"label": "Sinclairs Hotels Ltd",
 "nse": "SINCLAIR",
 "bse": "523023",
 "isin": "INE985A01022",
@@ -101860,7 +101992,7 @@
 },
 {
 "id": "COSMOFE",
-"label": "Cosmo Ferrites Ltd-$",
+"label": "Cosmo Ferrites Ltd",
 "nse": "COSMOFE",
 "bse": "523100",
 "isin": "INE124B01018",
@@ -101920,7 +102052,7 @@
 },
 {
 "id": "EIHAHOTELS",
-"label": "EIH Associated Hotels Ltd-$",
+"label": "EIH Associated Hotels Ltd",
 "nse": "EIHAHOTELS",
 "bse": "523127",
 "isin": "INE276C01014",
@@ -101932,7 +102064,7 @@
 },
 {
 "id": "MEDICAPQ",
-"label": "Medi Caps Ltd-$",
+"label": "Medi Caps Ltd",
 "nse": "MEDICAPQ",
 "bse": "523144",
 "isin": "INE442D01010",
@@ -101992,7 +102124,7 @@
 },
 {
 "id": "KOKUYOCMLN",
-"label": "Kokuyo Camlin Ltd-$",
+"label": "Kokuyo Camlin Ltd",
 "nse": "KOKUYOCMLN",
 "bse": "523207",
 "isin": "INE760A01029",
@@ -102016,7 +102148,7 @@
 },
 {
 "id": "BHARATSE",
-"label": "Bharat Seats Ltd-$",
+"label": "Bharat Seats Ltd",
 "nse": "BHARATSE",
 "bse": "523229",
 "isin": "INE415D01024",
@@ -102052,7 +102184,7 @@
 },
 {
 "id": "MACPLASQ",
-"label": "Machino Plastics Ltd-$",
+"label": "Machino Plastics Ltd",
 "nse": "MACPLASQ",
 "bse": "523248",
 "isin": "INE082B01018",
@@ -102136,7 +102268,7 @@
 },
 {
 "id": "TCPLPACK",
-"label": "TCPL Packaging Ltd-$",
+"label": "TCPL Packaging Ltd",
 "nse": "TCPLPACK",
 "bse": "523301",
 "isin": "INE822C01015",
@@ -102244,7 +102376,7 @@
 },
 {
 "id": "DCMSRIND",
-"label": "DCM Shriram Industries Ltd-$",
+"label": "DCM Shriram Industries Ltd",
 "nse": "DCMSRIND",
 "bse": "523369",
 "isin": "INE843D01027",
@@ -102352,7 +102484,7 @@
 },
 {
 "id": "JMFINANCIL",
-"label": "JM Financial Ltd-$",
+"label": "JM Financial Ltd",
 "nse": "JMFINANCIL",
 "bse": "523405",
 "isin": "INE780C01023",
@@ -102364,7 +102496,7 @@
 },
 {
 "id": "ADCINDIA",
-"label": "ADC India Communications Ltd-$",
+"label": "ADC India Communications Ltd",
 "nse": "ADCINDIA",
 "bse": "523411",
 "isin": "INE833A01016",
@@ -102419,7 +102551,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -102484,7 +102616,7 @@
 },
 {
 "id": "CMMHOSP",
-"label": "Chennai Meenakshi Multispeciality Hospital Ltd-$",
+"label": "Chennai Meenakshi Multispeciality Hospital Ltd",
 "nse": "CMMHOSP",
 "bse": "523489",
 "isin": "INE889F01017",
@@ -102508,7 +102640,7 @@
 },
 {
 "id": "APMIN",
-"label": "APM Industries Ltd-$",
+"label": "APM Industries Ltd",
 "nse": "APMIN",
 "bse": "523537",
 "isin": "INE170D01025",
@@ -102580,15 +102712,15 @@
 },
 {
 "id": "INDTONER",
-"label": "Indian Toners & Developers Ltd-$",
+"label": "Indian Toners & Developers Ltd",
 "nse": "INDTONER",
 "bse": "523586",
 "isin": "INE826B01026",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
-"sc_id": ""
+"group": "B",
+"sc_id": "ITD01"
 },
 {
 "id": "KUNSTOFF",
@@ -102676,7 +102808,7 @@
 },
 {
 "id": "IPRINGLTD",
-"label": "IP Rings Ltd-$",
+"label": "IP Rings Ltd",
 "nse": "IPRINGLTD",
 "bse": "523638",
 "isin": "INE558A01019",
@@ -102700,7 +102832,7 @@
 },
 {
 "id": "PLASTIBLEN",
-"label": "Plastiblends India Ltd-$",
+"label": "Plastiblends India Ltd",
 "nse": "PLASTIBLEN",
 "bse": "523648",
 "isin": "INE083C01022",
@@ -102748,7 +102880,7 @@
 },
 {
 "id": "FLEXFO",
-"label": "Flex Foods Ltd-$",
+"label": "Flex Foods Ltd",
 "nse": "FLEXFO",
 "bse": "523672",
 "isin": "INE954B01018",
@@ -102844,7 +102976,7 @@
 },
 {
 "id": "ASHIANA",
-"label": "Ashiana Housing Ltd-$",
+"label": "Ashiana Housing Ltd",
 "nse": "ASHIANA",
 "bse": "523716",
 "isin": "INE365D01021",
@@ -102880,7 +103012,7 @@
 },
 {
 "id": "DVL",
-"label": "Dhunseri Ventures Ltd-$",
+"label": "Dhunseri Ventures Ltd",
 "nse": "DVL",
 "bse": "523736",
 "isin": "INE477B01010",
@@ -102940,7 +103072,7 @@
 },
 {
 "id": "MAZDA",
-"label": "Mazda Ltd-$",
+"label": "Mazda Ltd",
 "nse": "MAZDA",
 "bse": "523792",
 "isin": "INE885E01042",
@@ -102976,7 +103108,7 @@
 },
 {
 "id": "MENONBE",
-"label": "Menon Bearings Ltd-$",
+"label": "Menon Bearings Ltd",
 "nse": "MENONBE",
 "bse": "523828",
 "isin": "INE071D01033",
@@ -102988,7 +103120,7 @@
 },
 {
 "id": "MUKATPIP",
-"label": "Mukat Pipes Ltd-$",
+"label": "Mukat Pipes Ltd",
 "nse": "MUKATPIP",
 "bse": "523832",
 "isin": "INE862C01029",
@@ -103144,7 +103276,7 @@
 },
 {
 "id": "KINGFA",
-"label": "Kingfa Science & Technology (India) Ltd-$",
+"label": "Kingfa Science & Technology (India) Ltd",
 "nse": "KINGFA",
 "bse": "524019",
 "isin": "INE473D01015",
@@ -103228,7 +103360,7 @@
 },
 {
 "id": "ALBERTDAVD",
-"label": "Albert David Ltd-$",
+"label": "Albert David Ltd",
 "nse": "ALBERTDAVD",
 "bse": "524075",
 "isin": "INE155C01010",
@@ -103336,7 +103468,7 @@
 },
 {
 "id": "VINATIORGA",
-"label": "Vinati Organics Ltd-$",
+"label": "Vinati Organics Ltd",
 "nse": "VINATIORGA",
 "bse": "524200",
 "isin": "INE410B01037",
@@ -103408,7 +103540,7 @@
 },
 {
 "id": "RESONANCE",
-"label": "Resonance Specialties Ltd-$",
+"label": "Resonance Specialties Ltd",
 "nse": "RESONANCE",
 "bse": "524218",
 "isin": "INE486D01017",
@@ -103528,7 +103660,7 @@
 },
 {
 "id": "BCLIND",
-"label": "BCL Industries Ltd-$",
+"label": "BCL Industries Ltd",
 "nse": "BCLIND",
 "bse": "524332",
 "isin": "INE412G01024",
@@ -103552,7 +103684,7 @@
 },
 {
 "id": "INDOBORAX",
-"label": "Indo Borax & Chemicals Ltd-$",
+"label": "Indo Borax & Chemicals Ltd",
 "nse": "INDOBORAX",
 "bse": "524342",
 "isin": "INE803D01021",
@@ -103600,7 +103732,7 @@
 },
 {
 "id": "VIMTALABS",
-"label": "Vimta Labs Ltd-$",
+"label": "Vimta Labs Ltd",
 "nse": "VIMTALABS",
 "bse": "524394",
 "isin": "INE579C01029",
@@ -103732,7 +103864,7 @@
 },
 {
 "id": "SYNCOMF",
-"label": "Syncom Formulations India Ltd-$",
+"label": "Syncom Formulations India Ltd",
 "nse": "SYNCOMF",
 "bse": "524470",
 "isin": "INE312C01025",
@@ -103744,7 +103876,7 @@
 },
 {
 "id": "RIDDHI",
-"label": "Riddhi Siddhi Gluco Biols Ltd-$",
+"label": "Riddhi Siddhi Gluco Biols Ltd",
 "nse": "RIDDHI",
 "bse": "524480",
 "isin": "INE249D01019",
@@ -103852,7 +103984,7 @@
 },
 {
 "id": "KREBSBIO",
-"label": "Krebs Biochemicals & Industries Ltd-$",
+"label": "Krebs Biochemicals & Industries Ltd",
 "nse": "KREBSBIO",
 "bse": "524518",
 "isin": "INE268B01013",
@@ -103876,7 +104008,7 @@
 },
 {
 "id": "LAFFANSQ",
-"label": "Laffans Petrochemicals Ltd-$",
+"label": "Laffans Petrochemicals Ltd",
 "nse": "LAFFANSQ",
 "bse": "524522",
 "isin": "INE919B01011",
@@ -103900,7 +104032,7 @@
 },
 {
 "id": "SUKHJITS",
-"label": "Sukhjit Starch & Chemicals Ltd-$",
+"label": "Sukhjit Starch & Chemicals Ltd",
 "nse": "SUKHJITS",
 "bse": "524542",
 "isin": "INE450E01029",
@@ -103948,7 +104080,7 @@
 },
 {
 "id": "PODDARMENT",
-"label": "Poddar Pigments Ltd-$",
+"label": "Poddar Pigments Ltd",
 "nse": "PODDARMENT",
 "bse": "524570",
 "isin": "INE371C01013",
@@ -103984,7 +104116,7 @@
 },
 {
 "id": "PRIYALT",
-"label": "Priya Ltd-$",
+"label": "Priya Ltd",
 "nse": "PRIYALT",
 "bse": "524580",
 "isin": "INE686C01014",
@@ -104044,7 +104176,7 @@
 },
 {
 "id": "AKSHARCHEM",
-"label": "AksharChem India Ltd-$",
+"label": "AksharChem India Ltd",
 "nse": "AKSHARCHEM",
 "bse": "524598",
 "isin": "INE542B01011",
@@ -104128,7 +104260,7 @@
 },
 {
 "id": "PARKERAC",
-"label": "Parker Agrochem Exports Ltd-$",
+"label": "Parker Agrochem Exports Ltd",
 "nse": "PARKERAC",
 "bse": "524628",
 "isin": "INE750B01010",
@@ -104188,7 +104320,7 @@
 },
 {
 "id": "INDOAMIN",
-"label": "Indo Amines Ltd-$",
+"label": "Indo Amines Ltd",
 "nse": "INDOAMIN",
 "bse": "524648",
 "isin": "INE760F01028",
@@ -104224,7 +104356,7 @@
 },
 {
 "id": "BIBCL",
-"label": "Bharat Immunologicals & Biologicals Corporation Ltd-$",
+"label": "Bharat Immunologicals & Biologicals Corporation Ltd",
 "nse": "BIBCL",
 "bse": "524663",
 "isin": "INE994B01014",
@@ -104272,7 +104404,7 @@
 },
 {
 "id": "BASANTGL",
-"label": "Basant Agro Tech India Ltd-$",
+"label": "Basant Agro Tech India Ltd",
 "nse": "BASANTGL",
 "bse": "524687",
 "isin": "INE473E01021",
@@ -104356,7 +104488,7 @@
 },
 {
 "id": "SDL",
-"label": "Span Divergent Ltd-$",
+"label": "Span Divergent Ltd",
 "nse": "SDL",
 "bse": "524727",
 "isin": "INE004E01016",
@@ -104512,7 +104644,7 @@
 },
 {
 "id": "DYNAMIND",
-"label": "Dynamic Industries Ltd-$",
+"label": "Dynamic Industries Ltd",
 "nse": "DYNAMIND",
 "bse": "524818",
 "isin": "INE457C01010",
@@ -104764,7 +104896,7 @@
 },
 {
 "id": "NIKHILAD",
-"label": "Nikhil Adhesives Ltd-$",
+"label": "Nikhil Adhesives Ltd",
 "nse": "NIKHILAD",
 "bse": "526159",
 "isin": "INE926C01022",
@@ -104836,7 +104968,7 @@
 },
 {
 "id": "ROYALCU",
-"label": "Royal Cushion Vinyl Products Ltd-$",
+"label": "Royal Cushion Vinyl Products Ltd",
 "nse": "ROYALCU",
 "bse": "526193",
 "isin": "INE618A01011",
@@ -104860,7 +104992,7 @@
 },
 {
 "id": "HITECHCORP",
-"label": "Hitech Corporation Ltd-$",
+"label": "Hitech Corporation Ltd",
 "nse": "HITECHCORP",
 "bse": "526217",
 "isin": "INE120D01012",
@@ -104872,7 +105004,7 @@
 },
 {
 "id": "FILATEX",
-"label": "Filatex India Ltd-$",
+"label": "Filatex India Ltd",
 "nse": "FILATEX",
 "bse": "526227",
 "isin": "INE816B01035",
@@ -104999,7 +105131,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "OP02"
 },
 {
@@ -105076,7 +105208,7 @@
 },
 {
 "id": "GANESHHOU",
-"label": "Ganesh Housing Ltd-$",
+"label": "Ganesh Housing Ltd",
 "nse": "GANESHHOU",
 "bse": "526367",
 "isin": "INE460C01014",
@@ -105100,7 +105232,7 @@
 },
 {
 "id": "CINDHO",
-"label": "Cindrella Hotels Ltd-$",
+"label": "Cindrella Hotels Ltd",
 "nse": "CINDHO",
 "bse": "526373",
 "isin": "INE908C01012",
@@ -105112,7 +105244,7 @@
 },
 {
 "id": "PATINTLOG",
-"label": "Patel Integrated Logistics Ltd-$",
+"label": "Patel Integrated Logistics Ltd",
 "nse": "PATINTLOG",
 "bse": "526381",
 "isin": "INE529D01014",
@@ -105124,7 +105256,7 @@
 },
 {
 "id": "ALPHAGEO",
-"label": "Alphageo (India) Ltd-$",
+"label": "Alphageo (India) Ltd",
 "nse": "ALPHAGEO",
 "bse": "526397",
 "isin": "INE137C01018",
@@ -105172,7 +105304,7 @@
 },
 {
 "id": "KRITI",
-"label": "Kriti Industries India Ltd-$",
+"label": "Kriti Industries India Ltd",
 "nse": "KRITI",
 "bse": "526423",
 "isin": "INE479D01038",
@@ -105316,7 +105448,7 @@
 },
 {
 "id": "SKYIND",
-"label": "Sky Industries Ltd-$",
+"label": "Sky Industries Ltd",
 "nse": "SKYIND",
 "bse": "526479",
 "isin": "INE765B01018",
@@ -105419,12 +105551,12 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SCS05"
 },
 {
 "id": "SHAHISHIP",
-"label": "Shahi Shipping Ltd-$",
+"label": "Shahi Shipping Ltd",
 "nse": "SHAHISHIP",
 "bse": "526508",
 "isin": "INE825D01016",
@@ -105592,7 +105724,7 @@
 },
 {
 "id": "LIPPISYS",
-"label": "Lippi Systems Ltd-$",
+"label": "Lippi Systems Ltd",
 "nse": "LIPPISYS",
 "bse": "526604",
 "isin": "INE845B01018",
@@ -105808,7 +105940,7 @@
 },
 {
 "id": "ECOPLAST",
-"label": "Ecoplast Ltd-$",
+"label": "Ecoplast Ltd",
 "nse": "ECOPLAST",
 "bse": "526703",
 "isin": "INE423D01010",
@@ -105868,7 +106000,7 @@
 },
 {
 "id": "NICCOPAR",
-"label": "Nicco Parks & Resorts Ltd-$",
+"label": "Nicco Parks & Resorts Ltd",
 "nse": "NICCOPAR",
 "bse": "526721",
 "isin": "INE653C01022",
@@ -105928,7 +106060,7 @@
 },
 {
 "id": "BRIGHTBR",
-"label": "Bright Brothers Ltd-$",
+"label": "Bright Brothers Ltd",
 "nse": "BRIGHTBR",
 "bse": "526731",
 "isin": "INE630D01010",
@@ -106000,7 +106132,7 @@
 },
 {
 "id": "VALIANT",
-"label": "Valiant Communications Ltd-$",
+"label": "Valiant Communications Ltd",
 "nse": "VALIANT",
 "bse": "526775",
 "isin": "INE760B01019",
@@ -106012,7 +106144,7 @@
 },
 {
 "id": "DRAGARWQ",
-"label": "Dr Agarwals Eye Hospital Ltd-$",
+"label": "Dr Agarwals Eye Hospital Ltd",
 "nse": "DRAGARWQ",
 "bse": "526783",
 "isin": "INE934C01018",
@@ -106084,7 +106216,7 @@
 },
 {
 "id": "CHEVIOT",
-"label": "Cheviot Company Ltd-$",
+"label": "Cheviot Company Ltd",
 "nse": "CHEVIOT",
 "bse": "526817",
 "isin": "INE974B01016",
@@ -106096,7 +106228,7 @@
 },
 {
 "id": "DAICHI",
-"label": "Dai-Ichi Karkaria Ltd-$",
+"label": "Dai-Ichi Karkaria Ltd",
 "nse": "DAICHI",
 "bse": "526821",
 "isin": "INE928C01010",
@@ -106108,7 +106240,7 @@
 },
 {
 "id": "SPICEISLIN",
-"label": "Spice Islands Industries Ltd-$",
+"label": "Spice Islands Industries Ltd",
 "nse": "SPICEISLIN",
 "bse": "526827",
 "isin": "INE882D01025",
@@ -106132,7 +106264,7 @@
 },
 {
 "id": "SIPL",
-"label": "Shelter Infra Projects Ltd-$",
+"label": "Shelter Infra Projects Ltd",
 "nse": "SIPL",
 "bse": "526839",
 "isin": "INE413C01013",
@@ -106192,7 +106324,7 @@
 },
 {
 "id": "BI",
-"label": "Bilcare Ltd-$",
+"label": "Bilcare Ltd",
 "nse": "BI",
 "bse": "526853",
 "isin": "INE986A01012",
@@ -106312,7 +106444,7 @@
 },
 {
 "id": "SARLAPOLY",
-"label": "Sarla Performance Fibers Ltd-$",
+"label": "Sarla Performance Fibers Ltd",
 "nse": "SARLAPOLY",
 "bse": "526885",
 "isin": "INE453D01025",
@@ -106396,7 +106528,7 @@
 },
 {
 "id": "HRYNSHP",
-"label": "Hariyana Ship Breakers Ltd-$",
+"label": "Hariyana Ship Breakers Ltd",
 "nse": "HRYNSHP",
 "bse": "526931",
 "isin": "INE400G01011",
@@ -106475,7 +106607,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "VR01"
 },
 {
@@ -106840,7 +106972,7 @@
 },
 {
 "id": "ANTELOPUS",
-"label": "Antelopus Selan Energy Ltd-$",
+"label": "Antelopus Selan Energy Ltd",
 "nse": "ANTELOPUS",
 "bse": "530075",
 "isin": "INE818A01017",
@@ -106864,7 +106996,7 @@
 },
 {
 "id": "FAZE3Q",
-"label": "Faze Three Ltd-$",
+"label": "Faze Three Ltd",
 "nse": "FAZE3Q",
 "bse": "530079",
 "isin": "INE963C01033",
@@ -106936,7 +107068,7 @@
 },
 {
 "id": "SAMRATPH",
-"label": "Samrat Pharmachem Ltd-$",
+"label": "Samrat Pharmachem Ltd",
 "nse": "SAMRATPH",
 "bse": "530125",
 "isin": "INE103E01016",
@@ -106972,7 +107104,7 @@
 },
 {
 "id": "AMCOIND",
-"label": "Amco India Ltd-$",
+"label": "Amco India Ltd",
 "nse": "AMCOIND",
 "bse": "530133",
 "isin": "INE924B01011",
@@ -107020,7 +107152,7 @@
 },
 {
 "id": "KISAN",
-"label": "Kisan Mouldings Ltd-$",
+"label": "Kisan Mouldings Ltd",
 "nse": "KISAN",
 "bse": "530145",
 "isin": "INE017C01012",
@@ -107104,7 +107236,7 @@
 },
 {
 "id": "ODYSSEY",
-"label": "Odyssey Technologies Ltd-$",
+"label": "Odyssey Technologies Ltd",
 "nse": "ODYSSEY",
 "bse": "530175",
 "isin": "INE213B01019",
@@ -107188,7 +107320,7 @@
 },
 {
 "id": "KALLAM",
-"label": "Kallam Textiles Ltd-$",
+"label": "Kallam Textiles Ltd",
 "nse": "KALLAM",
 "bse": "530201",
 "isin": "INE629F01025",
@@ -107500,7 +107632,7 @@
 },
 {
 "id": "CLSEL",
-"label": "Chaman Lal Setia Exports Ltd-$",
+"label": "Chaman Lal Setia Exports Ltd",
 "nse": "CLSEL",
 "bse": "530307",
 "isin": "INE419D01026",
@@ -107512,7 +107644,7 @@
 },
 {
 "id": "CHANDRAP",
-"label": "Chandra Prabhu International Ltd-$",
+"label": "Chandra Prabhu International Ltd",
 "nse": "CHANDRAP",
 "bse": "530309",
 "isin": "INE368D01025",
@@ -107536,7 +107668,7 @@
 },
 {
 "id": "HINDTIN",
-"label": "Hindustan Tin Works Ltd-$",
+"label": "Hindustan Tin Works Ltd",
 "nse": "HINDTIN",
 "bse": "530315",
 "isin": "INE428D01019",
@@ -107560,7 +107692,7 @@
 },
 {
 "id": "PREMCO",
-"label": "Premco Global Ltd-$",
+"label": "Premco Global Ltd",
 "nse": "PREMCO",
 "bse": "530331",
 "isin": "INE001E01012",
@@ -107584,7 +107716,7 @@
 },
 {
 "id": "GENUSPOWER",
-"label": "Genus Power Infrastructures Ltd-$",
+"label": "Genus Power Infrastructures Ltd",
 "nse": "GENUSPOWER",
 "bse": "530343",
 "isin": "INE955D01029",
@@ -107632,7 +107764,7 @@
 },
 {
 "id": "UGARSUGAR",
-"label": "Ugar Sugar Works Ltd-$",
+"label": "Ugar Sugar Works Ltd",
 "nse": "UGARSUGAR",
 "bse": "530363",
 "isin": "INE071E01023",
@@ -107644,7 +107776,7 @@
 },
 {
 "id": "ORIENTBELL",
-"label": "Orient Bell Ltd-$",
+"label": "Orient Bell Ltd",
 "nse": "ORIENTBELL",
 "bse": "530365",
 "isin": "INE607D01018",
@@ -107728,7 +107860,7 @@
 },
 {
 "id": "EPIC",
-"label": "EPIC Energy Ltd-$",
+"label": "EPIC Energy Ltd",
 "nse": "EPIC",
 "bse": "530407",
 "isin": "INE932F01015",
@@ -107860,7 +107992,7 @@
 },
 {
 "id": "VALSONQ",
-"label": "Valson Industries Ltd-$",
+"label": "Valson Industries Ltd",
 "nse": "VALSONQ",
 "bse": "530459",
 "isin": "INE808A01018",
@@ -107944,7 +108076,7 @@
 },
 {
 "id": "RELAXO",
-"label": "Relaxo Footwears Ltd-$",
+"label": "Relaxo Footwears Ltd",
 "nse": "RELAXO",
 "bse": "530517",
 "isin": "INE131B01039",
@@ -107956,7 +108088,7 @@
 },
 {
 "id": "VIRAT",
-"label": "Virat Industries Ltd",
+"label": "Brahm Virat Industries Corporation Ltd",
 "nse": "VIRAT",
 "bse": "530521",
 "isin": "INE467D01017",
@@ -108004,7 +108136,7 @@
 },
 {
 "id": "COSCO",
-"label": "Cosco India Ltd-$",
+"label": "Cosco India Ltd",
 "nse": "COSCO",
 "bse": "530545",
 "isin": "INE949B01018",
@@ -108040,7 +108172,7 @@
 },
 {
 "id": "PARACABLES",
-"label": "Paramount Communications Ltd-$",
+"label": "Paramount Communications Ltd",
 "nse": "PARACABLES",
 "bse": "530555",
 "isin": "INE074B01023",
@@ -108352,7 +108484,7 @@
 },
 {
 "id": "PRIMEPRO",
-"label": "Prime Property Development Corporation Ltd-$",
+"label": "Prime Property Development Corporation Ltd",
 "nse": "PRIMEPRO",
 "bse": "530695",
 "isin": "INE233C01023",
@@ -108376,7 +108508,7 @@
 },
 {
 "id": "RAJRILTD",
-"label": "Raj Rayon Industries Ltd-$",
+"label": "Raj Rayon Industries Ltd",
 "nse": "RAJRILTD",
 "bse": "530699",
 "isin": "INE533D01032",
@@ -108520,7 +108652,7 @@
 },
 {
 "id": "STERTOOLS",
-"label": "Sterling Tools Ltd-$",
+"label": "Sterling Tools Ltd",
 "nse": "STERTOOLS",
 "bse": "530759",
 "isin": "INE334A01023",
@@ -108676,7 +108808,7 @@
 },
 {
 "id": "SSPDL",
-"label": "SSPDL Ltd-$",
+"label": "SSPDL Ltd",
 "nse": "SSPDL",
 "bse": "530821",
 "isin": "INE838C01011",
@@ -108724,7 +108856,7 @@
 },
 {
 "id": "CUPID",
-"label": "Cupid Ltd-$",
+"label": "Cupid Ltd",
 "nse": "CUPID",
 "bse": "530843",
 "isin": "INE509F01029",
@@ -108772,7 +108904,7 @@
 },
 {
 "id": "CHEMBOND",
-"label": "Chembond Material Technologies Ltd-$",
+"label": "Chembond Material Technologies Ltd",
 "nse": "CHEMBOND",
 "bse": "530871",
 "isin": "INE995D01025",
@@ -108832,7 +108964,7 @@
 },
 {
 "id": "NGIND",
-"label": "NG Industries Ltd-$",
+"label": "NG Industries Ltd",
 "nse": "NGIND",
 "bse": "530897",
 "isin": "INE825C01018",
@@ -108988,7 +109120,7 @@
 },
 {
 "id": "SUNILAGR",
-"label": "Sunil Agro Foods Ltd-$",
+"label": "Sunil Agro Foods Ltd",
 "nse": "SUNILAGR",
 "bse": "530953",
 "isin": "INE224D01012",
@@ -109120,7 +109252,7 @@
 },
 {
 "id": "BALAMINES",
-"label": "Balaji Amines Ltd-$",
+"label": "Balaji Amines Ltd",
 "nse": "BALAMINES",
 "bse": "530999",
 "isin": "INE050E01027",
@@ -109444,7 +109576,7 @@
 },
 {
 "id": "PATELENG",
-"label": "Patel Engineering Ltd-$",
+"label": "Patel Engineering Ltd",
 "nse": "PATELENG",
 "bse": "531120",
 "isin": "INE244B01030",
@@ -109475,7 +109607,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -109504,7 +109636,7 @@
 },
 {
 "id": "ELFORGE",
-"label": "El Forge Ltd-$",
+"label": "El Forge Ltd",
 "nse": "ELFORGE",
 "bse": "531144",
 "isin": "INE158F01017",
@@ -109516,7 +109648,7 @@
 },
 {
 "id": "MEDICAMEQ",
-"label": "Medicamen Biotech Ltd-$",
+"label": "Medicamen Biotech Ltd",
 "nse": "MEDICAMEQ",
 "bse": "531146",
 "isin": "INE646B01010",
@@ -109612,7 +109744,7 @@
 },
 {
 "id": "EMAMILTD",
-"label": "Emami Ltd-$",
+"label": "Emami Ltd",
 "nse": "EMAMILTD",
 "bse": "531162",
 "isin": "INE548C01032",
@@ -109876,7 +110008,7 @@
 },
 {
 "id": "COMFINTE",
-"label": "Comfort Intech Ltd-$",
+"label": "Comfort Intech Ltd",
 "nse": "COMFINTE",
 "bse": "531216",
 "isin": "INE819A01049",
@@ -109912,7 +110044,7 @@
 },
 {
 "id": "ANJANI",
-"label": "Anjani Synthetics Ltd-$",
+"label": "Anjani Synthetics Ltd",
 "nse": "ANJANI",
 "bse": "531223",
 "isin": "INE364D01032",
@@ -110020,7 +110152,7 @@
 },
 {
 "id": "LINC",
-"label": "Linc Ltd-$",
+"label": "Linc Ltd",
 "nse": "LINC",
 "bse": "531241",
 "isin": "INE802B01027",
@@ -110044,7 +110176,7 @@
 },
 {
 "id": "INDGELA",
-"label": "India Gelatine & Chemicals Ltd-$",
+"label": "India Gelatine & Chemicals Ltd",
 "nse": "INDGELA",
 "bse": "531253",
 "isin": "INE342D01012",
@@ -110140,7 +110272,7 @@
 },
 {
 "id": "VSTTILLERS",
-"label": "VST Tillers Tractors Ltd-$",
+"label": "VST Tillers Tractors Ltd",
 "nse": "VSTTILLERS",
 "bse": "531266",
 "isin": "INE764D01017",
@@ -110464,7 +110596,7 @@
 },
 {
 "id": "ZYDUSWELL",
-"label": "Zydus Wellness Ltd-$",
+"label": "Zydus Wellness Ltd",
 "nse": "ZYDUSWELL",
 "bse": "531335",
 "isin": "INE768C01028",
@@ -110656,7 +110788,7 @@
 },
 {
 "id": "ARIHANT",
-"label": "Arihant Foundations & Housing Ltd-$",
+"label": "Arihant Foundations & Housing Ltd",
 "nse": "ARIHANT",
 "bse": "531381",
 "isin": "INE413D01011",
@@ -110884,7 +111016,7 @@
 },
 {
 "id": "SHAKTIPUMP",
-"label": "Shakti Pumps India Ltd-$",
+"label": "Shakti Pumps India Ltd",
 "nse": "SHAKTIPUMP",
 "bse": "531431",
 "isin": "INE908D01010",
@@ -110980,7 +111112,7 @@
 },
 {
 "id": "MOHITIND",
-"label": "Mohit Industries Ltd-$",
+"label": "Mohit Industries Ltd",
 "nse": "MOHITIND",
 "bse": "531453",
 "isin": "INE954E01012",
@@ -111148,7 +111280,7 @@
 },
 {
 "id": "MADHUCON",
-"label": "Madhucon Projects Ltd-$",
+"label": "Madhucon Projects Ltd",
 "nse": "MADHUCON",
 "bse": "531497",
 "isin": "INE378D01032",
@@ -111160,7 +111292,7 @@
 },
 {
 "id": "SYBLY",
-"label": "Sybly Industries Ltd-$",
+"label": "Sybly Industries Ltd",
 "nse": "SYBLY",
 "bse": "531499",
 "isin": "INE080D01042",
@@ -111196,7 +111328,7 @@
 },
 {
 "id": "MARIS",
-"label": "Maris Spinners Ltd-$",
+"label": "Maris Spinners Ltd",
 "nse": "MARIS",
 "bse": "531503",
 "isin": "INE866D01010",
@@ -111304,7 +111436,7 @@
 },
 {
 "id": "ACESOFT",
-"label": "ACE Software Exports Ltd-$",
+"label": "ACE Software Exports Ltd",
 "nse": "ACESOFT",
 "bse": "531525",
 "isin": "INE849B01010",
@@ -111376,7 +111508,7 @@
 },
 {
 "id": "RISHDIGA",
-"label": "Rishabh Digha Steel & Allied Products Ltd-$",
+"label": "Rishabh Digha Steel & Allied Products Ltd",
 "nse": "RISHDIGA",
 "bse": "531539",
 "isin": "INE864D01015",
@@ -111400,7 +111532,7 @@
 },
 {
 "id": "KOBO",
-"label": "Kobo Biotech Ltd-$",
+"label": "Kobo Biotech Ltd",
 "nse": "KOBO",
 "bse": "531541",
 "isin": "INE881A01015",
@@ -111748,7 +111880,7 @@
 },
 {
 "id": "OROSMITHS",
-"label": "Orosil Smiths India Ltd-$",
+"label": "Orosil Smiths India Ltd",
 "nse": "OROSMITHS",
 "bse": "531626",
 "isin": "INE628B01034",
@@ -111767,7 +111899,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -111808,7 +111940,7 @@
 },
 {
 "id": "SURAJLTD",
-"label": "Suraj Ltd-$",
+"label": "Suraj Ltd",
 "nse": "SURAJLTD",
 "bse": "531638",
 "isin": "INE713C01016",
@@ -112120,7 +112252,7 @@
 },
 {
 "id": "VIDHIING",
-"label": "Vidhi Specialty Food Ingredients Ltd-$",
+"label": "Vidhi Specialty Food Ingredients Ltd",
 "nse": "VIDHIING",
 "bse": "531717",
 "isin": "INE632C01026",
@@ -112203,6 +112335,18 @@
 "sc_id": ""
 },
 {
+"id": "SILICON",
+"label": "Silicon Valley Infotech Ltd",
+"nse": "SILICON",
+"bse": "531738",
+"isin": "INE913A01024",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "XT",
+"sc_id": ""
+},
+{
 "id": "GENNEX",
 "label": "Gennex Laboratories Ltd",
 "nse": "GENNEX",
@@ -112228,7 +112372,7 @@
 },
 {
 "id": "GINISILK",
-"label": "Gini Silk Mills Ltd-$",
+"label": "Gini Silk Mills Ltd",
 "nse": "GINISILK",
 "bse": "531744",
 "isin": "INE548B01018",
@@ -112396,7 +112540,7 @@
 },
 {
 "id": "ATULAUTO",
-"label": "Atul Auto Ltd-$",
+"label": "Atul Auto Ltd",
 "nse": "ATULAUTO",
 "bse": "531795",
 "isin": "INE951D01028",
@@ -112487,7 +112631,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -112564,7 +112708,7 @@
 },
 {
 "id": "LAHOTIOV",
-"label": "Lahoti Overseas Ltd-$",
+"label": "Lahoti Overseas Ltd",
 "nse": "LAHOTIOV",
 "bse": "531842",
 "isin": "INE515C01023",
@@ -112576,7 +112720,7 @@
 },
 {
 "id": "ZENITHSTL",
-"label": "Zenith Steel Pipes & Industries Ltd-$",
+"label": "Zenith Steel Pipes & Industries Ltd",
 "nse": "ZENITHSTL",
 "bse": "531845",
 "isin": "INE318D01020",
@@ -112600,7 +112744,7 @@
 },
 {
 "id": "ASTAR",
-"label": "Asian Star Company Ltd-$",
+"label": "Asian Star Company Ltd",
 "nse": "ASTAR",
 "bse": "531847",
 "isin": "INE194D01017",
@@ -112819,7 +112963,7 @@
 "label": "Galaxy Agrico Exports Ltd",
 "nse": "GALAGEX",
 "bse": "531911",
-"isin": "INE803L01016",
+"isin": "INE803L01024",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
@@ -113080,7 +113224,7 @@
 },
 {
 "id": "HINDALUMI",
-"label": "Hind Aluminium Industries Ltd-$",
+"label": "Hind Aluminium Industries Ltd",
 "nse": "HINDALUMI",
 "bse": "531979",
 "isin": "INE227B01019",
@@ -113224,7 +113368,7 @@
 },
 {
 "id": "GRAVITY",
-"label": "Gravity India Ltd-$",
+"label": "Gravity India Ltd",
 "nse": "GRAVITY",
 "bse": "532015",
 "isin": "INE995A01013",
@@ -113332,7 +113476,7 @@
 },
 {
 "id": "SWELECTES",
-"label": "Swelect Energy Systems Ltd-$",
+"label": "Swelect Energy Systems Ltd",
 "nse": "SWELECTES",
 "bse": "532051",
 "isin": "INE409B01013",
@@ -113356,7 +113500,7 @@
 },
 {
 "id": "KDDL",
-"label": "KDDL Ltd-$",
+"label": "KDDL Ltd",
 "nse": "KDDL",
 "bse": "532054",
 "isin": "INE291D01011",
@@ -113416,7 +113560,7 @@
 },
 {
 "id": "INTERDIGI",
-"label": "Interworld Digital Ltd-$",
+"label": "Interworld Digital Ltd",
 "nse": "INTERDIGI",
 "bse": "532072",
 "isin": "INE177D01020",
@@ -113476,7 +113620,7 @@
 },
 {
 "id": "INDOCITY",
-"label": "Indo City Infotech Ltd-$",
+"label": "Indo City Infotech Ltd",
 "nse": "INDOCITY",
 "bse": "532100",
 "isin": "INE456B01014",
@@ -114047,7 +114191,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "JS02"
 },
 {
@@ -114251,7 +114395,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "SRI01"
 },
 {
@@ -114328,7 +114472,7 @@
 },
 {
 "id": "INTENTECH",
-"label": "Intense Technologies Ltd-$",
+"label": "Intense Technologies Ltd",
 "nse": "INTENTECH",
 "bse": "532326",
 "isin": "INE781A01025",
@@ -114340,7 +114484,7 @@
 },
 {
 "id": "DANLAW",
-"label": "Danlaw Technologies India Ltd-$",
+"label": "Danlaw Technologies India Ltd",
 "nse": "DANLAW",
 "bse": "532329",
 "isin": "INE310B01013",
@@ -114424,7 +114568,7 @@
 },
 {
 "id": "COMPUSOFT",
-"label": "Compucom Software Ltd-$",
+"label": "Compucom Software Ltd",
 "nse": "COMPUSOFT",
 "bse": "532339",
 "isin": "INE453B01029",
@@ -114448,7 +114592,7 @@
 },
 {
 "id": "IZMO",
-"label": "IZMO Ltd-$",
+"label": "IZMO Ltd",
 "nse": "IZMO",
 "bse": "532341",
 "isin": "INE848A01014",
@@ -114760,7 +114904,7 @@
 },
 {
 "id": "BABA",
-"label": "Baba Arts Ltd-$",
+"label": "Baba Arts Ltd",
 "nse": "BABA",
 "bse": "532380",
 "isin": "INE893A01036",
@@ -115048,7 +115192,7 @@
 },
 {
 "id": "BFUTILITIE",
-"label": "BF Utilities Ltd-$",
+"label": "BF Utilities Ltd",
 "nse": "BFUTILITIE",
 "bse": "532430",
 "isin": "INE243D01012",
@@ -115216,7 +115360,7 @@
 },
 {
 "id": "HAZOOR",
-"label": "Hazoor Multi Projects Ltd-$",
+"label": "Hazoor Multi Projects Ltd",
 "nse": "HAZOOR",
 "bse": "532467",
 "isin": "INE550F01049",
@@ -115228,14 +115372,14 @@
 },
 {
 "id": "KAMAHOLD",
-"label": "Kama Holdings Ltd-$",
+"label": "Kama Holdings Ltd",
 "nse": "KAMAHOLD",
 "bse": "532468",
 "isin": "INE411F01010",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": ""
 },
 {
@@ -115276,7 +115420,7 @@
 },
 {
 "id": "UBL",
-"label": "United Breweries Ltd-$",
+"label": "United Breweries Ltd",
 "nse": "UBL",
 "bse": "532478",
 "isin": "INE686F01025",
@@ -115300,7 +115444,7 @@
 },
 {
 "id": "GRANULES",
-"label": "Granules India Ltd-$",
+"label": "Granules India Ltd",
 "nse": "GRANULES",
 "bse": "532482",
 "isin": "INE101D01020",
@@ -115396,7 +115540,7 @@
 },
 {
 "id": "RAJPALAYAM",
-"label": "Rajapalayam Mills Ltd-$",
+"label": "Rajapalayam Mills Ltd",
 "nse": "RAJPALAYAM",
 "bse": "532503",
 "isin": "INE296E01026",
@@ -115408,7 +115552,7 @@
 },
 {
 "id": "NAVINFLUOR",
-"label": "Navin Fluorine International Ltd-$",
+"label": "Navin Fluorine International Ltd",
 "nse": "NAVINFLUOR",
 "bse": "532504",
 "isin": "INE048G01026",
@@ -115456,7 +115600,7 @@
 },
 {
 "id": "SUPRAJIT",
-"label": "Suprajit Engineering Ltd-$",
+"label": "Suprajit Engineering Ltd",
 "nse": "SUPRAJIT",
 "bse": "532509",
 "isin": "INE399C01030",
@@ -115624,7 +115768,7 @@
 },
 {
 "id": "UNOMINDA",
-"label": "UNO Minda Ltd-$",
+"label": "UNO Minda Ltd",
 "nse": "UNOMINDA",
 "bse": "532539",
 "isin": "INE405E01023",
@@ -115672,7 +115816,7 @@
 },
 {
 "id": "CENTURYPLY",
-"label": "Century Plyboards (India) Ltd-$",
+"label": "Century Plyboards (India) Ltd",
 "nse": "CENTURYPLY",
 "bse": "532548",
 "isin": "INE348B01021",
@@ -117503,7 +117647,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -118324,7 +118468,7 @@
 },
 {
 "id": "BIRLAMONEY",
-"label": "Aditya Birla Money Ltd-$",
+"label": "Aditya Birla Money Ltd",
 "nse": "BIRLAMONEY",
 "bse": "532974",
 "isin": "INE865C01022",
@@ -119663,7 +119807,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "KIC02"
 },
 {
@@ -120623,7 +120767,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -121827,18 +121971,6 @@
 "sc_id": ""
 },
 {
-"id": "AMARSEC",
-"label": "Amarnath Securities Ltd",
-"nse": "AMARSEC",
-"bse": "538465",
-"isin": "INE745P01010",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "XT",
-"sc_id": ""
-},
-{
 "id": "CTL",
 "label": "Capital Trade Links Ltd",
 "nse": "CTL",
@@ -122135,7 +122267,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -122603,7 +122735,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -123107,7 +123239,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -125891,7 +126023,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "PII03"
 },
 {
@@ -126915,9 +127047,9 @@
 "sc_id": "TCI08"
 },
 {
-"id": "SHASHANK",
-"label": "Shashank Traders Ltd",
-"nse": "SHASHANK",
+"id": "COSENER",
+"label": "Cosmic Energy & Motors Ltd",
+"nse": "COSENER",
 "bse": "540221",
 "isin": "INE508R01018",
 "exchange": "BSE",
@@ -127343,7 +127475,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -130195,7 +130327,7 @@
 "label": "Chandni Machines Ltd",
 "nse": "CHANDNIMACH",
 "bse": "542627",
-"isin": "INE01GZ01011",
+"isin": "INE01GZ01029",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
@@ -132947,7 +133079,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "VL08"
 },
 {
@@ -135503,7 +135635,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "B",
 "sc_id": "SCI05"
 },
 {
@@ -136187,7 +136319,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "B",
 "sc_id": "KJ01"
 },
 {
@@ -136343,8 +136475,8 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
-"sc_id": ""
+"group": "B",
+"sc_id": "BE11"
 },
 {
 "id": "AEROFLEX",
@@ -137272,7 +137404,7 @@
 },
 {
 "id": "SHREE",
-"label": "Shree Marutinandan Tubes Ltd",
+"label": "Shree Marutinandan Industries Ltd",
 "nse": "SHREE",
 "bse": "544083",
 "isin": "INE0QIS01011",
@@ -138447,9 +138579,9 @@
 "sc_id": ""
 },
 {
-"id": "SBINEQWETF",
+"id": "SBIEQLWT50",
 "label": "SBI NIFTY50 EQUAL WEIGHT ETF",
-"nse": "SBINEQWETF",
+"nse": "SBIEQLWT50",
 "bse": "544215",
 "isin": "INF200KB1282",
 "exchange": "BSE",
@@ -139816,7 +139948,7 @@
 },
 {
 "id": "AVAX",
-"label": "Avax Apparels and Ornaments Ltd",
+"label": "AVAX Ltd",
 "nse": "AVAX",
 "bse": "544337",
 "isin": "INE0NQ401024",
@@ -140271,9 +140403,9 @@
 "sc_id": ""
 },
 {
-"id": "SBIBPB",
+"id": "SBIPSUBNK",
 "label": "SBI BSE PSU BANK ETF",
-"nse": "SBIBPB",
+"nse": "SBIPSUBNK",
 "bse": "544385",
 "isin": "INF200KB1712",
 "exchange": "BSE",
@@ -140927,7 +141059,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -141071,7 +141203,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -141119,7 +141251,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "DSS03"
 },
 {
@@ -141359,7 +141491,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "H05"
 },
 {
@@ -141855,9 +141987,9 @@
 "sc_id": "VTL04"
 },
 {
-"id": "ABCOTS",
-"label": "A B Cotspin India Ltd",
-"nse": "ABCOTS",
+"id": "ABCIND",
+"label": "ABC Industries India Ltd",
+"nse": "ABCIND",
 "bse": "544522",
 "isin": "INE08PH01015",
 "exchange": "BSE",
@@ -142127,7 +142259,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -142996,7 +143128,7 @@
 },
 {
 "id": "MSCIADD",
-"label": "MSCIADD",
+"label": "DSP MSCI India ETF",
 "nse": "MSCIADD",
 "bse": "544620",
 "isin": "INF740KA1WV7",
@@ -144339,9 +144471,9 @@
 "sc_id": "PL11"
 },
 {
-"id": "SBINMID150",
+"id": "SBIMID150",
 "label": "SBI Nifty Midcap 150 ETF",
-"nse": "SBINMID150",
+"nse": "SBIMID150",
 "bse": "544745",
 "isin": "INF200KB1AK8",
 "exchange": "BSE",
@@ -145127,7 +145259,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -145247,7 +145379,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "TPTL"
 },
 {
@@ -145315,7 +145447,7 @@
 "label": "Meenakshi India Ltd",
 "nse": "MEEIND",
 "bse": "544831",
-"isin": "INE208H01016",
+"isin": "INE208H01024",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
@@ -146927,7 +147059,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -147279,6 +147411,90 @@
 "sc_id": "SMTL"
 },
 {
+"id": "BIRLATOTAL",
+"label": "Aditya Birla Sun Life BSE Total Market ETF",
+"nse": "BIRLATOTAL",
+"bse": "545002",
+"isin": "INF209KC1746",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ABS07"
+},
+{
+"id": "PHARMAIETF",
+"label": "ICICI Prudential Nifty Pharma ETF",
+"nse": "PHARMAIETF",
+"bse": "545003",
+"isin": "INF109K1A716",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "IPN08"
+},
+{
+"id": "JPL",
+"label": "Jio Platforms Ltd",
+"nse": "JPL",
+"bse": "545004",
+"isin": "INE0BJO01010",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "A",
+"sc_id": "JPL"
+},
+{
+"id": "PARASHLTH",
+"label": "Paras Healthcare Ltd",
+"nse": "PARASHLTH",
+"bse": "545005",
+"isin": "INE661T01029",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "PHL01"
+},
+{
+"id": "SBIDEFETF",
+"label": "SBI BSE India Defence ETF",
+"nse": "SBIDEFETF",
+"bse": "545006",
+"isin": "INF200KB1CJ6",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SBI30"
+},
+{
+"id": "CORE4",
+"label": "Core4 Engineers Ltd",
+"nse": "CORE4",
+"bse": "545007",
+"isin": "INE1RY601016",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "MT",
+"sc_id": ""
+},
+{
+"id": "EDELALTS",
+"label": "EAAA India Alternatives Ltd",
+"nse": "EDELALTS",
+"bse": "545008",
+"isin": "INE528L01027",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "EIA"
+},
+{
 "id": "SENSEXIETF",
 "label": "ICICI Prudential BSE Sensex ETF",
 "nse": "SENSEXIETF",
@@ -147352,7 +147568,7 @@
 },
 {
 "id": "AMRUTANJAN",
-"label": "Amrutanjan Health Care Ltd-$",
+"label": "Amrutanjan Health Care Ltd",
 "nse": "AMRUTANJAN",
 "bse": "590006",
 "isin": "INE098F01031",
@@ -147376,7 +147592,7 @@
 },
 {
 "id": "HISARMETAL",
-"label": "Hisar Metal Industries Ltd-$",
+"label": "Hisar Metal Industries Ltd",
 "nse": "HISARMETAL",
 "bse": "590018",
 "isin": "INE598C01011",
@@ -147460,7 +147676,7 @@
 },
 {
 "id": "KAVDEFENCE",
-"label": "Kavveri Defence & Wireless Technologies Ltd-$",
+"label": "Kavveri Defence & Wireless Technologies Ltd",
 "nse": "KAVDEFENCE",
 "bse": "590041",
 "isin": "INE641C01019",
@@ -147604,7 +147820,7 @@
 },
 {
 "id": "LAMBODHARA",
-"label": "Lambodhara Textile Ltd-$",
+"label": "Lambodhara Textile Ltd",
 "nse": "LAMBODHARA",
 "bse": "590075",
 "isin": "INE112F01022",
@@ -147771,9 +147987,9 @@
 "sc_id": "KMM03"
 },
 {
-"id": "SETFNIFBK",
+"id": "SBIBANKNIF",
 "label": "SBI-ETF NIFTY BANK",
-"nse": "SETFNIFBK",
+"nse": "SBIBANKNIF",
 "bse": "590137",
 "isin": "INF200KA1580",
 "exchange": "BSE",
@@ -147783,9 +147999,9 @@
 "sc_id": "SBI25"
 },
 {
-"id": "SETFNIF50",
+"id": "SBINIFTY50",
 "label": "SBI-ETF NIFTY 50",
-"nse": "SETFNIF50",
+"nse": "SBINIFTY50",
 "bse": "590138",
 "isin": "INF200KA1FS1",
 "exchange": "BSE",
@@ -147975,28 +148191,16 @@
 "sc_id": ""
 },
 {
-"id": "OLAELEC-RE",
-"label": "Ola Electric Mobility Ltd",
-"nse": "OLAELEC-RE",
-"bse": "751146",
-"isin": "INE0LXG20016",
+"id": "SHIVAM-RE1",
+"label": "SHIVAM AUTOTECH Ltd",
+"nse": "SHIVAM-RE1",
+"bse": "751148",
+"isin": "INE637H20024",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
 "group": "R",
-"sc_id": "OEM01"
-},
-{
-"id": "CONTICO-RE",
-"label": "Continental Controls Ltd",
-"nse": "CONTICO-RE",
-"bse": "751147",
-"isin": "INE545B20014",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "R",
-"sc_id": ""
+"sc_id": "SAR03"
 },
 {
 "id": "JDL",
@@ -148153,6 +148357,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "JEP01"
+},
+{
+"id": "CENTEXTPP",
+"label": "Century Extrusions Ltd",
+"nse": "CENTEXTPP",
+"bse": "890241",
+"isin": "IN9281A01016",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "CEP"
 }
 ],
 "bse_large": [
@@ -148206,7 +148422,7 @@
 },
 {
 "id": "BAJAJELEC",
-"label": "Bajaj Electricals Ltd-$",
+"label": "Bajaj Electricals Ltd",
 "nse": "BAJAJELEC",
 "bse": "500031",
 "isin": "INE193E01025",
@@ -148218,7 +148434,7 @@
 },
 {
 "id": "FORCEMOT",
-"label": "Force Motors Ltd-$",
+"label": "Force Motors Ltd",
 "nse": "FORCEMOT",
 "bse": "500033",
 "isin": "INE451A01017",
@@ -148254,7 +148470,7 @@
 },
 {
 "id": "BANCOINDIA",
-"label": "Banco Products (India) Ltd-$",
+"label": "Banco Products (India) Ltd",
 "nse": "BANCOINDIA",
 "bse": "500039",
 "isin": "INE213C01025",
@@ -148746,7 +148962,7 @@
 },
 {
 "id": "IONEXCHANG",
-"label": "Ion Exchange India Ltd-$",
+"label": "Ion Exchange India Ltd",
 "nse": "IONEXCHANG",
 "bse": "500214",
 "isin": "INE570A01022",
@@ -148806,7 +149022,7 @@
 },
 {
 "id": "KIRLOSBROS",
-"label": "Kirloskar Brothers Ltd-$",
+"label": "Kirloskar Brothers Ltd",
 "nse": "KIRLOSBROS",
 "bse": "500241",
 "isin": "INE732A01036",
@@ -148923,18 +149139,6 @@
 "industry": "",
 "group": "A",
 "sc_id": "MS02"
-},
-{
-"id": "MAHSCOOTER",
-"label": "Maharashtra Scooters Ltd",
-"nse": "MAHSCOOTER",
-"bse": "500266",
-"isin": "INE288A01013",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "A",
-"sc_id": "MS01"
 },
 {
 "id": "MFSL",
@@ -149814,7 +150018,7 @@
 },
 {
 "id": "BALKRISIND",
-"label": "Balkrishna Industries Ltd-$",
+"label": "Balkrishna Industries Ltd",
 "nse": "BALKRISIND",
 "bse": "502355",
 "isin": "INE787D01026",
@@ -149898,7 +150102,7 @@
 },
 {
 "id": "SARDAEN",
-"label": "Sarda Energy & Minerals Ltd-$",
+"label": "Sarda Energy & Minerals Ltd",
 "nse": "SARDAEN",
 "bse": "504614",
 "isin": "INE385C01021",
@@ -149958,7 +150162,7 @@
 },
 {
 "id": "DYNAMATECH",
-"label": "Dynamatic Technologies Ltd-$",
+"label": "Dynamatic Technologies Ltd",
 "nse": "DYNAMATECH",
 "bse": "505242",
 "isin": "INE221B01012",
@@ -150042,7 +150246,7 @@
 },
 {
 "id": "GABRIEL",
-"label": "Gabriel India Ltd-$",
+"label": "Gabriel India Ltd",
 "nse": "GABRIEL",
 "bse": "505714",
 "isin": "INE524A01029",
@@ -150066,7 +150270,7 @@
 },
 {
 "id": "GRINDWELL",
-"label": "Grindwell Norton Ltd-$",
+"label": "Grindwell Norton Ltd",
 "nse": "GRINDWELL",
 "bse": "506076",
 "isin": "INE536A01023",
@@ -150102,7 +150306,7 @@
 },
 {
 "id": "DEEPAKNTR",
-"label": "Deepak Nitrite Ltd-$",
+"label": "Deepak Nitrite Ltd",
 "nse": "DEEPAKNTR",
 "bse": "506401",
 "isin": "INE288B01029",
@@ -150138,7 +150342,7 @@
 },
 {
 "id": "ALKYLAMINE",
-"label": "Alkyl Amines Chemicals Ltd-$",
+"label": "Alkyl Amines Chemicals Ltd",
 "nse": "ALKYLAMINE",
 "bse": "506767",
 "isin": "INE150B01039",
@@ -150162,7 +150366,7 @@
 },
 {
 "id": "TI",
-"label": "Tilaknagar Industries Ltd-$",
+"label": "Tilaknagar Industries Ltd",
 "nse": "TI",
 "bse": "507205",
 "isin": "INE133E01013",
@@ -150198,7 +150402,7 @@
 },
 {
 "id": "VIPIND",
-"label": "VIP Industries Ltd-$",
+"label": "VIP Industries Ltd",
 "nse": "VIPIND",
 "bse": "507880",
 "isin": "INE054A01027",
@@ -150378,7 +150582,7 @@
 },
 {
 "id": "AVANTIFEED",
-"label": "Avanti Feeds Ltd-$",
+"label": "Avanti Feeds Ltd",
 "nse": "AVANTIFEED",
 "bse": "512573",
 "isin": "INE871C01038",
@@ -150414,7 +150618,7 @@
 },
 {
 "id": "PENIND",
-"label": "Pennar Industries Ltd-$",
+"label": "Pennar Industries Ltd",
 "nse": "PENIND",
 "bse": "513228",
 "isin": "INE932A01024",
@@ -150486,7 +150690,7 @@
 },
 {
 "id": "ANANTRAJ",
-"label": "Anant Raj Ltd-$",
+"label": "Anant Raj Ltd",
 "nse": "ANANTRAJ",
 "bse": "515055",
 "isin": "INE242C01024",
@@ -150522,7 +150726,7 @@
 },
 {
 "id": "HBLENGINE",
-"label": "HBL Engineering Ltd-$",
+"label": "HBL Engineering Ltd",
 "nse": "HBLENGINE",
 "bse": "517271",
 "isin": "INE292B01021",
@@ -150605,20 +150809,8 @@
 "sc_id": "JAI"
 },
 {
-"id": "TVSHLTD",
-"label": "TVS Holdings Ltd",
-"nse": "TVSHLTD",
-"bse": "520056",
-"isin": "INE105A01035",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "A",
-"sc_id": "SC"
-},
-{
 "id": "RATNAMANI",
-"label": "Ratnamani Metals & Tubes Ltd-$",
+"label": "Ratnamani Metals & Tubes Ltd",
 "nse": "RATNAMANI",
 "bse": "520111",
 "isin": "INE703B01027",
@@ -150798,7 +150990,7 @@
 },
 {
 "id": "JMFINANCIL",
-"label": "JM Financial Ltd-$",
+"label": "JM Financial Ltd",
 "nse": "JMFINANCIL",
 "bse": "523405",
 "isin": "INE780C01023",
@@ -150870,7 +151062,7 @@
 },
 {
 "id": "VINATIORGA",
-"label": "Vinati Organics Ltd-$",
+"label": "Vinati Organics Ltd",
 "nse": "VINATIORGA",
 "bse": "524200",
 "isin": "INE410B01037",
@@ -151134,7 +151326,7 @@
 },
 {
 "id": "GENUSPOWER",
-"label": "Genus Power Infrastructures Ltd-$",
+"label": "Genus Power Infrastructures Ltd",
 "nse": "GENUSPOWER",
 "bse": "530343",
 "isin": "INE955D01029",
@@ -151146,7 +151338,7 @@
 },
 {
 "id": "RELAXO",
-"label": "Relaxo Footwears Ltd-$",
+"label": "Relaxo Footwears Ltd",
 "nse": "RELAXO",
 "bse": "530517",
 "isin": "INE131B01039",
@@ -151182,7 +151374,7 @@
 },
 {
 "id": "CUPID",
-"label": "Cupid Ltd-$",
+"label": "Cupid Ltd",
 "nse": "CUPID",
 "bse": "530843",
 "isin": "INE509F01029",
@@ -151218,7 +151410,7 @@
 },
 {
 "id": "PATELENG",
-"label": "Patel Engineering Ltd-$",
+"label": "Patel Engineering Ltd",
 "nse": "PATELENG",
 "bse": "531120",
 "isin": "INE244B01030",
@@ -151230,7 +151422,7 @@
 },
 {
 "id": "EMAMILTD",
-"label": "Emami Ltd-$",
+"label": "Emami Ltd",
 "nse": "EMAMILTD",
 "bse": "531162",
 "isin": "INE548C01032",
@@ -151254,7 +151446,7 @@
 },
 {
 "id": "ZYDUSWELL",
-"label": "Zydus Wellness Ltd-$",
+"label": "Zydus Wellness Ltd",
 "nse": "ZYDUSWELL",
 "bse": "531335",
 "isin": "INE768C01028",
@@ -151290,7 +151482,7 @@
 },
 {
 "id": "SHAKTIPUMP",
-"label": "Shakti Pumps India Ltd-$",
+"label": "Shakti Pumps India Ltd",
 "nse": "SHAKTIPUMP",
 "bse": "531431",
 "isin": "INE908D01010",
@@ -151854,7 +152046,7 @@
 },
 {
 "id": "UBL",
-"label": "United Breweries Ltd-$",
+"label": "United Breweries Ltd",
 "nse": "UBL",
 "bse": "532478",
 "isin": "INE686F01025",
@@ -151866,7 +152058,7 @@
 },
 {
 "id": "GRANULES",
-"label": "Granules India Ltd-$",
+"label": "Granules India Ltd",
 "nse": "GRANULES",
 "bse": "532482",
 "isin": "INE101D01020",
@@ -151938,7 +152130,7 @@
 },
 {
 "id": "NAVINFLUOR",
-"label": "Navin Fluorine International Ltd-$",
+"label": "Navin Fluorine International Ltd",
 "nse": "NAVINFLUOR",
 "bse": "532504",
 "isin": "INE048G01026",
@@ -151974,7 +152166,7 @@
 },
 {
 "id": "SUPRAJIT",
-"label": "Suprajit Engineering Ltd-$",
+"label": "Suprajit Engineering Ltd",
 "nse": "SUPRAJIT",
 "bse": "532509",
 "isin": "INE399C01030",
@@ -152094,7 +152286,7 @@
 },
 {
 "id": "UNOMINDA",
-"label": "UNO Minda Ltd-$",
+"label": "UNO Minda Ltd",
 "nse": "UNOMINDA",
 "bse": "532539",
 "isin": "INE405E01023",
@@ -152130,7 +152322,7 @@
 },
 {
 "id": "CENTURYPLY",
-"label": "Century Plyboards (India) Ltd-$",
+"label": "Century Plyboards (India) Ltd",
 "nse": "CENTURYPLY",
 "bse": "532548",
 "isin": "INE348B01021",
@@ -156591,6 +156783,18 @@
 "industry": "",
 "group": "A",
 "sc_id": "EBS"
+},
+{
+"id": "JPL",
+"label": "Jio Platforms Ltd",
+"nse": "JPL",
+"bse": "545004",
+"isin": "INE0BJO01010",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "A",
+"sc_id": "JPL"
 }
 ],
 "bse_mid": [
@@ -156644,7 +156848,7 @@
 },
 {
 "id": "BEPL",
-"label": "Bhansali Engineering Polymers Ltd-$",
+"label": "Bhansali Engineering Polymers Ltd",
 "nse": "BEPL",
 "bse": "500052",
 "isin": "INE922A01025",
@@ -156692,7 +156896,7 @@
 },
 {
 "id": "OAL",
-"label": "Oriental Aromatics Ltd-$",
+"label": "Oriental Aromatics Ltd",
 "nse": "OAL",
 "bse": "500078",
 "isin": "INE959C01023",
@@ -156776,7 +156980,7 @@
 },
 {
 "id": "DIAMINESQ",
-"label": "Diamines & Chemicals Ltd-$",
+"label": "Diamines & Chemicals Ltd",
 "nse": "DIAMINESQ",
 "bse": "500120",
 "isin": "INE591D01014",
@@ -156788,7 +156992,7 @@
 },
 {
 "id": "ELANTAS",
-"label": "Elantas Beck India Ltd-$",
+"label": "Elantas Beck India Ltd",
 "nse": "ELANTAS",
 "bse": "500123",
 "isin": "INE280B01018",
@@ -156824,7 +157028,7 @@
 },
 {
 "id": "COCKERILL",
-"label": "John Cockerill India Ltd-$",
+"label": "John Cockerill India Ltd",
 "nse": "COCKERILL",
 "bse": "500147",
 "isin": "INE515A01019",
@@ -156857,6 +157061,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "FI12"
+},
+{
+"id": "GANESHBE",
+"label": "Ganesh Benzoplast Ltd",
+"nse": "GANESHBE",
+"bse": "500153",
+"isin": "INE388A01029",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "GB01"
 },
 {
 "id": "METROGLOBL",
@@ -156893,18 +157109,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "GI11"
-},
-{
-"id": "GFLLIMITED",
-"label": "GFL Ltd",
-"nse": "GFLLIMITED",
-"bse": "500173",
-"isin": "INE538A01037",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "GF07"
 },
 {
 "id": "GLFL",
@@ -157100,7 +157304,7 @@
 },
 {
 "id": "MAFATIND",
-"label": "Mafatlal Industries Ltd-$",
+"label": "Mafatlal Industries Ltd",
 "nse": "MAFATIND",
 "bse": "500264",
 "isin": "INE270B01035",
@@ -157340,7 +157544,7 @@
 },
 {
 "id": "PUNJCOMMU",
-"label": "Punjab Communications Ltd-$",
+"label": "Punjab Communications Ltd",
 "nse": "PUNJCOMMU",
 "bse": "500346",
 "isin": "INE609A01010",
@@ -157460,7 +157664,7 @@
 },
 {
 "id": "TIMEX",
-"label": "Timex Group India Ltd-$",
+"label": "Timex Group India Ltd",
 "nse": "TIMEX",
 "bse": "500414",
 "isin": "INE064A01026",
@@ -157724,7 +157928,7 @@
 },
 {
 "id": "SAGCEM",
-"label": "Sagar Cements Ltd-$",
+"label": "Sagar Cements Ltd",
 "nse": "SAGCEM",
 "bse": "502090",
 "isin": "INE229C01021",
@@ -157736,7 +157940,7 @@
 },
 {
 "id": "DECCANCE",
-"label": "Deccan Cements Ltd-$",
+"label": "Deccan Cements Ltd",
 "nse": "DECCANCE",
 "bse": "502137",
 "isin": "INE583C01021",
@@ -157760,7 +157964,7 @@
 },
 {
 "id": "NCLIND",
-"label": "NCL Industries Ltd-$",
+"label": "NCL Industries Ltd",
 "nse": "NCLIND",
 "bse": "502168",
 "isin": "INE732C01016",
@@ -157784,7 +157988,7 @@
 },
 {
 "id": "SHREDIGCEM",
-"label": "Shree Digvijay Cement Company Ltd-$",
+"label": "Shree Digvijay Cement Company Ltd",
 "nse": "SHREDIGCEM",
 "bse": "502180",
 "isin": "INE232A01011",
@@ -157844,7 +158048,7 @@
 },
 {
 "id": "LAKSHMIMIL",
-"label": "Lakshmi Mills Company Ltd-$",
+"label": "Lakshmi Mills Company Ltd",
 "nse": "LAKSHMIMIL",
 "bse": "502958",
 "isin": "INE938C01019",
@@ -157880,7 +158084,7 @@
 },
 {
 "id": "RELCHEMQ",
-"label": "Reliance Chemotex Industries Ltd-$",
+"label": "Reliance Chemotex Industries Ltd",
 "nse": "RELCHEMQ",
 "bse": "503162",
 "isin": "INE750D01016",
@@ -157915,20 +158119,8 @@
 "sc_id": "SMC01"
 },
 {
-"id": "ELCIDIN",
-"label": "EL CID Investments Ltd",
-"nse": "ELCIDIN",
-"bse": "503681",
-"isin": "INE927X01018",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "EIL"
-},
-{
 "id": "BANSWRAS",
-"label": "Banswara Syntex Ltd-$",
+"label": "Banswara Syntex Ltd",
 "nse": "BANSWRAS",
 "bse": "503722",
 "isin": "INE629D01020",
@@ -157940,7 +158132,7 @@
 },
 {
 "id": "SIYSIL",
-"label": "Siyaram Silk Mills Ltd-$",
+"label": "Siyaram Silk Mills Ltd",
 "nse": "SIYSIL",
 "bse": "503811",
 "isin": "INE076B01028",
@@ -157952,7 +158144,7 @@
 },
 {
 "id": "BBL",
-"label": "Bharat Bijlee Ltd-$",
+"label": "Bharat Bijlee Ltd",
 "nse": "BBL",
 "bse": "503960",
 "isin": "INE464A01036",
@@ -158024,7 +158216,7 @@
 },
 {
 "id": "PERMAGN",
-"label": "Permanent Magnets Ltd-$",
+"label": "Permanent Magnets Ltd",
 "nse": "PERMAGN",
 "bse": "504132",
 "isin": "INE418E01018",
@@ -158048,7 +158240,7 @@
 },
 {
 "id": "WSI",
-"label": "W. S. Industries (India) Ltd-$",
+"label": "W. S. Industries (India) Ltd",
 "nse": "WSI",
 "bse": "504220",
 "isin": "INE100D01014",
@@ -158132,7 +158324,7 @@
 },
 {
 "id": "ORIENTCER",
-"label": "Orient Ceratech Ltd-$",
+"label": "Orient Ceratech Ltd",
 "nse": "ORIENTCER",
 "bse": "504879",
 "isin": "INE569C01020",
@@ -158180,7 +158372,7 @@
 },
 {
 "id": "ACGL",
-"label": "Automobile Corporation of Goa Ltd-$",
+"label": "Automobile Corporation of Goa Ltd",
 "nse": "ACGL",
 "bse": "505036",
 "isin": "INE451C01013",
@@ -158216,7 +158408,7 @@
 },
 {
 "id": "ZFSTEERING",
-"label": "ZF Steering Gear India Ltd-$",
+"label": "ZF Steering Gear India Ltd",
 "nse": "ZFSTEERING",
 "bse": "505163",
 "isin": "INE116C01012",
@@ -158240,7 +158432,7 @@
 },
 {
 "id": "SEMAC",
-"label": "Semac Construction Ltd-$",
+"label": "Semac Construction Ltd",
 "nse": "SEMAC",
 "bse": "505368",
 "isin": "INE617A01013",
@@ -158312,7 +158504,7 @@
 },
 {
 "id": "BIMETAL",
-"label": "Bimetal Bearings Ltd-$",
+"label": "Bimetal Bearings Ltd",
 "nse": "BIMETAL",
 "bse": "505681",
 "isin": "INE469A01019",
@@ -158336,7 +158528,7 @@
 },
 {
 "id": "GRAUWEIL",
-"label": "Grauer & Weil India Ltd-$",
+"label": "Grauer & Weil India Ltd",
 "nse": "GRAUWEIL",
 "bse": "505710",
 "isin": "INE266D01021",
@@ -158420,7 +158612,7 @@
 },
 {
 "id": "TRF",
-"label": "TRF Ltd-$",
+"label": "TRF Ltd",
 "nse": "TRF",
 "bse": "505854",
 "isin": "INE391D01019",
@@ -158444,7 +158636,7 @@
 },
 {
 "id": "KENNAMET",
-"label": "Kennametal India Ltd-$",
+"label": "Kennametal India Ltd",
 "nse": "KENNAMET",
 "bse": "505890",
 "isin": "INE717A01029",
@@ -158636,7 +158828,7 @@
 },
 {
 "id": "GOCLCORP",
-"label": "GOCL Corporation Ltd-$",
+"label": "GOCL Corporation Ltd",
 "nse": "GOCLCORP",
 "bse": "506480",
 "isin": "INE077F01035",
@@ -158648,7 +158840,7 @@
 },
 {
 "id": "NITTAGELA",
-"label": "Nitta Gelatin India Ltd-$",
+"label": "Nitta Gelatin India Ltd",
 "nse": "NITTAGELA",
 "bse": "506532",
 "isin": "INE265B01019",
@@ -158672,7 +158864,7 @@
 },
 {
 "id": "PUNJABCHEM",
-"label": "Punjab Chemicals & Crop Protection Ltd-$",
+"label": "Punjab Chemicals & Crop Protection Ltd",
 "nse": "PUNJABCHEM",
 "bse": "506618",
 "isin": "INE277B01014",
@@ -158708,7 +158900,7 @@
 },
 {
 "id": "ULTRAMAR",
-"label": "Ultramarine & Pigments Ltd-$",
+"label": "Ultramarine & Pigments Ltd",
 "nse": "ULTRAMAR",
 "bse": "506685",
 "isin": "INE405A01021",
@@ -158756,7 +158948,7 @@
 },
 {
 "id": "TANFACIND",
-"label": "TANFAC Industries Ltd-$",
+"label": "TANFAC Industries Ltd",
 "nse": "TANFACIND",
 "bse": "506854",
 "isin": "INE639B01023",
@@ -158780,7 +158972,7 @@
 },
 {
 "id": "MAKERSL",
-"label": "Makers Laboratories Ltd-$",
+"label": "Makers Laboratories Ltd",
 "nse": "MAKERSL",
 "bse": "506919",
 "isin": "INE987A01010",
@@ -158924,7 +159116,7 @@
 },
 {
 "id": "TTKHLTCARE",
-"label": "TTK Healthcare Ltd-$",
+"label": "TTK Healthcare Ltd",
 "nse": "TTKHLTCARE",
 "bse": "507747",
 "isin": "INE910C01018",
@@ -159008,7 +159200,7 @@
 },
 {
 "id": "ADDIND",
-"label": "Addi Industries Ltd-$",
+"label": "Addi Industries Ltd",
 "nse": "ADDIND",
 "bse": "507852",
 "isin": "INE757C01021",
@@ -159017,6 +159209,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "AI05"
+},
+{
+"id": "PIONRINV",
+"label": "Pioneer Investcorp Ltd",
+"nse": "PIONRINV",
+"bse": "507864",
+"isin": "INE746D01014",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": ""
 },
 {
 "id": "UNITECH",
@@ -159068,7 +159272,7 @@
 },
 {
 "id": "HAWKINCOOK",
-"label": "Hawkins Cookers Ltd-$",
+"label": "Hawkins Cookers Ltd",
 "nse": "HAWKINCOOK",
 "bse": "508486",
 "isin": "INE979B01015",
@@ -159224,7 +159428,7 @@
 },
 {
 "id": "PTL",
-"label": "PTL Enterprises Ltd-$",
+"label": "PTL Enterprises Ltd",
 "nse": "PTL",
 "bse": "509220",
 "isin": "INE034D01049",
@@ -159236,7 +159440,7 @@
 },
 {
 "id": "TVSSRICHAK",
-"label": "TVS Srichakra Ltd-$",
+"label": "TVS Srichakra Ltd",
 "nse": "TVSSRICHAK",
 "bse": "509243",
 "isin": "INE421C01016",
@@ -159284,7 +159488,7 @@
 },
 {
 "id": "GOACARBON",
-"label": "Goa Carbon Ltd-$",
+"label": "Goa Carbon Ltd",
 "nse": "GOACARBON",
 "bse": "509567",
 "isin": "INE426D01013",
@@ -159428,7 +159632,7 @@
 },
 {
 "id": "AEROENTER",
-"label": "Aeroflex Enterprises Ltd-$",
+"label": "Aeroflex Enterprises Ltd",
 "nse": "AEROENTER",
 "bse": "511076",
 "isin": "INE065D01027",
@@ -159500,7 +159704,7 @@
 },
 {
 "id": "VAKRANGEE",
-"label": "Vakrangee Ltd-$",
+"label": "Vakrangee Ltd",
 "nse": "VAKRANGEE",
 "bse": "511431",
 "isin": "INE051B01021",
@@ -159884,7 +160088,7 @@
 },
 {
 "id": "DONEAR",
-"label": "Donear Industries Ltd-$",
+"label": "Donear Industries Ltd",
 "nse": "DONEAR",
 "bse": "512519",
 "isin": "INE668D01028",
@@ -159992,7 +160196,7 @@
 },
 {
 "id": "GANDHITUBE",
-"label": "Gandhi Special Tubes Ltd-$",
+"label": "Gandhi Special Tubes Ltd",
 "nse": "GANDHITUBE",
 "bse": "513108",
 "isin": "INE524B01027",
@@ -160016,7 +160220,7 @@
 },
 {
 "id": "ORICONENT",
-"label": "Oricon Enterprises Ltd-$",
+"label": "Oricon Enterprises Ltd",
 "nse": "ORICONENT",
 "bse": "513121",
 "isin": "INE730A01022",
@@ -160040,7 +160244,7 @@
 },
 {
 "id": "SSWL",
-"label": "Steel Strips Wheels Ltd-$",
+"label": "Steel Strips Wheels Ltd",
 "nse": "SSWL",
 "bse": "513262",
 "isin": "INE802C01033",
@@ -160052,7 +160256,7 @@
 },
 {
 "id": "MANINDS",
-"label": "Man Industries (India) Ltd-$",
+"label": "Man Industries (India) Ltd",
 "nse": "MANINDS",
 "bse": "513269",
 "isin": "INE993A01026",
@@ -160124,7 +160328,7 @@
 },
 {
 "id": "PITTIENG",
-"label": "Pitti Engineering Ltd-$",
+"label": "Pitti Engineering Ltd",
 "nse": "PITTIENG",
 "bse": "513519",
 "isin": "INE450D01021",
@@ -160160,7 +160364,7 @@
 },
 {
 "id": "SHILGRAVQ",
-"label": "Shilp Gravures Ltd-$",
+"label": "Shilp Gravures Ltd",
 "nse": "SHILGRAVQ",
 "bse": "513709",
 "isin": "INE960A01017",
@@ -160172,7 +160376,7 @@
 },
 {
 "id": "AROGRANITE",
-"label": "Aro Granite Industries Ltd-$",
+"label": "Aro Granite Industries Ltd",
 "nse": "AROGRANITE",
 "bse": "513729",
 "isin": "INE210C01013",
@@ -160184,7 +160388,7 @@
 },
 {
 "id": "LOYALTEX",
-"label": "Loyal Textile Mills Ltd-$",
+"label": "Loyal Textile Mills Ltd",
 "nse": "LOYALTEX",
 "bse": "514036",
 "isin": "INE970D01010",
@@ -160220,7 +160424,7 @@
 },
 {
 "id": "PBMPOLY",
-"label": "PBM Polytex Ltd-$",
+"label": "PBM Polytex Ltd",
 "nse": "PBMPOLY",
 "bse": "514087",
 "isin": "INE501F01018",
@@ -160232,7 +160436,7 @@
 },
 {
 "id": "SURYALA",
-"label": "Suryalata Spinning Mills Ltd-$",
+"label": "Suryalata Spinning Mills Ltd",
 "nse": "SURYALA",
 "bse": "514138",
 "isin": "INE132C01027",
@@ -160244,7 +160448,7 @@
 },
 {
 "id": "TTL",
-"label": "T T Ltd-$",
+"label": "T T Ltd",
 "nse": "TTL",
 "bse": "514142",
 "isin": "INE592B01024",
@@ -160292,7 +160496,7 @@
 },
 {
 "id": "SUMEETINDS",
-"label": "Sumeet Industries Ltd-$",
+"label": "Sumeet Industries Ltd",
 "nse": "SUMEETINDS",
 "bse": "514211",
 "isin": "INE235C01036",
@@ -160340,7 +160544,7 @@
 },
 {
 "id": "PIONEEREMB",
-"label": "Pioneer Embroideries Ltd-$",
+"label": "Pioneer Embroideries Ltd",
 "nse": "PIONEEREMB",
 "bse": "514300",
 "isin": "INE156C01018",
@@ -160484,7 +160688,7 @@
 },
 {
 "id": "HALDYNGL",
-"label": "Haldyn Glass Ltd-$",
+"label": "Haldyn Glass Ltd",
 "nse": "HALDYNGL",
 "bse": "515147",
 "isin": "INE506D01020",
@@ -160496,7 +160700,7 @@
 },
 {
 "id": "SHREYANIND",
-"label": "Shreyans Industries Ltd-$",
+"label": "Shreyans Industries Ltd",
 "nse": "SHREYANIND",
 "bse": "516016",
 "isin": "INE231C01019",
@@ -160520,7 +160724,7 @@
 },
 {
 "id": "PAKKA",
-"label": "Pakka Ltd-$",
+"label": "Pakka Ltd",
 "nse": "PAKKA",
 "bse": "516030",
 "isin": "INE551D01018",
@@ -160628,7 +160832,7 @@
 },
 {
 "id": "SALZERELEC",
-"label": "Salzer Electronics Ltd-$",
+"label": "Salzer Electronics Ltd",
 "nse": "SALZERELEC",
 "bse": "517059",
 "isin": "INE457F01013",
@@ -160664,7 +160868,7 @@
 },
 {
 "id": "DIGISPICE",
-"label": "Digispice Technologies Ltd-$",
+"label": "Digispice Technologies Ltd",
 "nse": "DIGISPICE",
 "bse": "517214",
 "isin": "INE927C01020",
@@ -160868,7 +161072,7 @@
 },
 {
 "id": "APCL",
-"label": "Anjani Portland Cement Ltd-$",
+"label": "Anjani Portland Cement Ltd",
 "nse": "APCL",
 "bse": "518091",
 "isin": "INE071F01012",
@@ -160928,7 +161132,7 @@
 },
 {
 "id": "NAHARINDUS",
-"label": "Nahar Industrial Enterprises Ltd-$",
+"label": "Nahar Industrial Enterprises Ltd",
 "nse": "NAHARINDUS",
 "bse": "519136",
 "isin": "INE289A01011",
@@ -160952,7 +161156,7 @@
 },
 {
 "id": "VADILALIND",
-"label": "Vadilal Industries Ltd-$",
+"label": "Vadilal Industries Ltd",
 "nse": "VADILALIND",
 "bse": "519156",
 "isin": "INE694D01016",
@@ -160964,7 +161168,7 @@
 },
 {
 "id": "ADFFOODS",
-"label": "Adf Foods Ltd-$",
+"label": "Adf Foods Ltd",
 "nse": "ADFFOODS",
 "bse": "519183",
 "isin": "INE982B01027",
@@ -160973,18 +161177,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "ADF01"
-},
-{
-"id": "WILLAMAGOR",
-"label": "Williamson Magor & Company Ltd",
-"nse": "WILLAMAGOR",
-"bse": "519224",
-"isin": "INE210A01017",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "WMC"
 },
 {
 "id": "SIEL",
@@ -161024,7 +161216,7 @@
 },
 {
 "id": "KSE",
-"label": "KSE Ltd-$",
+"label": "KSE Ltd",
 "nse": "KSE",
 "bse": "519421",
 "isin": "INE953E01022",
@@ -161072,7 +161264,7 @@
 },
 {
 "id": "ASIANTNE",
-"label": "Asian Tea & Exports Ltd-$",
+"label": "Asian Tea & Exports Ltd",
 "nse": "ASIANTNE",
 "bse": "519532",
 "isin": "INE822B01017",
@@ -161191,6 +161383,18 @@
 "sc_id": "RAC"
 },
 {
+"id": "SICALLOG",
+"label": "Sical Logistics Ltd",
+"nse": "SICALLOG",
+"bse": "520086",
+"isin": "INE075B01020",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SA05"
+},
+{
 "id": "ASAL",
 "label": "Automotive Stampings and Assemblies Ltd",
 "nse": "ASAL",
@@ -161252,7 +161456,7 @@
 },
 {
 "id": "NAGREEKEXP",
-"label": "Nagreeka Exports Ltd-$",
+"label": "Nagreeka Exports Ltd",
 "nse": "NAGREEKEXP",
 "bse": "521109",
 "isin": "INE123B01028",
@@ -161275,18 +161479,6 @@
 "sc_id": "ZCC"
 },
 {
-"id": "SILINV",
-"label": "SIL Investments Ltd",
-"nse": "SILINV",
-"bse": "521194",
-"isin": "INE923A01015",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "SI51"
-},
-{
 "id": "SURYALAXMI",
 "label": "Suryalakshmi Cotton Mills Ltd",
 "nse": "SURYALAXMI",
@@ -161300,7 +161492,7 @@
 },
 {
 "id": "DAMODARIND",
-"label": "Damodar Industries Ltd-$",
+"label": "Damodar Industries Ltd",
 "nse": "DAMODARIND",
 "bse": "521220",
 "isin": "INE497D01022",
@@ -161324,7 +161516,7 @@
 },
 {
 "id": "SAMBANDAM",
-"label": "Sambandam Spinning Mills Ltd-$",
+"label": "Sambandam Spinning Mills Ltd",
 "nse": "SAMBANDAM",
 "bse": "521240",
 "isin": "INE304D01012",
@@ -161348,7 +161540,7 @@
 },
 {
 "id": "BATLIBOI",
-"label": "Batliboi Ltd-$",
+"label": "Batliboi Ltd",
 "nse": "BATLIBOI",
 "bse": "522004",
 "isin": "INE177C01022",
@@ -161432,7 +161624,7 @@
 },
 {
 "id": "YUKEN",
-"label": "Yuken India Ltd-$",
+"label": "Yuken India Ltd",
 "nse": "YUKEN",
 "bse": "522108",
 "isin": "INE384C01016",
@@ -161444,7 +161636,7 @@
 },
 {
 "id": "VOITHPAPR",
-"label": "Voith Paper Fabrics India Ltd-$",
+"label": "Voith Paper Fabrics India Ltd",
 "nse": "VOITHPAPR",
 "bse": "522122",
 "isin": "INE285C01015",
@@ -161456,7 +161648,7 @@
 },
 {
 "id": "ITL",
-"label": "ITL Industries Ltd-$",
+"label": "ITL Industries Ltd",
 "nse": "ITL",
 "bse": "522183",
 "isin": "INE478D01014",
@@ -161504,7 +161696,7 @@
 },
 {
 "id": "TANAA",
-"label": "Taneja Aerospace & Aviation Ltd-$",
+"label": "Taneja Aerospace & Aviation Ltd",
 "nse": "TANAA",
 "bse": "522229",
 "isin": "INE692C01020",
@@ -161516,7 +161708,7 @@
 },
 {
 "id": "MMFL",
-"label": "MM Forgings Ltd-$",
+"label": "MM Forgings Ltd",
 "nse": "MMFL",
 "bse": "522241",
 "isin": "INE227C01017",
@@ -161528,7 +161720,7 @@
 },
 {
 "id": "MAYURUNIQ",
-"label": "Mayur Uniquoters Ltd-$",
+"label": "Mayur Uniquoters Ltd",
 "nse": "MAYURUNIQ",
 "bse": "522249",
 "isin": "INE040D01038",
@@ -161540,7 +161732,7 @@
 },
 {
 "id": "RAJOOENG",
-"label": "Rajoo Engineers Ltd-$",
+"label": "Rajoo Engineers Ltd",
 "nse": "RAJOOENG",
 "bse": "522257",
 "isin": "INE535F01024",
@@ -161552,7 +161744,7 @@
 },
 {
 "id": "DOLPHIN",
-"label": "Dolphin Offshore Enterprises (India) Ltd-$",
+"label": "Dolphin Offshore Enterprises (India) Ltd",
 "nse": "DOLPHIN",
 "bse": "522261",
 "isin": "INE920A01037",
@@ -161564,7 +161756,7 @@
 },
 {
 "id": "RAMRAT",
-"label": "Ram Ratna Wires Ltd-$",
+"label": "Ram Ratna Wires Ltd",
 "nse": "RAMRAT",
 "bse": "522281",
 "isin": "INE207E01023",
@@ -161576,7 +161768,7 @@
 },
 {
 "id": "CONTROLPR",
-"label": "Control Print Ltd-$",
+"label": "Control Print Ltd",
 "nse": "CONTROLPR",
 "bse": "522295",
 "isin": "INE663B01015",
@@ -161588,7 +161780,7 @@
 },
 {
 "id": "ANSALBU",
-"label": "Ansal Buildwell Ltd-$",
+"label": "Ansal Buildwell Ltd",
 "nse": "ANSALBU",
 "bse": "523007",
 "isin": "INE030C01015",
@@ -161612,7 +161804,7 @@
 },
 {
 "id": "SINCLAIR",
-"label": "Sinclairs Hotels Ltd-$",
+"label": "Sinclairs Hotels Ltd",
 "nse": "SINCLAIR",
 "bse": "523023",
 "isin": "INE985A01022",
@@ -161624,7 +161816,7 @@
 },
 {
 "id": "EIHAHOTELS",
-"label": "EIH Associated Hotels Ltd-$",
+"label": "EIH Associated Hotels Ltd",
 "nse": "EIHAHOTELS",
 "bse": "523127",
 "isin": "INE276C01014",
@@ -161636,7 +161828,7 @@
 },
 {
 "id": "KOKUYOCMLN",
-"label": "Kokuyo Camlin Ltd-$",
+"label": "Kokuyo Camlin Ltd",
 "nse": "KOKUYOCMLN",
 "bse": "523207",
 "isin": "INE760A01029",
@@ -161648,7 +161840,7 @@
 },
 {
 "id": "BHARATSE",
-"label": "Bharat Seats Ltd-$",
+"label": "Bharat Seats Ltd",
 "nse": "BHARATSE",
 "bse": "523229",
 "isin": "INE415D01024",
@@ -161708,7 +161900,7 @@
 },
 {
 "id": "TCPLPACK",
-"label": "TCPL Packaging Ltd-$",
+"label": "TCPL Packaging Ltd",
 "nse": "TCPLPACK",
 "bse": "523301",
 "isin": "INE822C01015",
@@ -161756,7 +161948,7 @@
 },
 {
 "id": "DCMSRIND",
-"label": "DCM Shriram Industries Ltd-$",
+"label": "DCM Shriram Industries Ltd",
 "nse": "DCMSRIND",
 "bse": "523369",
 "isin": "INE843D01027",
@@ -161875,6 +162067,18 @@
 "sc_id": "PWI"
 },
 {
+"id": "INDTONER",
+"label": "Indian Toners & Developers Ltd",
+"nse": "INDTONER",
+"bse": "523586",
+"isin": "INE826B01026",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ITD01"
+},
+{
 "id": "SIKA",
 "label": "Sika Interplant Systems Ltd",
 "nse": "SIKA",
@@ -161924,7 +162128,7 @@
 },
 {
 "id": "IPRINGLTD",
-"label": "IP Rings Ltd-$",
+"label": "IP Rings Ltd",
 "nse": "IPRINGLTD",
 "bse": "523638",
 "isin": "INE558A01019",
@@ -161936,7 +162140,7 @@
 },
 {
 "id": "PLASTIBLEN",
-"label": "Plastiblends India Ltd-$",
+"label": "Plastiblends India Ltd",
 "nse": "PLASTIBLEN",
 "bse": "523648",
 "isin": "INE083C01022",
@@ -161996,7 +162200,7 @@
 },
 {
 "id": "ASHIANA",
-"label": "Ashiana Housing Ltd-$",
+"label": "Ashiana Housing Ltd",
 "nse": "ASHIANA",
 "bse": "523716",
 "isin": "INE365D01021",
@@ -162008,7 +162212,7 @@
 },
 {
 "id": "DVL",
-"label": "Dhunseri Ventures Ltd-$",
+"label": "Dhunseri Ventures Ltd",
 "nse": "DVL",
 "bse": "523736",
 "isin": "INE477B01010",
@@ -162032,7 +162236,7 @@
 },
 {
 "id": "MAZDA",
-"label": "Mazda Ltd-$",
+"label": "Mazda Ltd",
 "nse": "MAZDA",
 "bse": "523792",
 "isin": "INE885E01042",
@@ -162044,7 +162248,7 @@
 },
 {
 "id": "MENONBE",
-"label": "Menon Bearings Ltd-$",
+"label": "Menon Bearings Ltd",
 "nse": "MENONBE",
 "bse": "523828",
 "isin": "INE071D01033",
@@ -162092,7 +162296,7 @@
 },
 {
 "id": "KINGFA",
-"label": "Kingfa Science & Technology (India) Ltd-$",
+"label": "Kingfa Science & Technology (India) Ltd",
 "nse": "KINGFA",
 "bse": "524019",
 "isin": "INE473D01015",
@@ -162128,7 +162332,7 @@
 },
 {
 "id": "ALBERTDAVD",
-"label": "Albert David Ltd-$",
+"label": "Albert David Ltd",
 "nse": "ALBERTDAVD",
 "bse": "524075",
 "isin": "INE155C01010",
@@ -162224,7 +162428,7 @@
 },
 {
 "id": "BCLIND",
-"label": "BCL Industries Ltd-$",
+"label": "BCL Industries Ltd",
 "nse": "BCLIND",
 "bse": "524332",
 "isin": "INE412G01024",
@@ -162236,7 +162440,7 @@
 },
 {
 "id": "INDOBORAX",
-"label": "Indo Borax & Chemicals Ltd-$",
+"label": "Indo Borax & Chemicals Ltd",
 "nse": "INDOBORAX",
 "bse": "524342",
 "isin": "INE803D01021",
@@ -162272,7 +162476,7 @@
 },
 {
 "id": "VIMTALABS",
-"label": "Vimta Labs Ltd-$",
+"label": "Vimta Labs Ltd",
 "nse": "VIMTALABS",
 "bse": "524394",
 "isin": "INE579C01029",
@@ -162308,7 +162512,7 @@
 },
 {
 "id": "SYNCOMF",
-"label": "Syncom Formulations India Ltd-$",
+"label": "Syncom Formulations India Ltd",
 "nse": "SYNCOMF",
 "bse": "524470",
 "isin": "INE312C01025",
@@ -162332,7 +162536,7 @@
 },
 {
 "id": "KREBSBIO",
-"label": "Krebs Biochemicals & Industries Ltd-$",
+"label": "Krebs Biochemicals & Industries Ltd",
 "nse": "KREBSBIO",
 "bse": "524518",
 "isin": "INE268B01013",
@@ -162356,7 +162560,7 @@
 },
 {
 "id": "SUKHJITS",
-"label": "Sukhjit Starch & Chemicals Ltd-$",
+"label": "Sukhjit Starch & Chemicals Ltd",
 "nse": "SUKHJITS",
 "bse": "524542",
 "isin": "INE450E01029",
@@ -162368,7 +162572,7 @@
 },
 {
 "id": "PODDARMENT",
-"label": "Poddar Pigments Ltd-$",
+"label": "Poddar Pigments Ltd",
 "nse": "PODDARMENT",
 "bse": "524570",
 "isin": "INE371C01013",
@@ -162392,7 +162596,7 @@
 },
 {
 "id": "INDOAMIN",
-"label": "Indo Amines Ltd-$",
+"label": "Indo Amines Ltd",
 "nse": "INDOAMIN",
 "bse": "524648",
 "isin": "INE760F01028",
@@ -162404,7 +162608,7 @@
 },
 {
 "id": "BIBCL",
-"label": "Bharat Immunologicals & Biologicals Corporation Ltd-$",
+"label": "Bharat Immunologicals & Biologicals Corporation Ltd",
 "nse": "BIBCL",
 "bse": "524663",
 "isin": "INE994B01014",
@@ -162560,7 +162764,7 @@
 },
 {
 "id": "FILATEX",
-"label": "Filatex India Ltd-$",
+"label": "Filatex India Ltd",
 "nse": "FILATEX",
 "bse": "526227",
 "isin": "INE816B01035",
@@ -162571,8 +162775,20 @@
 "sc_id": "FI06"
 },
 {
+"id": "ORIENTLTD",
+"label": "Orient Press Ltd",
+"nse": "ORIENTLTD",
+"bse": "526325",
+"isin": "INE609C01024",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "OP02"
+},
+{
 "id": "GANESHHOU",
-"label": "Ganesh Housing Ltd-$",
+"label": "Ganesh Housing Ltd",
 "nse": "GANESHHOU",
 "bse": "526367",
 "isin": "INE460C01014",
@@ -162584,7 +162800,7 @@
 },
 {
 "id": "PATINTLOG",
-"label": "Patel Integrated Logistics Ltd-$",
+"label": "Patel Integrated Logistics Ltd",
 "nse": "PATINTLOG",
 "bse": "526381",
 "isin": "INE529D01014",
@@ -162596,7 +162812,7 @@
 },
 {
 "id": "KRITI",
-"label": "Kriti Industries India Ltd-$",
+"label": "Kriti Industries India Ltd",
 "nse": "KRITI",
 "bse": "526423",
 "isin": "INE479D01038",
@@ -162629,6 +162845,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "PI09"
+},
+{
+"id": "SYSTMTXC",
+"label": "Systematix Corporate Services Ltd",
+"nse": "SYSTMTXC",
+"bse": "526506",
+"isin": "INE356B01024",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SCS05"
 },
 {
 "id": "IIRM",
@@ -162776,7 +163004,7 @@
 },
 {
 "id": "NICCOPAR",
-"label": "Nicco Parks & Resorts Ltd-$",
+"label": "Nicco Parks & Resorts Ltd",
 "nse": "NICCOPAR",
 "bse": "526721",
 "isin": "INE653C01022",
@@ -162812,7 +163040,7 @@
 },
 {
 "id": "BRIGHTBR",
-"label": "Bright Brothers Ltd-$",
+"label": "Bright Brothers Ltd",
 "nse": "BRIGHTBR",
 "bse": "526731",
 "isin": "INE630D01010",
@@ -162824,7 +163052,7 @@
 },
 {
 "id": "VALIANT",
-"label": "Valiant Communications Ltd-$",
+"label": "Valiant Communications Ltd",
 "nse": "VALIANT",
 "bse": "526775",
 "isin": "INE760B01019",
@@ -162836,7 +163064,7 @@
 },
 {
 "id": "DRAGARWQ",
-"label": "Dr Agarwals Eye Hospital Ltd-$",
+"label": "Dr Agarwals Eye Hospital Ltd",
 "nse": "DRAGARWQ",
 "bse": "526783",
 "isin": "INE934C01018",
@@ -162872,7 +163100,7 @@
 },
 {
 "id": "CHEVIOT",
-"label": "Cheviot Company Ltd-$",
+"label": "Cheviot Company Ltd",
 "nse": "CHEVIOT",
 "bse": "526817",
 "isin": "INE974B01016",
@@ -162908,7 +163136,7 @@
 },
 {
 "id": "SARLAPOLY",
-"label": "Sarla Performance Fibers Ltd-$",
+"label": "Sarla Performance Fibers Ltd",
 "nse": "SARLAPOLY",
 "bse": "526885",
 "isin": "INE453D01025",
@@ -162932,7 +163160,7 @@
 },
 {
 "id": "HRYNSHP",
-"label": "Hariyana Ship Breakers Ltd-$",
+"label": "Hariyana Ship Breakers Ltd",
 "nse": "HRYNSHP",
 "bse": "526931",
 "isin": "INE400G01011",
@@ -162977,6 +163205,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "GL02"
+},
+{
+"id": "VENUSREM",
+"label": "Venus Remedies Ltd",
+"nse": "VENUSREM",
+"bse": "526953",
+"isin": "INE411B01019",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "VR01"
 },
 {
 "id": "SHBAJRG",
@@ -163064,7 +163304,7 @@
 },
 {
 "id": "ANTELOPUS",
-"label": "Antelopus Selan Energy Ltd-$",
+"label": "Antelopus Selan Energy Ltd",
 "nse": "ANTELOPUS",
 "bse": "530075",
 "isin": "INE818A01017",
@@ -163076,7 +163316,7 @@
 },
 {
 "id": "FAZE3Q",
-"label": "Faze Three Ltd-$",
+"label": "Faze Three Ltd",
 "nse": "FAZE3Q",
 "bse": "530079",
 "isin": "INE963C01033",
@@ -163184,7 +163424,7 @@
 },
 {
 "id": "CLSEL",
-"label": "Chaman Lal Setia Exports Ltd-$",
+"label": "Chaman Lal Setia Exports Ltd",
 "nse": "CLSEL",
 "bse": "530307",
 "isin": "INE419D01026",
@@ -163196,7 +163436,7 @@
 },
 {
 "id": "PREMCO",
-"label": "Premco Global Ltd-$",
+"label": "Premco Global Ltd",
 "nse": "PREMCO",
 "bse": "530331",
 "isin": "INE001E01012",
@@ -163232,7 +163472,7 @@
 },
 {
 "id": "ORIENTBELL",
-"label": "Orient Bell Ltd-$",
+"label": "Orient Bell Ltd",
 "nse": "ORIENTBELL",
 "bse": "530365",
 "isin": "INE607D01018",
@@ -163328,7 +163568,7 @@
 },
 {
 "id": "VIRAT",
-"label": "Virat Industries Ltd",
+"label": "Brahm Virat Industries Corporation Ltd",
 "nse": "VIRAT",
 "bse": "530521",
 "isin": "INE467D01017",
@@ -163352,7 +163592,7 @@
 },
 {
 "id": "PARACABLES",
-"label": "Paramount Communications Ltd-$",
+"label": "Paramount Communications Ltd",
 "nse": "PARACABLES",
 "bse": "530555",
 "isin": "INE074B01023",
@@ -163400,7 +163640,7 @@
 },
 {
 "id": "STERTOOLS",
-"label": "Sterling Tools Ltd-$",
+"label": "Sterling Tools Ltd",
 "nse": "STERTOOLS",
 "bse": "530759",
 "isin": "INE334A01023",
@@ -163436,7 +163676,7 @@
 },
 {
 "id": "CHEMBOND",
-"label": "Chembond Material Technologies Ltd-$",
+"label": "Chembond Material Technologies Ltd",
 "nse": "CHEMBOND",
 "bse": "530871",
 "isin": "INE995D01025",
@@ -163496,7 +163736,7 @@
 },
 {
 "id": "BALAMINES",
-"label": "Balaji Amines Ltd-$",
+"label": "Balaji Amines Ltd",
 "nse": "BALAMINES",
 "bse": "530999",
 "isin": "INE050E01027",
@@ -163652,7 +163892,7 @@
 },
 {
 "id": "LINC",
-"label": "Linc Ltd-$",
+"label": "Linc Ltd",
 "nse": "LINC",
 "bse": "531241",
 "isin": "INE802B01027",
@@ -163676,7 +163916,7 @@
 },
 {
 "id": "VSTTILLERS",
-"label": "VST Tillers Tractors Ltd-$",
+"label": "VST Tillers Tractors Ltd",
 "nse": "VSTTILLERS",
 "bse": "531266",
 "isin": "INE764D01017",
@@ -163748,7 +163988,7 @@
 },
 {
 "id": "ARIHANT",
-"label": "Arihant Foundations & Housing Ltd-$",
+"label": "Arihant Foundations & Housing Ltd",
 "nse": "ARIHANT",
 "bse": "531381",
 "isin": "INE413D01011",
@@ -163784,7 +164024,7 @@
 },
 {
 "id": "MOHITIND",
-"label": "Mohit Industries Ltd-$",
+"label": "Mohit Industries Ltd",
 "nse": "MOHITIND",
 "bse": "531453",
 "isin": "INE954E01012",
@@ -163832,7 +164072,7 @@
 },
 {
 "id": "MADHUCON",
-"label": "Madhucon Projects Ltd-$",
+"label": "Madhucon Projects Ltd",
 "nse": "MADHUCON",
 "bse": "531497",
 "isin": "INE378D01032",
@@ -163928,7 +164168,7 @@
 },
 {
 "id": "SURAJLTD",
-"label": "Suraj Ltd-$",
+"label": "Suraj Ltd",
 "nse": "SURAJLTD",
 "bse": "531638",
 "isin": "INE713C01016",
@@ -163940,7 +164180,7 @@
 },
 {
 "id": "VIDHIING",
-"label": "Vidhi Specialty Food Ingredients Ltd-$",
+"label": "Vidhi Specialty Food Ingredients Ltd",
 "nse": "VIDHIING",
 "bse": "531717",
 "isin": "INE632C01026",
@@ -164000,7 +164240,7 @@
 },
 {
 "id": "ATULAUTO",
-"label": "Atul Auto Ltd-$",
+"label": "Atul Auto Ltd",
 "nse": "ATULAUTO",
 "bse": "531795",
 "isin": "INE951D01028",
@@ -164012,7 +164252,7 @@
 },
 {
 "id": "LAHOTIOV",
-"label": "Lahoti Overseas Ltd-$",
+"label": "Lahoti Overseas Ltd",
 "nse": "LAHOTIOV",
 "bse": "531842",
 "isin": "INE515C01023",
@@ -164024,7 +164264,7 @@
 },
 {
 "id": "ZENITHSTL",
-"label": "Zenith Steel Pipes & Industries Ltd-$",
+"label": "Zenith Steel Pipes & Industries Ltd",
 "nse": "ZENITHSTL",
 "bse": "531845",
 "isin": "INE318D01020",
@@ -164036,7 +164276,7 @@
 },
 {
 "id": "ASTAR",
-"label": "Asian Star Company Ltd-$",
+"label": "Asian Star Company Ltd",
 "nse": "ASTAR",
 "bse": "531847",
 "isin": "INE194D01017",
@@ -164108,7 +164348,7 @@
 },
 {
 "id": "HINDALUMI",
-"label": "Hind Aluminium Industries Ltd-$",
+"label": "Hind Aluminium Industries Ltd",
 "nse": "HINDALUMI",
 "bse": "531979",
 "isin": "INE227B01019",
@@ -164156,7 +164396,7 @@
 },
 {
 "id": "SWELECTES",
-"label": "Swelect Energy Systems Ltd-$",
+"label": "Swelect Energy Systems Ltd",
 "nse": "SWELECTES",
 "bse": "532051",
 "isin": "INE409B01013",
@@ -164168,7 +164408,7 @@
 },
 {
 "id": "KDDL",
-"label": "KDDL Ltd-$",
+"label": "KDDL Ltd",
 "nse": "KDDL",
 "bse": "532054",
 "isin": "INE291D01011",
@@ -164335,18 +164575,6 @@
 "sc_id": "INE"
 },
 {
-"id": "NSIL",
-"label": "Nalwa Sons Investments Ltd",
-"nse": "NSIL",
-"bse": "532256",
-"isin": "INE023A01030",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "JS02"
-},
-{
 "id": "ACCELYA",
 "label": "Accelya Solutions India Ltd",
 "nse": "ACCELYA",
@@ -164419,18 +164647,6 @@
 "sc_id": "ABB01"
 },
 {
-"id": "SHREERAMA",
-"label": "Shree Rama Multi-Tech Ltd",
-"nse": "SHREERAMA",
-"bse": "532310",
-"isin": "INE879A01019",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "SRI01"
-},
-{
 "id": "SHIVACEM",
 "label": "Shiva Cement Ltd",
 "nse": "SHIVACEM",
@@ -164456,7 +164672,7 @@
 },
 {
 "id": "INTENTECH",
-"label": "Intense Technologies Ltd-$",
+"label": "Intense Technologies Ltd",
 "nse": "INTENTECH",
 "bse": "532326",
 "isin": "INE781A01025",
@@ -164504,7 +164720,7 @@
 },
 {
 "id": "COMPUSOFT",
-"label": "Compucom Software Ltd-$",
+"label": "Compucom Software Ltd",
 "nse": "COMPUSOFT",
 "bse": "532339",
 "isin": "INE453B01029",
@@ -164516,7 +164732,7 @@
 },
 {
 "id": "IZMO",
-"label": "IZMO Ltd-$",
+"label": "IZMO Ltd",
 "nse": "IZMO",
 "bse": "532341",
 "isin": "INE848A01014",
@@ -164756,7 +164972,7 @@
 },
 {
 "id": "BFUTILITIE",
-"label": "BF Utilities Ltd-$",
+"label": "BF Utilities Ltd",
 "nse": "BFUTILITIE",
 "bse": "532430",
 "isin": "INE243D01012",
@@ -164804,7 +165020,7 @@
 },
 {
 "id": "HAZOOR",
-"label": "Hazoor Multi Projects Ltd-$",
+"label": "Hazoor Multi Projects Ltd",
 "nse": "HAZOOR",
 "bse": "532467",
 "isin": "INE550F01049",
@@ -164813,18 +165029,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "HHP"
-},
-{
-"id": "KAMAHOLD",
-"label": "Kama Holdings Ltd-$",
-"nse": "KAMAHOLD",
-"bse": "532468",
-"isin": "INE411F01010",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": ""
 },
 {
 "id": "APTECHT",
@@ -164876,7 +165080,7 @@
 },
 {
 "id": "RAJPALAYAM",
-"label": "Rajapalayam Mills Ltd-$",
+"label": "Rajapalayam Mills Ltd",
 "nse": "RAJPALAYAM",
 "bse": "532503",
 "isin": "INE296E01026",
@@ -166244,7 +166448,7 @@
 },
 {
 "id": "BIRLAMONEY",
-"label": "Aditya Birla Money Ltd-$",
+"label": "Aditya Birla Money Ltd",
 "nse": "BIRLAMONEY",
 "bse": "532974",
 "isin": "INE865C01022",
@@ -166913,18 +167117,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "SV04"
-},
-{
-"id": "KICL",
-"label": "Kalyani Investment Company Ltd",
-"nse": "KICL",
-"bse": "533302",
-"isin": "INE029L01018",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "KIC02"
 },
 {
 "id": "BFINVEST",
@@ -168833,18 +169025,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "BHL02"
-},
-{
-"id": "PILANIINVS",
-"label": "Pilani Investment and Industries Corporation Ltd",
-"nse": "PILANIINVS",
-"bse": "539883",
-"isin": "INE417C01014",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "PII03"
 },
 {
 "id": "MADHAVIPL",
@@ -171907,6 +172087,18 @@
 "sc_id": "MAS02"
 },
 {
+"id": "SVRL",
+"label": "Shri Venkatesh Refineries Ltd",
+"nse": "SVRL",
+"bse": "543373",
+"isin": "INE0HLJ01013",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "VL08"
+},
+{
 "id": "SAMOR",
 "label": "Samor Reality Ltd",
 "nse": "SAMOR",
@@ -173071,6 +173263,18 @@
 "sc_id": "PSUBA14584"
 },
 {
+"id": "SUDARSHAN",
+"label": "Sudarshan Pharma Industries Ltd",
+"nse": "SUDARSHAN",
+"bse": "543828",
+"isin": "INE00TV01023",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SCI05"
+},
+{
 "id": "SENSEXAXIS",
 "label": "AXIS BSE SENSEX ETF",
 "nse": "SENSEXAXIS",
@@ -173371,6 +173575,18 @@
 "sc_id": "NLS"
 },
 {
+"id": "KHAZANCHI",
+"label": "Khazanchi Jewellers Ltd",
+"nse": "KHAZANCHI",
+"bse": "543953",
+"isin": "INE0OWC01011",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "KJ01"
+},
+{
 "id": "ATL",
 "label": "Allcargo Terminals Ltd",
 "nse": "ATL",
@@ -173465,6 +173681,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "PT10"
+},
+{
+"id": "BONDADA",
+"label": "Bondada Engineering Ltd",
+"nse": "BONDADA",
+"bse": "543971",
+"isin": "INE0Q8P01029",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "BE11"
 },
 {
 "id": "AEROFLEX",
@@ -174331,9 +174559,9 @@
 "sc_id": "EVIND24461"
 },
 {
-"id": "SBINEQWETF",
+"id": "SBIEQLWT50",
 "label": "SBI NIFTY50 EQUAL WEIGHT ETF",
-"nse": "SBINEQWETF",
+"nse": "SBIEQLWT50",
 "bse": "544215",
 "isin": "INF200KB1282",
 "exchange": "BSE",
@@ -175123,9 +175351,9 @@
 "sc_id": "AXISV30155"
 },
 {
-"id": "SBIBPB",
+"id": "SBIPSUBNK",
 "label": "SBI BSE PSU BANK ETF",
-"nse": "SBIBPB",
+"nse": "SBIPSUBNK",
 "bse": "544385",
 "isin": "INF200KB1712",
 "exchange": "BSE",
@@ -175495,6 +175723,18 @@
 "sc_id": "GEL01"
 },
 {
+"id": "RMDRIP",
+"label": "R M Drip and Sprinklers Systems Ltd",
+"nse": "RMDRIP",
+"bse": "544456",
+"isin": "INE219Y01026",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "DSS03"
+},
+{
 "id": "BRIGHOTEL",
 "label": "Brigade Hotel Ventures Ltd",
 "nse": "BRIGHOTEL",
@@ -175565,18 +175805,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "GBP02"
-},
-{
-"id": "HILINFRA",
-"label": "Highway Infrastructure Ltd",
-"nse": "HILINFRA",
-"bse": "544477",
-"isin": "INE00RL01028",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "H05"
 },
 {
 "id": "ALLTIME",
@@ -175783,9 +176011,9 @@
 "sc_id": "VTL04"
 },
 {
-"id": "ABCOTS",
-"label": "A B Cotspin India Ltd",
-"nse": "ABCOTS",
+"id": "ABCIND",
+"label": "ABC Industries India Ltd",
+"nse": "ABCIND",
 "bse": "544522",
 "isin": "INE08PH01015",
 "exchange": "BSE",
@@ -176456,7 +176684,7 @@
 },
 {
 "id": "MSCIADD",
-"label": "MSCIADD",
+"label": "DSP MSCI India ETF",
 "nse": "MSCIADD",
 "bse": "544620",
 "isin": "INF740KA1WV7",
@@ -177139,9 +177367,9 @@
 "sc_id": "PL11"
 },
 {
-"id": "SBINMID150",
+"id": "SBIMID150",
 "label": "SBI Nifty Midcap 150 ETF",
-"nse": "SBINMID150",
+"nse": "SBIMID150",
 "bse": "544745",
 "isin": "INF200KB1AK8",
 "exchange": "BSE",
@@ -177655,6 +177883,18 @@
 "sc_id": "LPI"
 },
 {
+"id": "TRIVENIPT",
+"label": "Triveni Power Transmission Ltd",
+"nse": "TRIVENIPT",
+"bse": "544824",
+"isin": "INE2WKE01011",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "TPTL"
+},
+{
 "id": "ALPINETEX",
 "label": "Alpine Texworld Ltd",
 "nse": "ALPINETEX",
@@ -177695,7 +177935,7 @@
 "label": "Meenakshi India Ltd",
 "nse": "MEEIND",
 "bse": "544831",
-"isin": "INE208H01016",
+"isin": "INE208H01024",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
@@ -178819,6 +179059,66 @@
 "sc_id": "SMTL"
 },
 {
+"id": "BIRLATOTAL",
+"label": "Aditya Birla Sun Life BSE Total Market ETF",
+"nse": "BIRLATOTAL",
+"bse": "545002",
+"isin": "INF209KC1746",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ABS07"
+},
+{
+"id": "PHARMAIETF",
+"label": "ICICI Prudential Nifty Pharma ETF",
+"nse": "PHARMAIETF",
+"bse": "545003",
+"isin": "INF109K1A716",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "IPN08"
+},
+{
+"id": "PARASHLTH",
+"label": "Paras Healthcare Ltd",
+"nse": "PARASHLTH",
+"bse": "545005",
+"isin": "INE661T01029",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "PHL01"
+},
+{
+"id": "SBIDEFETF",
+"label": "SBI BSE India Defence ETF",
+"nse": "SBIDEFETF",
+"bse": "545006",
+"isin": "INF200KB1CJ6",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SBI30"
+},
+{
+"id": "EDELALTS",
+"label": "EAAA India Alternatives Ltd",
+"nse": "EDELALTS",
+"bse": "545008",
+"isin": "INE528L01027",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "EIA"
+},
+{
 "id": "SENSEXIETF",
 "label": "ICICI Prudential BSE Sensex ETF",
 "nse": "SENSEXIETF",
@@ -178868,7 +179168,7 @@
 },
 {
 "id": "AMRUTANJAN",
-"label": "Amrutanjan Health Care Ltd-$",
+"label": "Amrutanjan Health Care Ltd",
 "nse": "AMRUTANJAN",
 "bse": "590006",
 "isin": "INE098F01031",
@@ -178892,7 +179192,7 @@
 },
 {
 "id": "HISARMETAL",
-"label": "Hisar Metal Industries Ltd-$",
+"label": "Hisar Metal Industries Ltd",
 "nse": "HISARMETAL",
 "bse": "590018",
 "isin": "INE598C01011",
@@ -179084,7 +179384,7 @@
 },
 {
 "id": "LAMBODHARA",
-"label": "Lambodhara Textile Ltd-$",
+"label": "Lambodhara Textile Ltd",
 "nse": "LAMBODHARA",
 "bse": "590075",
 "isin": "INE112F01022",
@@ -179251,9 +179551,9 @@
 "sc_id": "KMM03"
 },
 {
-"id": "SETFNIFBK",
+"id": "SBIBANKNIF",
 "label": "SBI-ETF NIFTY BANK",
-"nse": "SETFNIFBK",
+"nse": "SBIBANKNIF",
 "bse": "590137",
 "isin": "INF200KA1580",
 "exchange": "BSE",
@@ -179263,9 +179563,9 @@
 "sc_id": "SBI25"
 },
 {
-"id": "SETFNIF50",
+"id": "SBINIFTY50",
 "label": "SBI-ETF NIFTY 50",
-"nse": "SETFNIF50",
+"nse": "SBINIFTY50",
 "bse": "590138",
 "isin": "INF200KA1FS1",
 "exchange": "BSE",
@@ -179465,6 +179765,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "JEP01"
+},
+{
+"id": "CENTEXTPP",
+"label": "Century Extrusions Ltd",
+"nse": "CENTEXTPP",
+"bse": "890241",
+"isin": "IN9281A01016",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "CEP"
 }
 ]
 }
