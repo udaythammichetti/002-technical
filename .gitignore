@@ -7,5 +7,5 @@ web/dist/
 .DS_Store
 *.egg-info/
 .streamlit/secrets.toml
-data/spurts_history/*.json
-!data/spurts_history/.gitkeep
+
+data/spurts_history/

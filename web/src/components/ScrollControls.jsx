@@ -4,7 +4,6 @@ function horizHost(panel) {
   if (!panel) return null
   return (
     panel.querySelector('.scan-tape') ||
-    panel.querySelector('.spurts-tape') ||
     panel.querySelector('.tape')
   )
 }

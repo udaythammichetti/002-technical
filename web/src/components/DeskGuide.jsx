@@ -104,16 +104,27 @@ const GUIDES = {
       },
     ],
   },
-  spurts: {
-    title: 'Spurts',
+  candle: {
+    title: 'Candles',
     blurb:
-      'Live NSE + BSE table. Vol× is the exchange multiple (NSE 1-week, BSE 2-week). 2W× is the NSE 2-week multiple. Archive holds By date and Reappeared.',
+      'Last 3, 5, and 7 candles on the daily chart, then the same year folded into weeks and months. Each cell shows Bull / Bear / Flat with (green / window).',
     params: [
-      { id: 'Live table', tip: 'Default · Rank · Exch · Stock · Chg · Vol× · Volume · LTP…' },
-      { id: 'Date', tip: 'Toolbar · Live today, or load any saved day’s table' },
-      { id: 'Archive', tip: 'Collapsed on demand · By date table + Reappeared table' },
-      { id: 'Save day', tip: 'Write today’s list to data/spurts_history/ (also auto after 15:30 IST)' },
-      { id: 'Vol×', tip: 'Session volume ÷ exchange reference average' },
+      { id: 'Turn', tip: '↑N = month weak (≤−2) while days recover · ↓N = month strong (≥+2) while days roll over · strength 1…3 · not in Score.' },
+      { id: 'Turn↑ · Turn↓', tip: 'Filter bull / bear turnaround rows.' },
+      { id: '2D', tip: 'Last 2 daily candles. Used by the 2D↑ filter. Not part of Score ±N/9.' },
+      { id: '3D · 5D · 7D', tip: 'Last 3, 5, and 7 daily candles. Open of the oldest to close of the newest.' },
+      { id: '3W · 5W · 7W', tip: 'Calendar weeks built from the daily bars. This week stays even if it is unfinished.' },
+      { id: '3M · 5M · 7M', tip: 'Calendar months built from the daily bars. This month stays even if it is unfinished.' },
+      { id: 'D · W · M', tip: 'Horizon lean · ↑ when ≥2 of 3 windows on that horizon are Bull · ↓ for Bear · · for Flat.' },
+      { id: 'Map', tip: 'Nine-window heat strip · Day · Week · Month. Green = Bull · red = Bear · grey = Flat.' },
+      { id: '2D↑', tip: 'Filter to names whose last 2 daily candles are Bull.' },
+      { id: 'Day↑ · Week↑ · Month↑', tip: 'Filter to names whose Day / Week / Month lean is Bull.' },
+      { id: 'Bull (2/3)', tip: 'Green chip · (green / window). Closed up ≥0.35% and greens ≥ reds. Doji body under 0.15% does not vote.' },
+      { id: 'Bear (1/3)', tip: 'Red chip · same count form. Closed down ≥0.35% and reds ≥ greens.' },
+      { id: 'Flat', tip: 'Net move inside ±0.35%, or candle colors disagree with the close.' },
+      { id: 'Score', tip: 'Shown as ±N/9 = bull windows − bear windows. Bias bullish at ≥ +3, bearish at ≤ −3. Aligned when |Score| ≥ 6.' },
+      { id: 'Close', tip: 'Last daily close · green when the day is up · red when down.' },
+      { id: '30D', tip: 'Spark of the last 30 daily closes on the same year of bars.' },
     ],
   },
 }
@@ -178,9 +189,6 @@ const FORMULA_ORDER = [
   'gap_down',
   'breakaway_gap',
   'bull_breakout',
-  'vol_x',
-  'nse',
-  'bse',
   'bullish',
   'bearish',
 ]
@@ -191,7 +199,7 @@ export default function DeskGuide() {
   const guide = GUIDES[desk] || GUIDES.volume
   const names = guide.params.map((p) => p.id).join(' · ')
   const formulas = board?.formulas || null
-  const tfMeta = board?.tf_meta && desk !== 'spurts' ? board.tf_meta : null
+  const tfMeta = board?.tf_meta || null
   const formulaKeys = formulas
     ? FORMULA_ORDER.filter((k) => formulas[k]).concat(
         Object.keys(formulas).filter((k) => !FORMULA_ORDER.includes(k)),

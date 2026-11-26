@@ -72,11 +72,13 @@ export function ChartIcon() {
   )
 }
 
-export function SpurtsIcon() {
+export function CandleIcon() {
   return (
     <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
-      <path d="M4 18V11M8 18V7M12 18V4M16 18v-6M20 18V9" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      <path d="M3.5 18.5h17" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity="0.35" />
+      <path d="M7 5v3M7 16v3M12 3v4M12 17v4M17 6v3M17 15v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.55" />
+      <rect x="5" y="8" width="4" height="8" rx="1" fill="currentColor" />
+      <rect x="10" y="7" width="4" height="10" rx="1" fill="currentColor" opacity="0.7" />
+      <rect x="15" y="9" width="4" height="6" rx="1" fill="currentColor" opacity="0.45" />
     </svg>
   )
 }
@@ -94,5 +96,5 @@ export const DESK_ICONS = {
   tech: TechIcon,
   sci: LabIcon,
   chart: ChartIcon,
-  spurts: SpurtsIcon,
+  candle: CandleIcon,
 }

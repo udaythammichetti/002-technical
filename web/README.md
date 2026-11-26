@@ -1,6 +1,6 @@
 # Signal Desk UI
 
-React + Vite front end for [Signal Desk](../README.md) (Volume · Technical · Lab · Chart · Spurts).
+React + Vite front end for [Signal Desk](../README.md) (Volume · Technical · Lab · Chart · Candles).
 
 ## Scripts
 

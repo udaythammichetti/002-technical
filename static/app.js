@@ -77,7 +77,7 @@ const SCI_COLUMNS = [
 
 const TIMEFRAMES = ["15m", "1h", "4h", "1d", "1w", "1m", "3m", "6m", "1y", "5y", "max"];
 const UNIVERSES = ["nifty50", "nifty500", "midcap", "smallcap", "nse_all", "bse_all"];
-const DESKS = ["volume", "tech", "sci", "spurts"];
+const DESKS = ["volume", "tech", "sci"];
 
 const SPURT_TABS = [
   ["trend", "All", "all"],
@@ -391,6 +391,7 @@ function restore() {
   } catch (_err) {
     /* defaults */
   }
+  if (state.desk === "spurts") state.desk = "volume";
   if (
     state.tab === "all" ||
     (state.desk === "tech" && state.tab === "spike") ||

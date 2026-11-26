@@ -13,17 +13,10 @@ export function clearServerCache() {
   return getJson('/api/cache/clear')
 }
 
-export function fetchBoard({ desk, tf, universe, indicators, fresh, spurtsDate, signal, job }) {
+export function fetchBoard({ desk, tf, universe, indicators, fresh, signal, job }) {
   const params = new URLSearchParams()
-  if (desk !== 'spurts') {
-    params.set('tf', String(tf || '1d').trim().toLowerCase())
-    params.set('universe', universe || 'nifty50')
-  } else {
-    // Spurts: full NSE + BSE lists; optional archive date for history view.
-    params.set('exchange', 'all')
-    params.set('universe', 'live')
-    if (spurtsDate && spurtsDate !== 'live') params.set('date', spurtsDate)
-  }
+  params.set('tf', String(tf || '1d').trim().toLowerCase())
+  params.set('universe', universe || 'nifty50')
   if (fresh) params.set('fresh', '1')
   if (desk === 'tech' && Array.isArray(indicators)) params.set('indicators', indicators.join(','))
   if (job) params.set('job', job)
@@ -35,8 +28,8 @@ export function fetchBoard({ desk, tf, universe, indicators, fresh, spurtsDate, 
         ? '/api/sci-board?'
         : desk === 'chart'
           ? '/api/chart-board?'
-          : desk === 'spurts'
-            ? '/api/spurts?'
+          : desk === 'candle'
+            ? '/api/candle-board?'
             : '/api/board?'
 
   return getJson(endpoint + params.toString(), { signal })
@@ -52,18 +45,6 @@ export function newScanJobId() {
   return 'job' + Date.now().toString(36) + Math.random().toString(36).slice(2, 10)
 }
 
-export function fetchSpurtsHistory() {
-  return getJson('/api/spurts/history')
-}
-
-export function fetchSpurtsDashboard(days = 30) {
-  return getJson(`/api/spurts/dashboard?days=${days}`)
-}
-
-export function archiveSpurtsToday(force = false) {
-  return getJson(`/api/spurts/archive${force ? '?force=1' : ''}`)
-}
-
 export function fetchVolume({ symbol, scId, tf, fresh, signal }) {
   const params = new URLSearchParams({
     symbol,
@@ -75,7 +56,7 @@ export function fetchVolume({ symbol, scId, tf, fresh, signal }) {
   return getJson('/api/volume?' + params.toString(), { signal })
 }
 
-/** Combined Volume + Technical + Lab + Chart for one symbol (no Spurts). */
+/** Combined Volume + Technical + Lab + Chart for one symbol. */
 export function fetchDossier({ symbol, scId, tf, exchange, indicators, fresh, signal }) {
   const params = new URLSearchParams({
     symbol: symbol || '',

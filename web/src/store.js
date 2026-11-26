@@ -98,14 +98,14 @@ function clampDeskTab(desk, tab) {
     tech: new Set(['trend', 'bullish', 'bearish']),
     sci: new Set(['trend', 'bullish', 'consolidating', 'breakout']),
     chart: new Set(['trend', 'bullish', 'bearish', 'breakout', 'support']),
-    spurts: new Set(['trend', 'nse', 'bse', 'spike']),
+    candle: new Set(['trend', 'bullish', 'bearish', 'aligned', 'turn_up', 'turn_dn', '2d', 'day', 'week', 'month']),
   }
   const set = allowed[desk] || allowed.volume
   if (set.has(tab)) return tab
   return 'trend'
 }
 
-const DESK_CACHE_IDS = new Set(['volume', 'tech', 'sci', 'chart', 'spurts'])
+const DESK_CACHE_IDS = new Set(['volume', 'tech', 'sci', 'chart', 'candle'])
 
 /** One machine-cache slot per dashboard (desk). */
 function readDeskCache(map, desk) {
@@ -137,7 +137,6 @@ function migrateBoardsByDesk(raw) {
         at: v.at || Date.now(),
         tf: v.tf,
         universe: v.universe,
-        spurtsDate: v.spurtsDate,
         techIndicators: v.techIndicators,
       }
     }
@@ -161,7 +160,7 @@ export const useDesk = create(
       searchEpoch: 0, // bumps to drop stale autosuggest results
       boardEpoch: 0, // bumps to drop stale board/symbol responses (TF/desk races)
       tf: '1d',
-      universe: 'nifty50', // shared across Volume · Technical · Lab · Chart (not Spurts)
+      universe: 'nifty50', // shared across Volume · Technical · Lab · Chart · Candles
       universes: UNIVERSES.map((u) => ({ ...u })).filter((u) => u.id !== 'live'),
       tab: 'trend',
       /** Scan desks: dense table by default (cards optional). */
@@ -169,16 +168,14 @@ export const useDesk = create(
       sortKey: 'score',
       sortDir: 'desc',
       techIndicators: defaultIndicators,
-      spurtsDate: 'live', // live | YYYY-MM-DD archive
       /** Symbol search window. Day = 1D session. Long = 5-year daily. */
       dossierHorizon: 'day',
-      spurtsArchives: [],
       sources: null,
       board: null,
       /** One persisted cache slot per dashboard until Refresh (that desk) or Clear all. */
       boardsByDesk: {},
       data: null,
-      /** Combined Volume+Tech+Lab+Chart page from common search (no Spurts). */
+      /** Combined Volume+Tech+Lab+Chart page from common search. */
       dossier: null,
       status: 'Warming engine…',
       loading: false,
@@ -190,16 +187,13 @@ export const useDesk = create(
       _progressTimer: null,
 
       setDesk(desk) {
-        const sortKey =
-          desk === 'spurts' ? 'vol_x' : desk === 'sci' || desk === 'chart' ? 'rank' : 'score'
-        const sortDir = desk === 'sci' || desk === 'chart' ? 'asc' : desk === 'spurts' ? 'desc' : 'desc'
+        const sortKey = desk === 'sci' || desk === 'chart' ? 'rank' : 'score'
+        const sortDir = desk === 'sci' || desk === 'chart' ? 'asc' : 'desc'
         const cached = readDeskCache(get().boardsByDesk, desk)
         const tf = clampTfForDesk(desk, cached?.tf || get().tf)
         const universe = cached?.universe
           ? clampUniverse(cached.universe, get().universes)
           : get().universe
-        const spurtsDate =
-          desk === 'spurts' ? cached?.spurtsDate || get().spurtsDate || 'live' : 'live'
         const techIndicators =
           desk === 'tech' && Array.isArray(cached?.techIndicators)
             ? clampTechIndicators(cached.techIndicators)
@@ -218,7 +212,6 @@ export const useDesk = create(
           query: '',
           suggestions: [],
           boardEpoch: get().boardEpoch + 1,
-          spurtsDate,
           error: null,
           loading: false,
           status: cached
@@ -226,65 +219,6 @@ export const useDesk = create(
             : `Ready · ${deskLabel(desk)} · hit Refresh to scan`,
         })
         if (cached) get()._statusFromBoard(cached.board)
-        if (desk === 'spurts') get().loadSpurtsHistory()
-      },
-
-      setSpurtsDate(date) {
-        const next = date && date !== 'live' ? String(date) : 'live'
-        const cached = readDeskCache(get().boardsByDesk, 'spurts')
-        const same = cached && (cached.spurtsDate || 'live') === next
-        if (same) {
-          set({
-            spurtsDate: next,
-            board: cached.board,
-            boardEpoch: get().boardEpoch + 1,
-            loading: false,
-            error: null,
-          })
-          get()._statusFromBoard(cached.board)
-          return
-        }
-        // Selection only — Refresh loads the chosen day.
-        set({
-          spurtsDate: next,
-          board: cached ? cached.board : get().board,
-          boardEpoch: get().boardEpoch + 1,
-          loading: false,
-          error: null,
-          status:
-            next === 'live'
-              ? 'Date · Live today · hit Refresh to load'
-              : `Date · ${next} · hit Refresh to load`,
-        })
-      },
-
-      async loadSpurtsHistory() {
-        try {
-          const data = await api.fetchSpurtsHistory()
-          set({ spurtsArchives: data.archives || [] })
-          return data
-        } catch {
-          return null
-        }
-      },
-
-      async archiveSpurtsToday(force = false) {
-        set({ status: 'Saving today’s spurts archive…', loading: true })
-        try {
-          const result = await api.archiveSpurtsToday(force)
-          await get().loadSpurtsHistory()
-          set({
-            loading: false,
-            status: result.saved
-              ? `Archived ${result.count} names · ${result.date}`
-              : result.detail || result.reason || 'Archive skipped',
-          })
-          if (get().spurtsDate === 'live') get().loadBoard(true)
-          return result
-        } catch (err) {
-          set({ loading: false, error: err.message, status: err.message || 'Archive failed' })
-          return null
-        }
       },
 
       setTf(tf) {
@@ -313,6 +247,7 @@ export const useDesk = create(
 
       setUniverse(universe) {
         const uid = clampUniverse(universe, get().universes)
+        if (uid === get().universe) return
         const desk = get().desk
         const cached = readDeskCache(get().boardsByDesk, desk)
         const same = cached && clampUniverse(cached.universe || '', get().universes) === uid
@@ -325,7 +260,8 @@ export const useDesk = create(
           query: '',
           error: null,
           loading: false,
-          ...(same && cached ? { board: cached.board } : {}),
+          // Keep matching desk cache; otherwise clear so old 50/50 never sits under BSE All.
+          board: same && cached ? cached.board : null,
           status: same
             ? `Cached · ${uLabel}`
             : `Book · ${uLabel} · hit Refresh to scan`,
@@ -397,7 +333,7 @@ export const useDesk = create(
         } catch {
           /* ignore */
         }
-        // Common search → combined dossier (all desks except Spurts). Keep current desk.
+        // Common search → combined dossier. Keep current desk.
         set({
           mode: 'symbol',
           symbol,
@@ -419,7 +355,7 @@ export const useDesk = create(
       },
 
       backToScan() {
-        const desk = get().desk === 'spurts' ? 'spurts' : get().desk
+        const desk = get().desk
         const cached = readDeskCache(get().boardsByDesk, desk)
         set({
           mode: 'scan',
@@ -504,7 +440,6 @@ export const useDesk = create(
         if (silent && get().boardInFlight) return
         const epoch = get().boardEpoch
         const desk = get().desk
-        const spurtsDate = get().spurtsDate || 'live'
         let tf
         let universe
         let indicators = get().techIndicators
@@ -540,18 +475,16 @@ export const useDesk = create(
           clearInterval(get()._progressTimer)
           set({ _progressTimer: null })
         }
-        const job = desk === 'spurts' ? null : api.newScanJobId()
+        const job = api.newScanJobId()
         const startStatus =
-          desk === 'spurts'
-            ? spurtsDate !== 'live'
-              ? `Loading spurts archive · ${spurtsDate}…`
-              : 'Fetching live NSE / BSE volume spurts…'
-            : desk === 'tech'
-              ? `Scanning Technical · ${tfLabel}…`
-              : desk === 'sci'
-                ? `Scanning Lab · ${tfLabel}…`
-                : desk === 'chart'
-                  ? `Scanning Chart · ${tfLabel}…`
+          desk === 'tech'
+            ? `Scanning Technical · ${tfLabel}…`
+            : desk === 'sci'
+              ? `Scanning Lab · ${tfLabel}…`
+              : desk === 'chart'
+                ? `Scanning Chart · ${tfLabel}…`
+                : desk === 'candle'
+                  ? 'Scanning Candles · 3/5/7 D W M…'
                   : `Scanning Volume · ${tfLabel}…`
         if (!silent) {
           set({
@@ -560,9 +493,7 @@ export const useDesk = create(
             _boardAbort: abort,
             error: null,
             status: startStatus,
-            scanProgress: job
-              ? { job, state: 'pending', done: 0, total: 0, pct: 0, phase: 'starting', label: '' }
-              : { state: 'running', done: 0, total: 0, pct: 0, phase: 'fetch', label: 'Spurts' },
+            scanProgress: { job, state: 'pending', done: 0, total: 0, pct: 0, phase: 'starting', label: '' },
           })
         } else {
           set({ error: null, boardInFlight: true, _boardAbort: abort })
@@ -604,7 +535,6 @@ export const useDesk = create(
             universe,
             indicators,
             fresh,
-            spurtsDate: desk === 'spurts' ? spurtsDate : 'live',
             signal: abort?.signal,
             job,
           })
@@ -613,10 +543,8 @@ export const useDesk = create(
             board,
             tf,
             universe,
-            spurtsDate: desk === 'spurts' ? spurtsDate : undefined,
             techIndicators: desk === 'tech' ? indicators : undefined,
           })
-          const archives = board.archives || get().spurtsArchives
           const stillActive = get().boardEpoch === epoch && get().desk === desk
           if (progressTimer) clearInterval(progressTimer)
           if (!stillActive) {
@@ -627,7 +555,6 @@ export const useDesk = create(
           const patch = {
             board,
             boardsByDesk,
-            spurtsArchives: archives,
             loading: false,
             boardInFlight: false,
             _boardAbort: null,
@@ -716,26 +643,6 @@ export const useDesk = create(
       _statusFromBoard(board) {
         const { desk } = get()
         const counts = board.counts || {}
-        if (desk === 'spurts') {
-          const nseFeed = (board.feeds || []).find((f) => f.name === 'NSE')
-          const shown =
-            board.raw_scanned != null && board.raw_scanned !== board.scanned
-              ? `${board.scanned}/${board.raw_scanned}`
-              : `${board.scanned}`
-          const hist = board.history || board.history_date
-          set({
-            status:
-              (hist ? `Spurts archive · ${board.history_date || ''} · ` : 'Spurts · ') +
-              `NSE ${counts.nse || 0} · BSE ${counts.bse || 0} · ${shown}` +
-              (!hist && board.live_quotes != null ? ` · live LTP ${board.live_quotes}` : '') +
-              (nseFeed?.as_of ? ` · list ${nseFeed.as_of}` : '') +
-              (board.archive?.saved ? ` · saved ${board.archive.date}` : '') +
-              (board.as_of ? ` · ${board.as_of}` : '') +
-              (board.cached ? ' · server cache' : ' · fresh') +
-              ' · dashboard cached',
-          })
-          return
-        }
         set({
           status:
             `${deskLabel(desk)} ready · ${board.universe_label || ''} · ${board.scanned}` +
@@ -758,7 +665,6 @@ export const useDesk = create(
         sortDir: s.sortDir,
         techIndicators: clampTechIndicators(s.techIndicators),
         boardsByDesk: s.boardsByDesk || {},
-        spurtsDate: s.spurtsDate || 'live',
         dossierHorizon: s.dossierHorizon === 'long' ? 'long' : 'day',
       }),
       merge: (persisted, current) => {
@@ -771,6 +677,13 @@ export const useDesk = create(
           boardsByDesk: migrateBoardsByDesk(rawCache),
         }
         delete next.boardsByKey
+        delete next.spurtsDate
+        delete next.spurtsArchives
+        if (!DESK_CACHE_IDS.has(next.desk)) {
+          next.desk = 'volume'
+          next.tab = 'trend'
+          next.board = null
+        }
         next.tf = clampTf(next.tf)
         next.universe = clampUniverse(next.universe, next.universes?.length ? next.universes : UNIVERSES)
         if (next.tab === 'chg_up') next.tab = 'bullish'
@@ -785,7 +698,6 @@ export const useDesk = create(
           if (hit.universe) {
             next.universe = clampUniverse(hit.universe, next.universes?.length ? next.universes : UNIVERSES)
           }
-          if (next.desk === 'spurts' && hit.spurtsDate) next.spurtsDate = hit.spurtsDate
           if (next.desk === 'tech' && Array.isArray(hit.techIndicators)) {
             next.techIndicators = clampTechIndicators(hit.techIndicators)
           }

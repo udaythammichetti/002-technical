@@ -134,7 +134,6 @@ export default function CombinedDossier() {
   const dossier = useDesk((s) => s.dossier)
   const loading = useDesk((s) => s.loading)
   const symbol = useDesk((s) => s.symbol)
-  const spurtsBoard = useDesk((s) => s.boardsByDesk?.spurts?.board)
   const horizon = useDesk((s) => s.dossierHorizon)
   const setDossierHorizon = useDesk((s) => s.setDossierHorizon)
   const [xvolSort, setXvolSort] = useState({ key: 'date', dir: 'desc', type: 'text' })
@@ -170,10 +169,6 @@ export default function CombinedDossier() {
   const tech = dossier.tech || null
   const sci = dossier.sci || null
   const chart = dossier.chart || null
-  const spurtsHits = (spurtsBoard?.rows || []).filter((row) => {
-    const id = String(row.nse || row.id || '').toUpperCase()
-    return id && id === String(sym || symbol || '').toUpperCase()
-  })
 
   function toggleXvolSort(key, type) {
     setXvolSort((prev) =>
@@ -211,7 +206,7 @@ export default function CombinedDossier() {
         <span>
           {horizon === 'long'
             ? '5-year daily · 50/200 · trend · demand and supply · ADX'
-            : '1-day window · RVOL · gap · candle · near support · Spurts'}
+            : '1-day window · RVOL · gap · candle · near support'}
         </span>
       </div>
       <p className="dossier-blurb">
@@ -226,15 +221,9 @@ export default function CombinedDossier() {
           chart?.score != null ? `Chart ${chart.score}` : null,
           stats.rvol != null ? `RVOL ${Number(stats.rvol).toFixed(2)}×` : null,
           tech?.bias ? `Tech ${tech.bias}` : null,
-          spurtsHits.length
-            ? 'Spurts ' +
-              spurtsHits
-                .map((hit) => `${hit.exchange} ${hit.vol_x != null ? Number(hit.vol_x).toFixed(1) + '×' : '—'}`)
-                .join(' · ')
-            : null,
         ]
           .filter(Boolean)
-          .join(' · ') || 'Volume · Technical · Lab · Chart · Spurts'}
+          .join(' · ') || 'Volume · Technical · Lab · Chart'}
       </p>
 
       <div className="dossier-grid">
@@ -506,35 +495,6 @@ export default function CombinedDossier() {
               ) : null}
             </>
           ) : null}
-        </DeskPanel>
-
-        <DeskPanel
-          title="Spurts"
-          empty={
-            spurtsHits.length
-              ? null
-              : 'Not on the loaded Spurts list. Refresh Spurts to check today’s NSE and BSE gainers.'
-          }
-        >
-          {spurtsHits.map((hit) => (
-            <span key={(hit.exchange || '') + (hit.nse || hit.id || '')} style={{ display: 'contents' }}>
-              <Metric
-                label={`${hit.exchange || 'Vol'} ×`}
-                value={hit.vol_x != null ? Number(hit.vol_x).toFixed(2) + '×' : '—'}
-                tone={hit.vol_x != null && hit.vol_x >= 3 ? 'pos' : ''}
-              />
-              <Metric
-                label="2W×"
-                value={hit.exchange === 'BSE' ? '—' : hit.vol_x_2w != null ? Number(hit.vol_x_2w).toFixed(2) + '×' : '—'}
-              />
-              <Metric
-                label="Chg"
-                value={hit.change_pct != null ? (hit.change_pct >= 0 ? '+' : '') + Number(hit.change_pct).toFixed(1) + '%' : '—'}
-                tone={hit.change_pct == null ? '' : hit.change_pct >= 0 ? 'pos' : 'neg'}
-              />
-              <Metric label="Score" value={hit.score != null ? String(hit.score) : '—'} tone={scoreTone(hit.score)} />
-            </span>
-          ))}
         </DeskPanel>
       </div>
 

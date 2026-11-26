@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
-"""Signal Desk — Streamlit UI for Volume / Technical / Lab / Spurts.
+"""Signal Desk — Streamlit UI for Volume / Technical / Lab.
 
 Run (from project root, with venv active):
   streamlit run app.py
 
-Backend logic lives in server.py (Moneycontrol OHLC + NSE/BSE spurts).
+Backend logic lives in server.py (Moneycontrol OHLC).
 Research only — not investment advice.
 """
 
@@ -22,7 +22,6 @@ DESKS = {
     "volume": "Volume",
     "tech": "Technical",
     "sci": "Lab",
-    "spurts": "Spurts",
 }
 
 UNIVERSE_LABELS = {item["id"]: item["label"] for item in desk.UNIVERSES}
@@ -145,6 +144,8 @@ def _init_state() -> None:
     for key, value in defaults.items():
         if key not in st.session_state:
             st.session_state[key] = value
+    if st.session_state.get("desk") == "spurts":
+        st.session_state.desk = "volume"
 
 
 def _tv_url(symbol: str | None, exchange: str | None = "NSE") -> str:
@@ -397,7 +398,7 @@ def _render_map(rows: list[dict], desk_id: str) -> None:
 def _render_sidebar() -> None:
     with st.sidebar:
         st.markdown("### Signal Desk")
-        st.caption("Volume · Technical · Lab · Spurts")
+        st.caption("Volume · Technical · Lab")
 
         desk_id = st.radio(
             "Workspace",

@@ -71,8 +71,8 @@ export default function TopBar() {
 
       <nav className="desk-nav" aria-label="Desks">
         {DESKS.map((d) => {
-          const Icon = DESK_ICONS[d.id]
-          return (
+              const Icon = DESK_ICONS[d.id] || MarkIcon
+              return (
             <button
               key={d.id}
               type="button"
@@ -105,7 +105,7 @@ export default function TopBar() {
               aria-label="Search symbol across Volume, Technical, Lab, Chart"
               aria-expanded={showSuggestions ? 'true' : 'false'}
               aria-autocomplete="list"
-              title="Common search · opens combined Volume · Technical · Lab · Chart (not Spurts)"
+              title="Common search · opens combined Volume · Technical · Lab · Chart"
             />
             <button type="submit" title="Open combined signal" aria-label="Search">
               <PlayIcon />
@@ -150,7 +150,7 @@ export default function TopBar() {
             }
             clearAllCache()
           }}
-          title="Clear every dashboard cache (Volume · Technical · Lab · Chart · Spurts)"
+          title="Clear every dashboard cache (Volume · Technical · Lab · Chart · Candles)"
         >
           Clear all caches
           {cacheCount > 0 ? <span className="cache-count">{cacheCount}</span> : null}

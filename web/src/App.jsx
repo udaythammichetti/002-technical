@@ -7,9 +7,7 @@ import TopBar from './components/TopBar'
 import { useDesk } from './store'
 
 export default function App() {
-  const desk = useDesk((s) => s.desk)
   const loadSources = useDesk((s) => s.loadSources)
-  const loadSpurtsHistory = useDesk((s) => s.loadSpurtsHistory)
 
   useEffect(() => {
     let cancelled = false
@@ -33,12 +31,6 @@ export default function App() {
     // boot once
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  useEffect(() => {
-    if (desk !== 'spurts') return undefined
-    loadSpurtsHistory()
-    return undefined
-  }, [desk, loadSpurtsHistory])
 
   return (
     <div className="shell">

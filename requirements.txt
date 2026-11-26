@@ -1,2 +1,2 @@
-# Signal Desk API — optional BSE spurts helper (Akamai/TLS fingerprint).
+# Signal Desk API — Yahoo quote TLS fingerprint.
 curl_cffi>=0.7.0

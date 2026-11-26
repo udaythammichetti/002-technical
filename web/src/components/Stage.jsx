@@ -5,8 +5,6 @@ import { filterRows } from '../utils'
 import BoardMeta from './BoardMeta'
 import LabDashboard from './LabDashboard'
 import ScrollControls from './ScrollControls'
-import SpurtsDashboard from './SpurtsDashboard'
-import SpurtsTable from './SpurtsTable'
 import CombinedDossier from './CombinedDossier'
 import ScanTable from './ScanTable'
 
@@ -21,7 +19,7 @@ export default function Stage() {
 
   const tabs = TABS[desk] || TABS.volume
 
-  // Common search → one combined page (Volume · Technical · Lab · Chart). Spurts excluded.
+  // Common search → one combined page (Volume · Technical · Lab · Chart).
   if (mode === 'symbol') {
     return (
       <main className="stage">
@@ -30,7 +28,7 @@ export default function Stage() {
         </div>
         <ScrollControls targetRef={panelRef} />
         <footer className="foot">
-          <p>Combined signal · Volume · Technical · Lab · Chart · Spurts · research only</p>
+          <p>Combined signal · Volume · Technical · Lab · Chart · research only</p>
         </footer>
       </main>
     )
@@ -56,24 +54,15 @@ export default function Stage() {
         </div>
       </div>
       <div className="panel" ref={panelRef} aria-live="polite">
-        {loading && !board && (
-          <p className="empty">
-            {desk === 'spurts' ? 'Loading live NSE / BSE volume spurts…' : 'Running model…'}
-          </p>
-        )}
+        {loading && !board && <p className="empty">Running model…</p>}
         {!loading && !board && (
           <p className="empty">No scan yet · pick timeframe / book, then hit Refresh.</p>
         )}
         {board && <BoardMeta />}
         {board && desk === 'sci' && <LabDashboard />}
-        {desk === 'spurts' && <SpurtsDashboard />}
         {board &&
           (filtered.length ? (
-            desk === 'spurts' ? (
-              <SpurtsTable rows={filtered} />
-            ) : (
-              <ScanTable rows={filtered} />
-            )
+            <ScanTable rows={filtered} />
           ) : (
             <p className="empty">No names in this view.</p>
           ))}

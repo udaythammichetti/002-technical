@@ -1,7 +1,35 @@
 import { useMemo } from 'react'
 import { useDesk } from '../store'
 import { displayStock, fmtCompact, fmtNum, fmtVol, sortRowsBy } from '../utils'
+import Sparkline from './Sparkline'
 import StockLink from './StockLink'
+
+const CANDLE_HEAT_KEYS = ['d3', 'd5', 'd7', 'w3', 'w5', 'w7', 'm3', 'm5', 'm7']
+
+function CandleHeat({ row }) {
+  const cells = CANDLE_HEAT_KEYS.map((key) => {
+    const v = row[key]
+    const tone = v === 'bull' ? 'up' : v === 'bear' ? 'down' : v ? 'flat' : 'empty'
+    const green = row[`${key}_up`]
+    const win = Number(String(key).slice(1))
+    const tip = [
+      key.toUpperCase(),
+      v === 'bull' ? 'Bull' : v === 'bear' ? 'Bear' : v ? 'Flat' : '—',
+      green != null && win ? `${green}/${win} green` : null,
+      row[`${key}_net`] != null ? `${row[`${key}_net`] >= 0 ? '+' : ''}${row[`${key}_net`]}%` : null,
+    ]
+      .filter(Boolean)
+      .join(' · ')
+    return <i key={key} className={'candle-heat-cell ' + tone} title={tip} />
+  })
+  return (
+    <span className="candle-heat" aria-label="Window map D · W · M">
+      <span className="candle-heat-group">{cells.slice(0, 3)}</span>
+      <span className="candle-heat-group">{cells.slice(3, 6)}</span>
+      <span className="candle-heat-group">{cells.slice(6, 9)}</span>
+    </span>
+  )
+}
 
 function scoreLabel(score, desk) {
   if (score == null || Number.isNaN(Number(score))) return '—'
@@ -9,12 +37,49 @@ function scoreLabel(score, desk) {
   const body = Number.isInteger(n) ? String(n) : n.toFixed(1)
   // Chart / Lab project 0…100 (mid ~50) — no signed '+' prefix.
   if (desk === 'chart' || desk === 'sci') return body
+  // Candles Net is bull−bear across 9 windows (−9…+9).
+  if (desk === 'candle') return (n > 0 ? '+' : '') + body + '/9'
   return (n > 0 ? '+' : '') + body
+}
+
+function candleWindowSize(key) {
+  const n = Number(String(key || '').slice(1))
+  return Number.isFinite(n) && n > 0 ? n : null
 }
 
 function Chip({ value }) {
   if (value == null || value === '—') return '—'
   return value
+}
+
+function todayCol() {
+  return {
+    key: 'today_chg',
+    label: 'Today %',
+    type: 'num',
+    title: 'Live session change vs previous close',
+  }
+}
+
+function chgCol(tfMeta, fallbackTitle) {
+  return {
+    key: 'change_pct',
+    label: tfMeta?.change_label || 'Chg %',
+    type: 'num',
+    title: tfMeta?.change_title || fallbackTitle || 'Price change %',
+  }
+}
+
+/** Stock · Today % · (WTD/MTD/Bar % when chip is not daily session). */
+function leadChgCols(tfMeta, fallbackTitle) {
+  const cols = [todayCol()]
+  // Daily chips: Today % already is 1D — skip duplicate column.
+  if (tfMeta?.change_mode && tfMeta.change_mode !== 'session') {
+    cols.push(chgCol(tfMeta, fallbackTitle))
+  } else if (!tfMeta?.change_mode) {
+    cols.push(chgCol(tfMeta, fallbackTitle))
+  }
+  return cols
 }
 
 function colsForDesk(desk, tfMeta) {
@@ -23,7 +88,7 @@ function colsForDesk(desk, tfMeta) {
     const t = tfMeta?.tech
     return [
       { key: 'nse', label: 'Stock', type: 'text' },
-      { key: 'change_pct', label: 'Chg %', type: 'num' },
+      ...leadChgCols(tfMeta, 'WTD/MTD/Bar % for this chip'),
       { key: 'score', label: 'Score', type: 'num' },
       { key: 'bias', label: 'Bias', type: 'text' },
       { key: 'setup', label: 'Setup', type: 'text' },
@@ -47,7 +112,7 @@ function colsForDesk(desk, tfMeta) {
     const lab = tfMeta?.lab
     return [
       { key: 'nse', label: 'Stock', type: 'text' },
-      { key: 'change_pct', label: 'Chg %', type: 'num' },
+      ...leadChgCols(tfMeta, 'WTD/MTD/Bar % for this chip'),
       { key: 'pattern', label: 'Pattern', type: 'text' },
       { key: 'bull_score', label: 'Bullish', type: 'num' },
       { key: 'consol_score', label: 'Coil', type: 'num' },
@@ -60,6 +125,61 @@ function colsForDesk(desk, tfMeta) {
       { key: 'squeeze', label: lab?.bb != null ? `Squeeze(${lab.bb})` : 'Squeeze', type: 'text' },
     ]
   }
+  if (desk === 'candle') {
+    const tip = 'Bull / Bear / Flat · (green / window). Hover for net % and red count.'
+    const stretch = (key, label, horizon, group) => ({
+      key,
+      label,
+      type: 'text',
+      title: `${label} · last ${label[0]} ${horizon} candles. ${tip}`,
+      horizon: group,
+    })
+    const lean = (key, label, horizon) => ({
+      key,
+      label,
+      type: 'text',
+      title: `${horizon} lean · ≥2 of 3 windows Bull / Bear on that horizon`,
+    })
+    return [
+      { key: 'nse', label: 'Stock', type: 'text' },
+      todayCol(),
+      { key: 'spark', label: '30D', type: 'text', title: 'Last 30 daily closes' },
+      { key: 'close', label: 'Close', type: 'num', title: 'Last daily close · green if up · red if down' },
+      {
+        key: 'score',
+        label: 'Score',
+        type: 'num',
+        title: 'Bull windows − bear windows across 3/5/7 × D/W/M (−9…+9). Bullish ≥+3 · bearish ≤−3.',
+      },
+      { key: 'bias', label: 'Bias', type: 'text', title: 'Bullish when Score ≥ +3 · bearish when Score ≤ −3' },
+      {
+        key: 'turn_score',
+        label: 'Turn',
+        type: 'num',
+        title:
+          'Turnaround vs month · ↑N = month weak + days recovering · ↓N = month strong + days rolling over · strength 1…3 · not in Score',
+      },
+      lean('d_lean', 'D', 'Day'),
+      lean('w_lean', 'W', 'Week'),
+      lean('m_lean', 'M', 'Month'),
+      {
+        key: 'heat',
+        label: 'Map',
+        type: 'text',
+        title: '9-window heat · Day · Week · Month · green = Bull · red = Bear · grey = Flat',
+      },
+      stretch('d2', '2D', 'daily', 'day'),
+      stretch('d3', '3D', 'daily', 'day'),
+      stretch('d5', '5D', 'daily', 'day'),
+      stretch('d7', '7D', 'daily', 'day'),
+      stretch('w3', '3W', 'weekly', 'week'),
+      stretch('w5', '5W', 'weekly', 'week'),
+      stretch('w7', '7W', 'weekly', 'week'),
+      stretch('m3', '3M', 'monthly', 'month'),
+      stretch('m5', '5M', 'monthly', 'month'),
+      stretch('m7', '7M', 'monthly', 'month'),
+    ]
+  }
   if (desk === 'chart') {
     // ChartSchool Chart Analysis columns — labels carry scan lookbacks from tf_meta.chart
     const c = tfMeta?.chart
@@ -69,7 +189,7 @@ function colsForDesk(desk, tfMeta) {
     const near = c?.near_pct
     return [
       { key: 'nse', label: 'Stock', type: 'text', title: 'Symbol' },
-      { key: 'change_pct', label: 'Chg %', type: 'num', title: 'Session / bar change %' },
+      ...leadChgCols(tfMeta, 'WTD % on weekly · MTD % on monthly'),
       { key: 'close', label: 'Close', type: 'num', title: 'Last close — read Sup, Res, Demand, and Supply against this price' },
       {
         key: 'score',
@@ -194,7 +314,7 @@ function colsForDesk(desk, tfMeta) {
   const vol = tfMeta?.volume
   return [
     { key: 'nse', label: 'Stock', type: 'text' },
-    { key: 'change_pct', label: 'Chg %', type: 'num' },
+    ...leadChgCols(tfMeta, 'WTD % on weekly · MTD % on monthly'),
     { key: 'score', label: 'Score', type: 'num' },
     { key: 'bias', label: 'Bias', type: 'text' },
     { key: 'er', label: 'E/R', type: 'text' },
@@ -276,6 +396,40 @@ function sortValue(row, key, desk) {
     if (row.close == null || row.ema20 == null) return null
     return Number(row.close) - Number(row.ema20)
   }
+  if (key === 'heat' && desk === 'candle') {
+    return row.score
+  }
+  if (key === 'turn_score') {
+    return row.turn_score != null ? Number(row.turn_score) : null
+  }
+  if (key === 'd_lean' || key === 'w_lean' || key === 'm_lean') {
+    const v = row[key]
+    if (v === 'bull') return 1
+    if (v === 'bear') return -1
+    if (v === 'flat') return 0
+    return null
+  }
+  if (key === 'spark' && desk === 'candle') {
+    return row.today_chg ?? row.change_pct
+  }
+  if (
+    key === 'd2' ||
+    key === 'd3' ||
+    key === 'd5' ||
+    key === 'd7' ||
+    key === 'w3' ||
+    key === 'w5' ||
+    key === 'w7' ||
+    key === 'm3' ||
+    key === 'm5' ||
+    key === 'm7'
+  ) {
+    const v = row[key]
+    if (v === 'bull') return 1
+    if (v === 'bear') return -1
+    if (v === 'neutral') return 0
+    return null
+  }
   if (key === 'pattern' && desk === 'sci') {
     const p = row.pattern || ''
     if (p === 'bull_breakout') return 'Breakout'
@@ -294,8 +448,8 @@ function cellSpec(row, key, desk) {
     return { node: <StockLink row={row} short showName={false} />, tdClass: 'stock-cell' }
   }
 
-  if (key === 'change_pct') {
-    const n = row.change_pct
+  if (key === 'today_chg' || key === 'change_pct') {
+    const n = key === 'today_chg' ? row.today_chg : row.change_pct
     if (n == null) return { node: '—', tdClass: '' }
     const tone = n > 0 ? 'up' : n < 0 ? 'down' : 'neutral'
     return {
@@ -312,6 +466,8 @@ function cellSpec(row, key, desk) {
     } else if (desk === 'chart' || desk === 'sci') {
       // Projected 0…100 — green ≥60 / red ≤40 (not signed ±).
       tone = n == null ? '' : n >= 60 ? 'up' : n <= 40 ? 'down' : 'neutral'
+    } else if (desk === 'candle') {
+      tone = n == null ? '' : n >= 3 ? 'up' : n <= -3 ? 'down' : 'neutral'
     } else if (n == null) {
       tone = ''
     } else if (n > 0 || row.bias === 'bullish') {
@@ -323,20 +479,27 @@ function cellSpec(row, key, desk) {
     }
     const hist = row.history || (row.partial_history ? 'partial' : null)
     const skip = Array.isArray(row.skipped) && row.skipped.length ? ` · skip ${row.skipped.join(',')}` : ''
-    const showHist = desk !== 'spurts' && hist && hist !== 'full'
+    const showHist = hist && hist !== 'full'
     const tip = showHist
       ? `${hist} history · ${row.bars_used != null ? row.bars_used + ' bars' : '—'}${
           row.history_need != null ? ` · need ${row.history_need}` : ''
         }${skip}`
       : skip
         ? `skip ${row.skipped.join(',')}`
-        : desk === 'chart' && Array.isArray(row.edges) && row.edges.length
-          ? row.edges.join(' · ')
-          : undefined
+        : desk === 'candle'
+          ? `Score = bull windows − bear windows · ${row.windows != null ? row.windows + '/9 filled' : '9 windows'} · Bias from ±3`
+          : desk === 'chart' && Array.isArray(row.edges) && row.edges.length
+            ? row.edges.join(' · ')
+            : undefined
+    const chipTone = tone === 'up' ? 'up' : tone === 'down' ? 'down' : tone === 'neutral' ? 'neutral' : ''
     return {
       node: (
         <span title={tip}>
-          <Chip value={scoreLabel(n, desk)} tone={tone === 'neutral' ? '' : tone} />
+          {desk === 'candle' ? (
+            <span className={'metric-chip' + (chipTone ? ` ${chipTone}` : '')}>{scoreLabel(n, desk)}</span>
+          ) : (
+            <Chip value={scoreLabel(n, desk)} tone={tone === 'neutral' ? '' : tone} />
+          )}
           {showHist && hist === 'thin' ? <sup className="hist-tag">T</sup> : null}
           {showHist && hist === 'partial' ? <sup className="hist-tag">P</sup> : null}
         </span>
@@ -963,6 +1126,101 @@ function cellSpec(row, key, desk) {
     }
   }
 
+  if (key === 'heat' && desk === 'candle') {
+    return { node: <CandleHeat row={row} />, tdClass: 'candle-heat-cell-td' }
+  }
+
+  if (key === 'turn_score' && desk === 'candle') {
+    const n = Number(row.turn_score)
+    if (!n) return { node: '—', tdClass: '' }
+    const up = n > 0
+    const tip = up
+      ? `Bull turn · strength ${Math.abs(n)} · month weak, days recovering`
+      : `Bear turn · strength ${Math.abs(n)} · month strong, days rolling over`
+    return {
+      node: (
+        <span title={tip} className={'metric-chip ' + (up ? 'up' : 'down')}>
+          {(up ? '↑' : '↓') + String(Math.abs(n))}
+        </span>
+      ),
+      tdClass: up ? 'up' : 'down',
+    }
+  }
+
+  if ((key === 'd_lean' || key === 'w_lean' || key === 'm_lean') && desk === 'candle') {
+    const v = row[key]
+    if (v == null) return { node: '—', tdClass: '' }
+    const word = v === 'bull' ? '↑' : v === 'bear' ? '↓' : '·'
+    const tone = v === 'bull' ? 'up' : v === 'bear' ? 'down' : 'neutral'
+    return {
+      node: (
+        <span title={v === 'bull' ? 'Bull lean' : v === 'bear' ? 'Bear lean' : 'Flat lean'} className={'metric-chip ' + tone}>
+          {word}
+        </span>
+      ),
+      tdClass: tone === 'neutral' ? '' : tone,
+    }
+  }
+
+  if (key === 'spark' && desk === 'candle') {
+    if (!row.spark?.length) return { node: '—', tdClass: 'spark-cell' }
+    return {
+      node: <Sparkline points={row.spark} up={row.spark_up !== false} width={72} height={22} />,
+      tdClass: 'spark-cell',
+    }
+  }
+
+  if (
+    key === 'd2' ||
+    key === 'd3' ||
+    key === 'd5' ||
+    key === 'd7' ||
+    key === 'w3' ||
+    key === 'w5' ||
+    key === 'w7' ||
+    key === 'm3' ||
+    key === 'm5' ||
+    key === 'm7'
+  ) {
+    const v = row[key]
+    if (v == null) return { node: '—', tdClass: '' }
+    const word = v === 'bull' ? 'Bull' : v === 'bear' ? 'Bear' : 'Flat'
+    const tone = v === 'bull' ? 'up' : v === 'bear' ? 'down' : 'neutral'
+    const net = row[`${key}_net`]
+    const upN = row[`${key}_up`]
+    const downN = row[`${key}_down`]
+    const win = candleWindowSize(key)
+    const green = upN != null ? Number(upN) : null
+    const label =
+      green != null && win != null ? `${word} (${green}/${win})` : word
+    const tip = [
+      net != null ? `close ${net >= 0 ? '+' : ''}${Number(net).toFixed(2)}%` : null,
+      green != null ? `${green} green` : null,
+      downN != null ? `${downN} red` : null,
+      win != null ? `${win} candles` : null,
+    ]
+      .filter(Boolean)
+      .join(' · ')
+    return {
+      node: (
+        <span title={tip || undefined} className={'metric-chip' + (tone ? ` ${tone}` : '')}>
+          {label}
+        </span>
+      ),
+      tdClass: tone === 'neutral' ? '' : tone,
+    }
+  }
+
+  if (key === 'close' && desk === 'candle') {
+    if (row.close == null) return { node: '—', tdClass: '' }
+    const chg = row.today_chg ?? row.change_pct
+    const tone = chg == null ? '' : chg > 0 ? 'up' : chg < 0 ? 'down' : ''
+    return {
+      node: <span className={tone ? `metric-chip ${tone}` : undefined}>{fmtNum(row.close)}</span>,
+      tdClass: tone,
+    }
+  }
+
   if (key === 'sma') {
     const a = row.sma20
     const b = row.sma50
@@ -1031,19 +1289,30 @@ export default function ScanTable({ rows }) {
       <table>
         <thead>
           <tr>
-            {cols.map((c) => (
-              <th key={c.key} className={c.key === 'nse' ? 'stock' : c.type === 'num' ? 'num' : ''}>
-                <button
-                  type="button"
-                  className={'sort-btn' + (sortKey === c.key ? ' is-on' : '')}
-                  onClick={() => setSort(c.key, c.type)}
-                  title={c.title || `Sort by ${c.label}`}
+            {cols.map((c) => {
+              const horizon =
+                c.horizon === 'day' ? ' horizon-day' : c.horizon === 'week' ? ' horizon-week' : c.horizon === 'month' ? ' horizon-month' : ''
+              const start =
+                c.key === 'd3' || c.key === 'w3' || c.key === 'm3' || c.key === 'heat' ? ' horizon-start' : ''
+              return (
+                <th
+                  key={c.key}
+                  className={
+                    (c.key === 'nse' ? 'stock' : c.type === 'num' ? 'num' : '') + horizon + start
+                  }
                 >
-                  {c.label}
-                  {sortKey === c.key ? (sortDir === 'asc' ? ' ↑' : ' ↓') : ''}
-                </button>
-              </th>
-            ))}
+                  <button
+                    type="button"
+                    className={'sort-btn' + (sortKey === c.key ? ' is-on' : '')}
+                    onClick={() => setSort(c.key, c.type)}
+                    title={c.title || `Sort by ${c.label}`}
+                  >
+                    {c.label}
+                    {sortKey === c.key ? (sortDir === 'asc' ? ' ↑' : ' ↓') : ''}
+                  </button>
+                </th>
+              )
+            })}
           </tr>
         </thead>
         <tbody>
@@ -1059,7 +1328,16 @@ export default function ScanTable({ rows }) {
               >
                 {cols.map((c) => {
                   const { node, tdClass } = cellSpec(row, c.key, desk)
-                  const cls = [tdClass, c.type === 'num' ? 'num' : ''].filter(Boolean).join(' ')
+                  const horizon =
+                    c.horizon === 'day'
+                      ? 'horizon-day'
+                      : c.horizon === 'week'
+                        ? 'horizon-week'
+                        : c.horizon === 'month'
+                          ? 'horizon-month'
+                          : ''
+                  const start = c.key === 'd3' || c.key === 'w3' || c.key === 'm3' || c.key === 'heat' ? 'horizon-start' : ''
+                  const cls = [tdClass, c.type === 'num' ? 'num' : '', horizon, start].filter(Boolean).join(' ')
                   return (
                     <td key={c.key} className={cls || undefined}>
                       {node}

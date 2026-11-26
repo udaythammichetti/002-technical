@@ -1,16 +1,9 @@
-import { displayStock, fmtCompact, fmtNum, fmtVol, stockSymbol } from '../utils'
+import { displayStock, fmtCompact, fmtNum, stockSymbol } from '../utils'
 import { tradingViewUrl } from '../utils'
 import { useDesk } from '../store'
 import Sparkline from './Sparkline'
 
 function toneClass(row, desk) {
-  if (desk === 'spurts') {
-    if ((row.change_pct || 0) < 0) return 'tone-bear'
-    const x = row.vol_x || 0
-    if (x >= 5) return 'tone-spike'
-    if (x >= 3) return 'tone-bull'
-    return 'tone-neutral'
-  }
   if (desk === 'sci') {
     const p = row.pattern || 'none'
     if (p === 'bull_breakout') return 'tone-spike'
@@ -38,6 +31,7 @@ function scoreLabel(score, desk) {
   const n = Number(score)
   const body = Number.isInteger(n) ? String(n) : n.toFixed(1)
   if (desk === 'chart' || desk === 'sci') return body
+  if (desk === 'candle') return (n > 0 ? '+' : '') + body + '/9'
   return (n > 0 ? '+' : '') + body
 }
 
@@ -61,16 +55,6 @@ function chgTone(changePct) {
 }
 
 function metrics(row, desk) {
-  if (desk === 'spurts') {
-    return [
-      { key: 'Score', value: scoreLabel(row.score), tone: row.score == null ? '' : row.score >= 0 ? 'pos' : 'neg' },
-      {
-        key: 'Vol×',
-        value: row.vol_x != null ? row.vol_x.toFixed(1) + '×' : '—',
-        tone: row.vol_x != null && row.vol_x >= 3 ? 'pos' : '',
-      },
-    ]
-  }
   if (desk === 'sci') {
     const pattern = row.pattern || 'none'
     const patternLabel =
@@ -138,6 +122,43 @@ function metrics(row, desk) {
             ? row.history
             : '—',
       },
+    ]
+  }
+  if (desk === 'candle') {
+    const lean = (prefix, label) => {
+      const v = row[`${prefix}_lean`]
+      return {
+        key: label,
+        value: v === 'bull' ? 'Bull' : v === 'bear' ? 'Bear' : 'Flat',
+        tone: v === 'bull' ? 'pos' : v === 'bear' ? 'neg' : '',
+      }
+    }
+    return [
+      {
+        key: 'Score',
+        value: scoreLabel(row.score, 'candle'),
+        tone: row.score == null ? '' : row.score >= 3 ? 'pos' : row.score <= -3 ? 'neg' : '',
+      },
+      {
+        key: 'Bias',
+        value: row.bias || '—',
+        tone: row.bias === 'bullish' ? 'pos' : row.bias === 'bearish' ? 'neg' : '',
+      },
+      {
+        key: 'Close',
+        value: row.close != null ? Number(row.close).toFixed(2) : '—',
+        tone:
+          (row.today_chg ?? row.change_pct) == null
+            ? ''
+            : (row.today_chg ?? row.change_pct) > 0
+              ? 'pos'
+              : (row.today_chg ?? row.change_pct) < 0
+                ? 'neg'
+                : '',
+      },
+      lean('d', 'Day'),
+      lean('w', 'Week'),
+      lean('m', 'Month'),
     ]
   }
   if (desk === 'chart') {
@@ -361,9 +382,9 @@ export default function StockCard({ row }) {
   const { title } = displayStock(row, { short: true })
   const tone = toneClass(row, desk)
   const tv = tradingViewUrl(sym, row.exchange === 'BSE' ? 'BSE' : 'NSE')
-  const clickable = Boolean(row.sc_id || (row.nse && desk !== 'spurts'))
+  const clickable = Boolean(row.sc_id || row.nse)
   const items = metrics(row, desk)
-  const dense = desk === 'volume' || desk === 'tech' || desk === 'sci' || desk === 'chart'
+  const dense = desk === 'volume' || desk === 'tech' || desk === 'sci' || desk === 'chart' || desk === 'candle'
 
   return (
     <article
@@ -403,21 +424,39 @@ export default function StockCard({ row }) {
           ) : (
             <span className="stock-box-sym">{sym || row.label || '—'}</span>
           )}
-          {row.exchange && desk === 'spurts' ? (
-            <span className="stock-box-exch">{row.exchange}</span>
-          ) : null}
         </div>
-        <span className={'chg-pill ' + chgTone(row.change_pct)}>
-          {row.change_pct != null
-            ? (row.change_pct >= 0 ? '+' : '') + fmtNum(row.change_pct, 1) + '%'
+        <span
+          className={'chg-pill ' + chgTone(row.today_chg ?? row.change_pct)}
+          title="Live session %"
+        >
+          {(row.today_chg ?? row.change_pct) != null
+            ? ((row.today_chg ?? row.change_pct) >= 0 ? '+' : '') +
+              fmtNum(row.today_chg ?? row.change_pct, 1) +
+              '%'
             : '—'}
         </span>
       </header>
 
-      {(desk === 'sci' || desk === 'chart') && row.spark?.length > 1 ? (
+      {(desk === 'sci' || desk === 'chart' || desk === 'candle') && row.spark?.length > 1 ? (
         <div className="stock-box-spark">
           <Sparkline points={row.spark} up={row.spark_up !== false} />
           {row.rank != null ? <span className="spark-rank">#{row.rank}</span> : null}
+        </div>
+      ) : null}
+
+      {desk === 'candle' ? (
+        <div className="candle-heat stock-box-heat" aria-label="Window map">
+          {['d3', 'd5', 'd7', 'w3', 'w5', 'w7', 'm3', 'm5', 'm7'].map((key, i) => {
+            const v = row[key]
+            const tone = v === 'bull' ? 'up' : v === 'bear' ? 'down' : v ? 'flat' : 'empty'
+            return (
+              <i
+                key={key}
+                className={'candle-heat-cell ' + tone + (i === 3 || i === 6 ? ' group-start' : '')}
+                title={key.toUpperCase()}
+              />
+            )
+          })}
         </div>
       ) : null}
 
@@ -429,10 +468,6 @@ export default function StockCard({ row }) {
           </div>
         ))}
       </dl>
-
-      {desk === 'spurts' && row.volume != null ? (
-        <footer className="stock-box-foot">Vol {fmtVol(row.volume)}</footer>
-      ) : null}
     </article>
   )
 }

@@ -908,14 +908,12 @@ button:focus-visible {
 }
 
 body:has([data-desk="tech"].is-on) .tape table,
-body:has([data-desk="sci"].is-on) .tape table,
-body[data-desk="spurts"] .tape table {
+body:has([data-desk="sci"].is-on) .tape table {
   font-size: var(--type-sm);
 }
 
 body:has([data-desk="tech"].is-on) .tape .sort-btn,
-body:has([data-desk="sci"].is-on) .tape .sort-btn,
-body[data-desk="spurts"] .tape .sort-btn {
+body:has([data-desk="sci"].is-on) .tape .sort-btn {
   font-size: var(--type-xs);
   padding: 7px 8px;
 }

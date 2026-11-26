@@ -3,7 +3,7 @@ import { useDesk } from '../store'
 import StockCard from './StockCard'
 
 function sortRows(rows, desk) {
-  const key = desk === 'spurts' ? 'vol_x' : desk === 'sci' || desk === 'chart' ? 'rank' : 'score'
+  const key = desk === 'sci' || desk === 'chart' ? 'rank' : 'score'
   const dir = desk === 'sci' || desk === 'chart' ? 1 : -1
   return rows.slice().sort((a, b) => {
     const av = a[key]
@@ -94,8 +94,7 @@ export default function StockGrid({ rows }) {
     )
   }
 
-  if (desk !== 'spurts') {
-    const groups = [
+  const groups = [
       ['bullish', 'Bullish', '↑'],
       ['neutral', 'Neutral', '·'],
       ['bearish', 'Bearish', '↓'],
@@ -122,15 +121,4 @@ export default function StockGrid({ rows }) {
         })}
       </div>
     )
-  }
-
-  return (
-    <div className="stock-board">
-      <div className={'stock-grid desk-' + desk}>
-        {sorted.map((row) => (
-          <StockCard key={`${row.exchange}-${row.nse || row.id || row.scrip}`} row={row} />
-        ))}
-      </div>
-    </div>
-  )
 }

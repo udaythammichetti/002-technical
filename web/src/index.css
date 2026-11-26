@@ -424,15 +424,6 @@ button, input, select { font: inherit; }
   color: var(--muted);
 }
 
-.spurts-live-tag {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--accent);
-  padding: 6px 10px;
-  border-radius: 8px;
-  background: var(--accent-soft);
-}
-
 .suggestions button {
   display: flex;
   width: 100%;
@@ -940,145 +931,6 @@ a.stock-box-sym:hover { color: var(--accent); text-decoration: underline; }
 }
 .desk-guide-tf strong { color: var(--accent); font-weight: 700; }
 
-/* Spurts historic: collapsed by default; expands to tape-style tables */
-.spurts-lead {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  margin: 0 0 8px;
-}
-.spurts-lead a,
-.spurts-lead > span {
-  display: inline-flex;
-  align-items: baseline;
-  gap: 6px;
-  padding: 3px 8px;
-  border-radius: 999px;
-  background: rgba(18, 22, 28, 0.05);
-  color: inherit;
-  text-decoration: none;
-  font-size: 12px;
-}
-.spurts-lead a:hover { background: rgba(11, 122, 90, 0.1); }
-.spurts-lead span,
-.spurts-lead em {
-  font-style: normal;
-  font-family: var(--mono);
-  font-size: 11px;
-  color: var(--muted);
-}
-.spurts-lead em.up { color: var(--accent); }
-.spurts-lead em.down { color: var(--danger); }
-.spurts-hist-panel {
-  margin-bottom: 8px;
-  border: 1px solid var(--line-soft);
-  border-radius: 9px;
-  background: rgba(255, 255, 255, 0.65);
-}
-.spurts-hist-panel > summary {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  padding: 6px 10px;
-  cursor: pointer;
-  list-style: none;
-  user-select: none;
-  font-size: 12px;
-  font-weight: 650;
-}
-.spurts-hist-panel > summary::-webkit-details-marker { display: none; }
-.spurts-hist-panel > summary em {
-  font-style: normal;
-  font-weight: 500;
-  font-size: 11px;
-  font-family: var(--mono);
-  color: var(--muted);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-.spurts-hist-panel[open] > summary {
-  border-bottom: 1px solid var(--line-soft);
-}
-.spurts-hist-panel-body {
-  padding: 8px 10px 10px;
-}
-.spurts-hist-tabs {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-}
-.spurts-hist-tabs button {
-  border: 1px solid var(--line);
-  background: transparent;
-  border-radius: 6px;
-  padding: 4px 10px;
-  font-size: 11.5px;
-  font-weight: 650;
-  color: var(--muted);
-  cursor: pointer;
-}
-.spurts-hist-tabs button.is-on {
-  background: var(--ink);
-  border-color: var(--ink);
-  color: #fff;
-}
-.spurts-hist-meta {
-  margin-left: auto;
-  font-size: 11px;
-  font-family: var(--mono);
-  color: var(--muted);
-}
-.spurts-hist-tape {
-  max-height: 280px;
-  border: 1px solid var(--line-soft);
-  border-radius: 6px;
-}
-.spurts-hist-tape td,
-.spurts-hist-tape th {
-  font-size: 12px;
-}
-.spurts-hist-date {
-  font-family: var(--mono);
-  font-weight: 650;
-}
-.spurts-hist-tape tr.is-active-day {
-  background: rgba(11, 122, 90, 0.08);
-}
-.spurts-hist-name {
-  display: block;
-  font-size: 10.5px;
-  color: var(--muted);
-  font-weight: 400;
-  max-width: 180px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-.spurts-hist-link {
-  border: 0;
-  background: none;
-  padding: 0;
-  font: inherit;
-  font-family: var(--mono);
-  color: var(--accent);
-  cursor: pointer;
-}
-.spurts-hist-link:hover { text-decoration: underline; }
-.spurts-hist-tape .chip-btn {
-  padding: 2px 8px;
-  font-size: 11px;
-}
-.spurts-hist-tape .stock-link {
-  display: inline-flex;
-  flex-direction: column;
-  align-items: flex-start;
-  gap: 1px;
-}
-
 .stock-box.is-lab .stock-box-spark {
   display: flex;
   align-items: center;
@@ -1460,12 +1312,10 @@ a.stock-box-sym:hover { color: var(--accent); text-decoration: underline; }
   border-color: rgba(11, 122, 90, 0.28);
 }
 
-.panel:has(.scan-tape),
-.panel:has(.spurts-tape) {
+.panel:has(.scan-tape) {
   overflow: hidden;
 }
-.panel:has(.scan-tape) > :not(.scan-tape),
-.panel:has(.spurts-tape) > :not(.spurts-tape) {
+.panel:has(.scan-tape) > :not(.scan-tape) {
   flex-shrink: 0;
 }
 .scan-tape {
@@ -1725,26 +1575,6 @@ a.stock-box-sym:hover { color: var(--accent); text-decoration: underline; }
 
 /* Table */
 .tape { overflow: auto; }
-.spurts-tape {
-  flex: 1 1 auto;
-  min-height: 0;
-  margin-top: 4px;
-  border: 1px solid var(--line-soft);
-  border-radius: 10px;
-  background: #fff;
-  overflow: auto;
-}
-.spurts-tape table {
-  border-collapse: separate;
-  border-spacing: 0;
-}
-.spurts-tape thead th {
-  position: sticky;
-  top: 0;
-  z-index: 3;
-  background: #f7f8fa;
-  box-shadow: inset 0 -1px 0 var(--line);
-}
 .tape table {
   width: 100%;
   border-collapse: collapse;
@@ -1823,6 +1653,55 @@ a.stock-box-sym:hover { color: var(--accent); text-decoration: underline; }
   color: var(--warn);
   vertical-align: super;
 }
+
+/* Candles desk — heat map + D/W/M column groups */
+.candle-heat {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  vertical-align: middle;
+}
+.candle-heat-group {
+  display: inline-flex;
+  gap: 2px;
+}
+.candle-heat-cell {
+  display: inline-block;
+  width: 8px;
+  height: 14px;
+  border-radius: 2px;
+  background: rgba(18, 22, 28, 0.12);
+}
+.candle-heat-cell.up { background: var(--accent); }
+.candle-heat-cell.down { background: var(--danger); }
+.candle-heat-cell.flat { background: rgba(18, 22, 28, 0.18); }
+.candle-heat-cell.empty { background: rgba(18, 22, 28, 0.06); }
+.candle-heat-cell.group-start { margin-left: 4px; }
+.stock-box-heat {
+  display: flex;
+  gap: 2px;
+  padding: 0 10px 6px;
+}
+.scan-tape td.candle-heat-cell-td,
+.scan-tape td.spark-cell {
+  padding-left: 6px;
+  padding-right: 6px;
+}
+.scan-tape .spark-cell .sparkline {
+  display: block;
+}
+.scan-tape th.horizon-start,
+.scan-tape td.horizon-start {
+  border-left: 1px solid var(--line-soft);
+}
+.scan-tape th.horizon-day .sort-btn,
+.scan-tape th.horizon-week .sort-btn,
+.scan-tape th.horizon-month .sort-btn {
+  font-variant-numeric: tabular-nums;
+}
+.scan-tape th.horizon-day { background: rgba(46, 125, 90, 0.05); }
+.scan-tape th.horizon-week { background: rgba(60, 100, 160, 0.06); }
+.scan-tape th.horizon-month { background: rgba(140, 100, 50, 0.06); }
 
 
 .foot {

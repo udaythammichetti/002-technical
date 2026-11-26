@@ -87,7 +87,7 @@ export function tradingViewUrl(symbol, exchange) {
   return 'https://www.tradingview.com/chart/?symbol=' + encodeURIComponent(ex + ':' + raw)
 }
 
-/** Build TradingView chart URL from a board/spurt row. */
+/** Build TradingView chart URL from a board row. */
 export function tradingViewUrlForRow(row) {
   if (!row || typeof row !== 'object') return ''
   const exchange = row.exchange === 'BSE' ? 'BSE' : 'NSE'
@@ -111,17 +111,23 @@ export function filterRows(rows, desk, tab) {
   if (!rows) return []
   let out = rows
 
-  if (desk === 'spurts') {
-    if (tab === 'nse') out = out.filter((r) => r.exchange === 'NSE')
-    else if (tab === 'bse') out = out.filter((r) => r.exchange === 'BSE')
-    else if (tab === 'spike') out = out.filter((r) => (r.vol_x || 0) >= 3)
-  } else if (desk === 'sci') {
+  if (desk === 'sci') {
     if (tab === 'bullish' || tab === 'bull')
       out = out.filter((r) => r.pattern === 'bull_breakout' || r.pattern === 'bull_base')
     else if (tab === 'consolidating' || tab === 'coil')
       out = out.filter((r) => r.pattern === 'consolidating' || r.pattern === 'bull_base')
     else if (tab === 'breakout' || tab === 'spike')
       out = out.filter((r) => r.pattern === 'bull_breakout' || r.spike)
+  } else if (desk === 'candle') {
+    if (tab === 'bullish') out = out.filter((r) => r.bias === 'bullish')
+    else if (tab === 'bearish') out = out.filter((r) => r.bias === 'bearish')
+    else     if (tab === 'aligned') out = out.filter((r) => Math.abs(r.score || 0) >= 6)
+    else if (tab === 'turn_up') out = out.filter((r) => r.turn === 'bull')
+    else if (tab === 'turn_dn') out = out.filter((r) => r.turn === 'bear')
+    else if (tab === '2d') out = out.filter((r) => r.d2 === 'bull')
+    else if (tab === 'day') out = out.filter((r) => r.d_lean === 'bull')
+    else if (tab === 'week') out = out.filter((r) => r.w_lean === 'bull')
+    else if (tab === 'month') out = out.filter((r) => r.m_lean === 'bull')
   } else if (desk === 'chart') {
     if (tab === 'bullish') out = out.filter((r) => r.bias === 'bullish')
     else if (tab === 'bearish') out = out.filter((r) => r.bias === 'bearish')

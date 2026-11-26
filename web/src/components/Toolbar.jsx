@@ -41,14 +41,10 @@ export default function Toolbar() {
   const boardsByDesk = useDesk((s) => s.boardsByDesk)
   const backToScan = useDesk((s) => s.backToScan)
   const mode = useDesk((s) => s.mode)
-  const spurtsDate = useDesk((s) => s.spurtsDate)
-  const spurtsArchives = useDesk((s) => s.spurtsArchives)
-  const setSpurtsDate = useDesk((s) => s.setSpurtsDate)
-  const archiveSpurtsToday = useDesk((s) => s.archiveSpurtsToday)
   const [open, setOpen] = useState(false)
   const [draft, setDraft] = useState(techIndicators)
 
-  const hideTf = desk === 'spurts'
+  const hideTf = desk === 'candle'
   const tfGroups = tfGroupsForDesk(desk)
   const cached = boardsByDesk?.[desk]
   const selectionStale =
@@ -57,8 +53,7 @@ export default function Toolbar() {
       !board ||
         (cached &&
           ((cached.tf && String(cached.tf).toLowerCase() !== String(tf).toLowerCase()) ||
-            (cached.universe && cached.universe !== universe) ||
-            (desk === 'spurts' && (cached.spurtsDate || 'live') !== (spurtsDate || 'live')))),
+            (cached.universe && cached.universe !== universe))),
     )
   // Highlight the TF the board actually returned (guards against stale/race UI).
   const activeTf =
@@ -159,55 +154,33 @@ export default function Toolbar() {
             </div>
           </details>
         )}
-        {desk !== 'spurts' && (
-          <label
-            className="universe-label"
-            title="Nifty · Cap · BSE Group A/B · NSE/BSE All · refreshed Monday 07:00 IST"
-          >
-            <span className="universe-tag">Book</span>
-            <select value={universe} onChange={(e) => setUniverse(e.target.value)} aria-label="Book">
-              {bookOptions(universes).map((block) => (
-                <optgroup key={block.group} label={block.group}>
-                  {block.items.map((u) => (
-                    <option
-                      key={u.id}
-                      value={u.id}
-                      title={
-                        u.size != null
-                          ? `${u.label} · ${u.size} names` +
-                            (u.scanable != null ? ` · ${u.scanable} scanable` : '')
-                          : u.label
-                      }
-                    >
-                      {u.label}
-                      {u.size != null ? ` · ${u.size}` : ''}
-                    </option>
-                  ))}
-                </optgroup>
-              ))}
-            </select>
-          </label>
-        )}
-        {desk === 'spurts' && (
-          <label
-            className="universe-label spurts-date-label"
-            title="Live today, or an archived day from data/spurts_history/"
-          >
-            <span className="universe-tag">Date</span>
-            <select
-              value={spurtsDate || 'live'}
-              onChange={(e) => setSpurtsDate(e.target.value)}
-              aria-label="Spurts date"
-            >
-              <option value="live">Live · today</option>
-              {(spurtsArchives || []).map((a) => (
-                <option key={a.date} value={a.date}>
-                  {a.date} · {a.count}
-                </option>
-              ))}
-            </select>
-          </label>
-        )}
+        <label
+          className="universe-label"
+          title="Nifty · Cap · BSE Group A/B · NSE/BSE All · refreshed Monday 07:00 IST"
+        >
+          <span className="universe-tag">Book</span>
+          <select value={universe} onChange={(e) => setUniverse(e.target.value)} aria-label="Book">
+            {bookOptions(universes).map((block) => (
+              <optgroup key={block.group} label={block.group}>
+                {block.items.map((u) => (
+                  <option
+                    key={u.id}
+                    value={u.id}
+                    title={
+                      u.size != null
+                        ? `${u.label} · ${u.size} names` +
+                          (u.scanable != null ? ` · ${u.scanable} scanable` : '')
+                        : u.label
+                    }
+                  >
+                    {u.label}
+                    {u.size != null ? ` · ${u.size}` : ''}
+                  </option>
+                ))}
+              </optgroup>
+            ))}
+          </select>
+        </label>
         <button
           type="button"
           className={
@@ -233,16 +206,6 @@ export default function Toolbar() {
               ? 'Refresh · scan'
               : 'Refresh'}
         </button>
-        {desk === 'spurts' && spurtsDate === 'live' ? (
-          <button
-            type="button"
-            className="chip-btn"
-            onClick={() => archiveSpurtsToday(true)}
-            title="Save today’s list as a flat file"
-          >
-            Save day
-          </button>
-        ) : null}
       </div>
     </div>
   )

@@ -10,7 +10,6 @@ Production-style (single port):
   python3 -u server.py          # serves web/dist + /api on :8797
 
 Primary source: Moneycontrol price/history APIs (NSE cash).
-Spurts: live NSE / BSE exchange APIs.
 Not a forecast or investment advice.
 """
 
@@ -480,18 +479,22 @@ def _as_completed_progress(futures, job_id: str | None = None, *, phase: str = "
         yield fut
 
 
-def _load_universe(universe_id: str) -> list[dict]:
+def _load_universe(universe_id: str, *, require_sc_id: bool = False) -> list[dict]:
+    """Load the book for a board scan.
+
+    Board history goes through Yahoo by symbol, so Moneycontrol sc_id is not
+    required. BSE All / NSE All otherwise drop thousands of names that only
+    have an exchange ticker.
+    """
     universe_id = (universe_id or "nifty50").lower()
-    # Spurts "live" book → scan NSE All on other desks if selected.
-    if universe_id == "live":
-        universe_id = "nse_all"
-    if universe_id in _universe_cache:
-        return _universe_cache[universe_id]
+    cache_key = (universe_id, bool(require_sc_id))
+    if cache_key in _universe_cache:
+        return _universe_cache[cache_key]
 
     rows: list[dict] = []
     if get_universe_rows is not None:
         try:
-            rows = get_universe_rows(universe_id, require_sc_id=True)
+            rows = get_universe_rows(universe_id, require_sc_id=require_sc_id)
         except (OSError, ValueError, RuntimeError, TypeError):
             rows = []
 
@@ -519,20 +522,12 @@ def _load_universe(universe_id: str) -> list[dict]:
         else:
             rows = list(NIFTY50)
 
-    _universe_cache[universe_id] = rows
+    _universe_cache[cache_key] = rows
     return rows
 
 
 def _universe_meta(universe_id: str) -> dict:
     uid = (universe_id or "nifty50").lower()
-    if uid == "live":
-        return {
-            "id": "live",
-            "label": "Live Spurts (NSE+BSE)",
-            "enrich_limit": 0,
-            "large": False,
-            "count": None,
-        }
     if _dim_universe_meta is not None:
         try:
             meta = _dim_universe_meta(uid)
@@ -578,8 +573,6 @@ def _ensure_universe_ready() -> None:
 
 def _universe_full_size(universe_id: str) -> int:
     uid = (universe_id or "nifty50").lower()
-    if uid == "live":
-        return 0  # Spurts membership list — size is feed-driven
     meta = _universe_meta(uid)
     if meta.get("count"):
         return int(meta["count"])
@@ -748,6 +741,17 @@ def _get_text(url: str, headers: dict | None = None, timeout: float = 20) -> tup
     req = Request(url, headers=headers or MC_HEADERS)
     with urlopen(req, timeout=timeout, context=SSL_CONTEXT) as response:
         return response.status, response.read(240).decode("utf-8", "replace")
+
+
+def _curl_session():
+    """Browser-like HTTPS session so Yahoo accepts the quote requests."""
+    try:
+        from curl_cffi import requests as creq  # type: ignore
+    except ImportError as exc:
+        raise RuntimeError(
+            "Install curl_cffi for Yahoo quotes: pip3 install curl_cffi"
+        ) from exc
+    return creq.Session()
 
 
 def _yahoo_http() -> object:
@@ -946,10 +950,10 @@ def verify_sources(fresh: bool = False) -> dict:
                 "id": item["id"],
                 "label": item["label"],
                 "group": item.get("group") or "Nifty",
+                # Boards scan every ticker via Yahoo — do not use Moneycontrol sc_id
+                # counts here (those made BSE Group B / BSE All look half-empty).
                 "size": _universe_full_size(item["id"]),
-                "scanable": item.get("scanable")
-                if item.get("scanable") is not None
-                else len(_load_universe(item["id"])),
+                "scanable": len(_load_universe(item["id"])),
                 "enrich_limit": item.get("enrich_limit"),
             }
             for item in (list_universe_meta() if list_universe_meta else UNIVERSES)
@@ -1139,6 +1143,7 @@ def _quote_yahoo(nse: str, exchange: str = "NSE") -> dict:
     sym = (nse or "").strip().upper()
     return {
         "pricecurrent": price,
+        "previousclose": prev,
         "pricepercentchange": change_pct,
         "VOL": _num(meta.get("regularMarketVolume")),
         "DVolAvg20": avg20,
@@ -1152,6 +1157,133 @@ def _quote_yahoo(nse: str, exchange: str = "NSE") -> dict:
         "_source": "yahoo",
         "_ticker": ticker,
     }
+
+
+def _tf_change_mode(tf_id: str) -> str:
+    """How Chg % is filled for this chip.
+
+    session — live 1D vs previous close (daily bars: 1D / 3M / 1Y / …)
+    period  — live WTD / MTD vs last completed week / month close
+    bar     — last bar vs prior bar (intraday)
+    """
+    tf = TIMEFRAMES.get(_normalize_tf(tf_id) if tf_id else "1d") or {}
+    res = str(tf.get("resolution") or "")
+    if res == "1D":
+        return "session"
+    if res in {"1W", "1M"}:
+        return "period"
+    return "bar"
+
+
+def _tf_is_daily(tf_id: str) -> bool:
+    """True when the chip’s bar size is a daily session (1D / 1Y / 3M…)."""
+    return _tf_change_mode(tf_id) == "session"
+
+
+def _period_anchor_close(bars: list[dict], resolution: str) -> float | None:
+    """Prior completed week/month close for live WTD / MTD.
+
+    After stub-trim, last bar is the completed period → use its close.
+    If the feed still keeps an in-progress week/month candle, use the one before.
+    """
+    if not bars:
+        return None
+    last = bars[-1]
+    last_ts = last.get("ts")
+    if last_ts is None:
+        return _num(last.get("close"))
+    last_dt = datetime.fromtimestamp(int(last_ts), tz=timezone.utc).astimezone(IST)
+    now = datetime.now(tz=IST)
+    in_progress = False
+    if resolution == "1W":
+        in_progress = last_dt.isocalendar()[:2] == now.isocalendar()[:2]
+    elif resolution == "1M":
+        in_progress = (last_dt.year, last_dt.month) == (now.year, now.month)
+    if in_progress and len(bars) >= 2:
+        return _num(bars[-2].get("close"))
+    return _num(last.get("close"))
+
+
+def _session_chg_from_quote(quote: dict | None) -> tuple[float | None, float | None]:
+    """Live session % and LTP from a quote dict."""
+    if not quote:
+        return None, None
+    px = _num(quote.get("pricecurrent"))
+    chg = _num(quote.get("pricepercentchange"))
+    prev = _num(quote.get("previousclose"))
+    if chg is None and px is not None and prev:
+        chg = ((px - prev) / prev) * 100.0
+    if chg is not None:
+        chg = round(float(chg), 2)
+    return chg, px
+
+
+def _stamp_today_change(row: dict, quote: dict | None) -> None:
+    """Always set today_chg = live session % (independent of TF chip)."""
+    if not row:
+        return
+    today, _px = _session_chg_from_quote(quote)
+    if today is not None:
+        row["today_chg"] = today
+        row["today_up"] = bool(today >= 0)
+
+
+def _overlay_live_change(
+    row: dict,
+    quote: dict | None,
+    *,
+    mode: str,
+    period_prev_close: float | None = None,
+) -> None:
+    """Fill Chg % from live quote — session (1D) or period (WTD/MTD).
+
+    Daily: Yahoo session % (bar gaps skip holidays → multi-day bar %).
+    Swing/Long week·month: live price vs last completed period close so the
+    column stays current instead of last finished week/month only.
+    """
+    if not row or not quote or mode == "bar":
+        return
+    px = _num(quote.get("pricecurrent"))
+    chg = None
+    if mode == "session":
+        chg, px = _session_chg_from_quote(quote)
+        row["change_basis"] = "session"
+    elif mode == "period":
+        prev = _num(period_prev_close)
+        if px is not None and prev:
+            chg = ((px - prev) / prev) * 100.0
+        row["change_basis"] = "period"
+    if chg is not None:
+        row["change_pct"] = round(float(chg), 2)
+        row["up"] = bool(row["change_pct"] >= 0)
+    if px is not None:
+        row["close"] = px
+
+
+def _overlay_session_change(row: dict, quote: dict | None) -> None:
+    """Back-compat: daily session overlay."""
+    _overlay_live_change(row, quote, mode="session")
+
+
+def _apply_tf_change(
+    row: dict,
+    quote: dict | None,
+    tf_id: str,
+    *,
+    bars: list[dict] | None = None,
+    period_prev_close: float | None = None,
+) -> None:
+    """Stamp Today % always; then TF Chg % (session / WTD / MTD / bar)."""
+    _stamp_today_change(row, quote)
+    mode = _tf_change_mode(tf_id)
+    if mode == "bar":
+        row["change_basis"] = "bar"
+        return
+    prev = period_prev_close
+    if mode == "period" and prev is None and bars:
+        res = str((TIMEFRAMES.get(_normalize_tf(tf_id)) or {}).get("resolution") or "")
+        prev = _period_anchor_close(bars, res)
+    _overlay_live_change(row, quote, mode=mode, period_prev_close=prev)
 
 
 def _quote_stock(sc_id: str, nse: str = "", exchange: str = "NSE", *, fast: bool = False) -> dict:
@@ -1373,6 +1505,15 @@ def _tf_meta(tf_id: str) -> dict:
         "1W": "weekly bars",
         "1M": "monthly bars",
     }.get(res, res)
+    change_mode = _tf_change_mode(tid)
+    if change_mode == "session":
+        change_label, change_title = "1D %", "Live session change vs previous close"
+    elif change_mode == "period" and res == "1W":
+        change_label, change_title = "WTD %", "Week-to-date vs last completed week close"
+    elif change_mode == "period":
+        change_label, change_title = "MTD %", "Month-to-date vs last completed month close"
+    else:
+        change_label, change_title = "Bar %", "Last bar vs prior bar"
     # Volume desk lookbacks for this interval (bar counts on resolution).
     volume = {
         "rvol": wins["rvol_window"],
@@ -1397,6 +1538,9 @@ def _tf_meta(tf_id: str) -> dict:
         "label": tf["label"],
         "resolution": res,
         "resolution_label": res_label,
+        "change_mode": change_mode,
+        "change_label": change_label,
+        "change_title": change_title,
         "avg_window": wins["avg_window"],
         "rvol_window": wins["rvol_window"],
         "countback": int(tf["countback"]),
@@ -2725,7 +2869,7 @@ def _scan_row(preset: dict, tf_id: str) -> dict | None:
         quote = {}
     study = dict(last.get("study") or {})
     study.update(hist)
-    return {
+    row = {
         "id": preset["id"],
         "nse": quote.get("NSEID") or quote.get("BSEID") or preset["nse"],
         "name": quote.get("company") or preset["label"],
@@ -2775,6 +2919,11 @@ def _scan_row(preset: dict, tf_id: str) -> dict | None:
         **hist,
         "study": study,
     }
+    _apply_tf_change(row, quote, tf_id, bars=bars)
+    if row.get("study") is not None and row.get("change_pct") is not None:
+        chg = float(row["change_pct"])
+        row["study"]["move"] = f"{'+' if chg >= 0 else ''}{chg:.2f}%"
+    return row
 
 
 # --- Technical Desk: classic OHLC indicators ---------------------------------
@@ -3749,7 +3898,7 @@ def _scan_tech_row(
         )
     except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
         quote = {}
-    return {
+    row = {
         "id": preset["id"],
         "nse": quote.get("NSEID") or quote.get("BSEID") or preset["nse"],
         "name": quote.get("company") or preset["label"],
@@ -3797,6 +3946,8 @@ def _scan_tech_row(
         "partial_history": study.get("partial_history"),
         "history": study.get("history") or ("partial" if study.get("partial_history") else "full"),
     }
+    _apply_tf_change(row, quote, tf_id, bars=bars)
+    return row
 
 
 def build_tech_board(
@@ -3813,7 +3964,7 @@ def build_tech_board(
     universe_id = meta["id"]
     selected = _parse_tech_indicators(indicators)
     presets = _load_universe(universe_id)
-    cache_key = ("tech-board-v3", universe_id, tf_id, ",".join(selected))
+    cache_key = ("tech-board-v6", universe_id, tf_id, ",".join(selected))
     now = time.time()
     if not fresh:
         with _cache_lock:
@@ -3951,7 +4102,7 @@ def build_board(
     meta = _universe_meta(universe_id)
     universe_id = meta["id"]
     presets = _load_universe(universe_id)
-    cache_key = ("board-v2", universe_id, tf_id)
+    cache_key = ("board-v5", universe_id, tf_id)
     now = time.time()
     if not fresh:
         with _cache_lock:
@@ -4503,7 +4654,7 @@ def _scan_sci_row(preset: dict, tf_id: str) -> dict | None:
         )
     except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
         quote = {}
-    return {
+    row = {
         "id": preset["id"],
         "nse": quote.get("NSEID") or quote.get("BSEID") or preset["nse"],
         "name": quote.get("company") or preset["label"],
@@ -4546,6 +4697,8 @@ def _scan_sci_row(preset: dict, tf_id: str) -> dict | None:
         "rank": None,
         "percentile": None,
     }
+    _apply_tf_change(row, quote, tf_id, bars=bars)
+    return row
 
 
 def build_sci_board(
@@ -4560,7 +4713,7 @@ def build_sci_board(
     meta = _universe_meta(universe_id)
     universe_id = meta["id"]
     presets = _load_universe(universe_id)
-    cache_key = ("sci-board-v2", universe_id, tf_id)
+    cache_key = ("sci-board-v5", universe_id, tf_id)
     now = time.time()
     if not fresh:
         with _cache_lock:
@@ -5748,17 +5901,17 @@ def _scan_chart_row(preset: dict, tf_id: str, *, with_quote: bool = False) -> di
     if not study:
         return None
     quote = {}
-    if with_quote:
-        try:
-            quote = _quote_stock(
-                preset.get("sc_id") or "",
-                nse=preset.get("nse") or preset.get("id") or "",
-                exchange=preset.get("exchange") or "NSE",
-                fast=True,
-            )
-        except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
-            quote = {}
-    return {
+    # Always quote — Today % needs live session on every chip (incl. intraday).
+    try:
+        quote = _quote_stock(
+            preset.get("sc_id") or "",
+            nse=preset.get("nse") or preset.get("id") or "",
+            exchange=preset.get("exchange") or "NSE",
+            fast=True,
+        )
+    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+        quote = {}
+    row = {
         "id": preset["id"],
         "nse": quote.get("NSEID") or quote.get("BSEID") or preset["nse"],
         "name": quote.get("company") or preset["label"],
@@ -5769,6 +5922,8 @@ def _scan_chart_row(preset: dict, tf_id: str, *, with_quote: bool = False) -> di
         "rank": None,
         "percentile": None,
     }
+    _apply_tf_change(row, quote, tf_id, bars=bars)
+    return row
 
 
 def _history_to_tf_bars(raw: dict, tf_id: str) -> list[dict]:
@@ -5946,7 +6101,7 @@ def build_symbol_dossier(
     indicators: str | list[str] | None = None,
     fresh: bool = False,
 ) -> dict:
-    """Combined Volume + Technical + Lab + Chart readout for one symbol (no Spurts)."""
+    """Combined Volume + Technical + Lab + Chart readout for one symbol."""
     tf_id = _normalize_tf(tf_id)
     tf = TIMEFRAMES[tf_id]
     symbol = re.sub(r"[\x00-\x1f<>]", "", symbol or "").strip().upper()
@@ -6105,6 +6260,372 @@ def _chart_dashboard(rows: list[dict]) -> dict:
     }
 
 
+_CANDLE_BODY_FLAT = 0.15  # candle body % treated as a doji
+_CANDLE_NET_FLAT = 0.35  # window open→close % that stays neutral
+_CANDLE_WINDOWS = (3, 5, 7)
+
+
+def _resample_calendar(bars: list[dict], period: str) -> list[dict]:
+    """Fold daily bars into calendar weeks (Monday) or calendar months.
+
+    The current, unfinished week or month stays as the last candle.
+    """
+    if not bars:
+        return []
+    buckets: dict[str, dict] = {}
+    order: list[str] = []
+    for bar in bars:
+        when = datetime.fromtimestamp(int(bar["ts"]), tz=IST)
+        if period == "W":
+            year, week, _weekday = when.isocalendar()
+            key = f"{year}-W{week:02d}"
+        else:
+            key = when.strftime("%Y-%m")
+        high = bar.get("high") if bar.get("high") is not None else bar["close"]
+        low = bar.get("low") if bar.get("low") is not None else bar["close"]
+        if key not in buckets:
+            order.append(key)
+            buckets[key] = {
+                "ts": bar["ts"],
+                "date": bar["date"],
+                "open": bar.get("open") if bar.get("open") is not None else bar["close"],
+                "high": high,
+                "low": low,
+                "close": bar["close"],
+                "volume": int(bar.get("volume") or 0),
+            }
+            continue
+        slot = buckets[key]
+        slot["high"] = max(slot["high"], high)
+        slot["low"] = min(slot["low"], low)
+        slot["close"] = bar["close"]
+        slot["ts"] = bar["ts"]
+        slot["date"] = bar["date"]
+        slot["volume"] += int(bar.get("volume") or 0)
+    return [buckets[key] for key in order]
+
+
+def _candle_stretch(bars: list[dict], n: int) -> dict:
+    """Last n candles: bull, bear, or neutral.
+
+    Bull when the window closed up and more candles are green than red.
+    Bear is the mirror. A doji body under 0.15% does not vote. A net move
+    inside ±0.35% stays neutral even if the colors lean one way.
+    """
+    empty = {"bias": None, "net": None, "up": None, "down": None}
+    if len(bars) < n:
+        return empty
+    window = bars[-n:]
+    first_open = window[0].get("open")
+    if first_open is None:
+        first_open = window[0]["close"]
+    last_close = window[-1]["close"]
+    if not first_open:
+        return empty
+    net = (last_close - first_open) / first_open * 100.0
+    up = down = 0
+    for bar in window:
+        opened = bar.get("open") if bar.get("open") is not None else bar["close"]
+        if not opened:
+            continue
+        body = (bar["close"] - opened) / opened * 100.0
+        if body > _CANDLE_BODY_FLAT:
+            up += 1
+        elif body < -_CANDLE_BODY_FLAT:
+            down += 1
+    # A color tie follows the net move. Opposite colors keep the window neutral.
+    if net >= _CANDLE_NET_FLAT and up >= down:
+        bias = "bull"
+    elif net <= -_CANDLE_NET_FLAT and down >= up:
+        bias = "bear"
+    else:
+        bias = "neutral"
+    return {"bias": bias, "net": round(net, 2), "up": up, "down": down}
+
+
+def _scan_candle_row(preset: dict) -> dict | None:
+    """One year of daily candles, then the last 3/5/7 days, weeks, and months."""
+    bars = _load_bars(
+        preset["nse"],
+        "1y",
+        exchange=preset.get("exchange") or "NSE",
+        fast=True,
+    )
+    if not bars:
+        return None
+    weekly = _resample_calendar(bars, "W")
+    monthly = _resample_calendar(bars, "M")
+    last = bars[-1]
+    closes = [float(b["close"]) for b in bars if b.get("close") is not None]
+    spark = _spark_closes(closes, 30)
+    spark_up = bool(len(closes) >= 2 and closes[-1] >= closes[-min(30, len(closes))])
+    quote = {}
+    try:
+        quote = _quote_stock(
+            preset.get("sc_id") or "",
+            nse=preset.get("nse") or preset.get("id") or "",
+            exchange=preset.get("exchange") or "NSE",
+            fast=True,
+        )
+    except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+        quote = {}
+    row: dict = {
+        "id": preset["id"],
+        "nse": quote.get("NSEID") or quote.get("BSEID") or preset["nse"],
+        "name": quote.get("company") or preset.get("label") or preset["nse"],
+        "sc_id": preset.get("sc_id"),
+        "exchange": quote.get("_market") or preset.get("exchange") or "NSE",
+        "sector": quote.get("SC_SUBSEC") or quote.get("newSubsector") or preset.get("industry") or "",
+        "close": last["close"],
+        "change_pct": last.get("change_pct"),
+        "up": last.get("up"),
+        "volume": last.get("volume"),
+        "spark": spark,
+        "spark_up": spark_up,
+    }
+    # Candles is always a daily desk — live session % (not bar-gap).
+    _apply_tf_change(row, quote, "1d", bars=bars)
+    score = 0
+    filled = 0
+    for n in _CANDLE_WINDOWS:
+        for prefix, series in (("d", bars), ("w", weekly), ("m", monthly)):
+            stretch = _candle_stretch(series, n)
+            key = f"{prefix}{n}"
+            row[key] = stretch["bias"]
+            row[f"{key}_net"] = stretch["net"]
+            row[f"{key}_up"] = stretch["up"]
+            row[f"{key}_down"] = stretch["down"]
+            if stretch["bias"] == "bull":
+                score += 1
+                filled += 1
+            elif stretch["bias"] == "bear":
+                score -= 1
+                filled += 1
+            elif stretch["bias"] == "neutral":
+                filled += 1
+    row["score"] = score
+    row["windows"] = filled
+    row["bias"] = "bullish" if score >= 3 else "bearish" if score <= -3 else "neutral"
+    # Horizon lean: ≥2 of 3 windows bull / bear on that horizon.
+    for prefix in ("d", "w", "m"):
+        bulls = sum(1 for n in _CANDLE_WINDOWS if row.get(f"{prefix}{n}") == "bull")
+        bears = sum(1 for n in _CANDLE_WINDOWS if row.get(f"{prefix}{n}") == "bear")
+        row[f"{prefix}_lean"] = "bull" if bulls >= 2 else "bear" if bears >= 2 else "flat"
+    # Extra short window for the 2D↑ filter / column (not part of Score ±N/9).
+    stretch2 = _candle_stretch(bars, 2)
+    row["d2"] = stretch2["bias"]
+    row["d2_net"] = stretch2["net"]
+    row["d2_up"] = stretch2["up"]
+    row["d2_down"] = stretch2["down"]
+    turn_kind, turn_strength = _candle_turnaround(row)
+    row["turn"] = turn_kind  # bull | bear | None
+    row["turn_strength"] = turn_strength  # 0..3
+    # Signed turn score for sorting: bull +1..+3 · bear −1..−3 · else 0
+    if turn_kind == "bull":
+        row["turn_score"] = turn_strength
+    elif turn_kind == "bear":
+        row["turn_score"] = -turn_strength
+    else:
+        row["turn_score"] = 0
+    return row
+
+
+def _candle_horizon_points(row: dict, prefix: str) -> int:
+    """Sum of bull(+1)/bear(−1) across 3/5/7 windows on one horizon (−3…+3)."""
+    total = 0
+    for n in _CANDLE_WINDOWS:
+        bias = row.get(f"{prefix}{n}")
+        if bias == "bull":
+            total += 1
+        elif bias == "bear":
+            total -= 1
+    return total
+
+
+def _candle_turnaround(row: dict) -> tuple[str | None, int]:
+    """Detect short-term turn vs longer horizon.
+
+    Bull turn: month still weak (≤ −2), days recovering (day ≥ +1 or flat+2D bull).
+    Bear turn: month still strong (≥ +2), days rolling over.
+    Strength 1…3 from day lean / 2D confirmation.
+    Not part of Score ±N/9.
+    """
+    day = _candle_horizon_points(row, "d")
+    week = _candle_horizon_points(row, "w")
+    month = _candle_horizon_points(row, "m")
+    d2 = row.get("d2")
+    d2_pt = 1 if d2 == "bull" else -1 if d2 == "bear" else 0
+
+    if month <= -2 and (day >= 1 or (day >= 0 and d2_pt == 1)):
+        strength = 1
+        if day >= 2 or row.get("d_lean") == "bull":
+            strength += 1
+        if d2_pt == 1:
+            strength += 1
+        return "bull", min(3, strength)
+
+    if month >= 2 and (day <= -1 or (day <= 0 and d2_pt == -1)):
+        strength = 1
+        if day <= -2 or row.get("d_lean") == "bear":
+            strength += 1
+        if d2_pt == -1:
+            strength += 1
+        return "bear", min(3, strength)
+
+    # Milder week+month setup with a clear 2D+day flip
+    if month <= -1 and week <= 0 and day >= 2 and d2_pt == 1:
+        return "bull", 2
+    if month >= 1 and week >= 0 and day <= -2 and d2_pt == -1:
+        return "bear", 2
+
+    return None, 0
+
+
+def _candle_dashboard(rows: list[dict]) -> dict:
+    """Book-level candle KPIs for the Candles desk strip."""
+    n = len(rows) or 1
+
+    def lean(prefix: str, side: str) -> int:
+        return sum(1 for row in rows if row.get(f"{prefix}_lean") == side)
+
+    scores = [row.get("score") for row in rows if row.get("score") is not None]
+    avg = round(sum(scores) / len(scores), 1) if scores else None
+    return {
+        "bullish": sum(1 for row in rows if row.get("bias") == "bullish"),
+        "bearish": sum(1 for row in rows if row.get("bias") == "bearish"),
+        "neutral": sum(1 for row in rows if row.get("bias") == "neutral"),
+        "aligned": sum(1 for row in rows if abs(row.get("score") or 0) >= 6),
+        "day_bull": lean("d", "bull"),
+        "day_bear": lean("d", "bear"),
+        "week_bull": lean("w", "bull"),
+        "week_bear": lean("w", "bear"),
+        "month_bull": lean("m", "bull"),
+        "month_bear": lean("m", "bear"),
+        "avg_score": avg,
+        "book": len(rows),
+        "pct_bullish": round(100.0 * sum(1 for row in rows if row.get("bias") == "bullish") / n, 0),
+    }
+
+
+CANDLE_FORMULAS = {
+    "window": (
+        "Each cell is Bull/Bear/Flat (green/window). Daily has 2D plus 3/5/7; weekly and monthly "
+        "use 3/5/7 from the same year folded by calendar week and month. "
+        "The unfinished week and month stay as the latest candle. 2D feeds the 2D↑ filter only."
+    ),
+    "bias": (
+        "Bull (e.g. 2/3): window close is at least 0.35% above the first open, and green candles "
+        "are at least as many as red. Bear is the mirror. A color tie follows the net move. "
+        "Opposite colors, or a net move inside ±0.35%, stay Flat. "
+        "A candle body under 0.15% is a doji and does not vote."
+    ),
+    "score": (
+        "Score = bull windows − bear windows, shown as ±N/9 across 3/5/7 × Day/Week/Month only "
+        "(2D and Turn are excluded). Row bias is bullish at Score ≥ +3 and bearish at Score ≤ −3. "
+        "Close is green when the day is up."
+    ),
+    "turn": (
+        "Turnaround vs the month. Bull turn: month windows still weak (≤ −2) while days recover "
+        "(day ≥ +1 or flat day + 2D bull). Bear turn is the mirror. Strength 1…3 from day lean / 2D. "
+        "Shown as ↑N / ↓N. Filter tabs Turn↑ / Turn↓."
+    ),
+}
+
+
+def build_candle_board(
+    universe_id: str = "nifty50",
+    fresh: bool = False,
+    progress_job: str | None = None,
+) -> dict:
+    _ensure_universe_ready()
+    meta = _universe_meta(universe_id)
+    universe_id = meta["id"]
+    presets = _load_universe(universe_id)
+    cache_key = ("candle-board-v8", universe_id)
+    now = time.time()
+    if not fresh:
+        with _cache_lock:
+            cached = _cache.get(cache_key)
+            if cached and now - cached[0] < CACHE_TTL:
+                payload = dict(cached[1])
+                payload["cached"] = True
+                payload["session"] = session_status()
+                _scan_job_finish(progress_job, ok=True)
+                return payload
+
+    _scan_job_start(
+        progress_job,
+        total=len(presets),
+        phase="scan",
+        label=f"{meta['label']} · Candles",
+    )
+    errors = 0
+    workers = 16 if _universe_is_large(universe_id) else 12
+    try:
+        rows: list[dict] = []
+        with ThreadPoolExecutor(max_workers=workers) as pool:
+            futures = {pool.submit(_scan_candle_row, preset): preset for preset in presets}
+            for future in _as_completed_progress(futures, progress_job, phase="scan"):
+                try:
+                    row = future.result()
+                except (URLError, HTTPError, TimeoutError, OSError, ValueError, RuntimeError):
+                    errors += 1
+                    continue
+                if row:
+                    rows.append(row)
+        universe_note = (
+            f"{meta['label']}: candle-read {len(rows)}/{len(presets)}"
+            f" of {_universe_full_size(universe_id)}"
+        )
+    except Exception as exc:
+        _scan_job_finish(progress_job, ok=False, error=str(exc))
+        raise
+
+    rows.sort(key=lambda item: (-(item.get("score") or 0), item.get("nse") or ""))
+    total = len(rows) or 1
+    for idx, row in enumerate(rows):
+        row["rank"] = idx + 1
+        row["percentile"] = round(100.0 * (total - idx) / total, 1)
+
+    sources = verify_sources()
+    payload = {
+        "as_of": _ist_stamp(),
+        "cached": False,
+        "desk": "candle",
+        "session": session_status(),
+        "timeframe": "1y",
+        "timeframe_label": "Daily · 2D + 3/5/7 D W M",
+        "universe": universe_id,
+        "universe_label": meta["label"],
+        "universe_size": _universe_full_size(universe_id),
+        "universe_scanable": len(presets),
+        "scanned": len(rows),
+        "errors": errors,
+        "formulas": CANDLE_FORMULAS,
+        "source": {
+            "name": sources.get("plot_source") or "Yahoo",
+            "verified": bool(sources.get("ready")),
+            "note": universe_note + " · last 3/5/7 daily, weekly, and monthly candles",
+        },
+        "sources": sources.get("sources", []),
+        "counts": {
+            "all": len(rows),
+            "bullish": sum(1 for row in rows if row.get("bias") == "bullish"),
+            "bearish": sum(1 for row in rows if row.get("bias") == "bearish"),
+            "neutral": sum(1 for row in rows if row.get("bias") == "neutral"),
+            "aligned": sum(1 for row in rows if abs(row.get("score") or 0) >= 6),
+            "turn_bull": sum(1 for row in rows if row.get("turn") == "bull"),
+            "turn_bear": sum(1 for row in rows if row.get("turn") == "bear"),
+        },
+        "dashboard": _candle_dashboard(rows),
+        "rows": rows,
+    }
+    with _cache_lock:
+        _cache[cache_key] = (time.time(), payload)
+    _scan_job_finish(progress_job, ok=True)
+    return payload
+
+
 def build_chart_board(
     tf_id: str = "1d",
     universe_id: str = "nifty50",
@@ -6120,7 +6641,7 @@ def build_chart_board(
     meta = _universe_meta(universe_id)
     universe_id = meta["id"]
     presets = _load_universe(universe_id)
-    cache_key = ("chart-board-v17", universe_id, tf_id)
+    cache_key = ("chart-board-v20", universe_id, tf_id)
     now = time.time()
     if not fresh:
         with _cache_lock:
@@ -6236,967 +6757,21 @@ def build_chart_board(
     return payload
 
 
-# --- Spurts Desk: live NSE / BSE volume gainers --------------------------------
-# NSE: https://www.nseindia.com/market-data/volume-gainers-spurts
-#      API live-analysis-volume-gainers
-# BSE: https://www.bseindia.com/markets/equity/eqreports/missprtvol
-#      API SpurtvolumeNew (needs browser-like TLS; curl_cffi recommended)
-
-SPURT_FORMULAS = {
-    "nse": (
-        "NSE Volume Gainers — today's volume vs 1-week & 2-week average volume "
-        "(nseindia.com/market-data/volume-gainers-spurts)"
-    ),
-    "bse": (
-        "BSE Spurt in Volume — today's volume (Lacs) vs 2-week average, "
-        "volume change in times (bseindia.com …/missprtvol)"
-    ),
-    "vol_x": "Vol× = today volume ÷ reference average volume (NSE week-1 avg / BSE 2-wk avg)",
-    "rank": "Rank 1 = highest Vol× within the selected exchange tab",
-    "score": (
-        "Score −100…+100. Volume term is log10(Vol×)/log10(200), so 3×, 10×, and 50× stay apart. "
-        "An up move adds at most 10; a down move keeps the multiple but softens the score."
-    ),
-    "history": (
-        "After cash close (15:30 IST), the live NSE+BSE list is written to "
-        "data/spurts_history/YYYY-MM-DD.json and kept for 30 calendar days"
-    ),
-    "reappear": (
-        "Reappeared = same symbol on ≥2 distinct archive days in the rolling 30-day window "
-        "(unusual volume that keeps returning)"
-    ),
-}
-
-# Why keep historical spurts (research citations for the dashboard):
-SPURT_HISTORY_PURPOSE = [
-    {
-        "id": "nse_list",
-        "title": "Exchange unusual-volume screen",
-        "ref": "NSE Volume Gainers / BSE Spurt-in-Volume — official unusual activity lists",
-        "url": "https://www.nseindia.com/market-data/volume-gainers-spurts",
-        "note": "Live pages are session snapshots; a local archive turns them into a research series.",
-    },
-    {
-        "id": "volume_continuation",
-        "title": "High-volume moves tend to continue",
-        "ref": (
-            "Parthasarathy (2019), Review of Behavioral Finance — large one-day price "
-            "changes with high volume show short-horizon continuation in Indian equities"
-        ),
-        "url": "https://doi.org/10.1108/RBF-06-2018-0058",
-        "note": "Reappearances + high Vol× flag names where volume shock may persist.",
-    },
-    {
-        "id": "return_volume",
-        "title": "Volume often leads returns",
-        "ref": (
-            "Mishra & Tripathy — return–volume study (Indian market): evidence of volume "
-            "causing returns more than the reverse"
-        ),
-        "url": "https://econwpa.ub.uni-muenchen.de/econ-wp/fin/papers/0504/0504013.pdf",
-        "note": "Tracking which names keep spiking helps separate one-off noise from persistent flow.",
-    },
-]
-
-SPURTS_HISTORY_DIR = DATA_DIR / "spurts_history"
-SPURTS_HISTORY_DAYS = 30
-
-_spurt_cache: dict[str, tuple[float, dict]] = {}
-_spurt_lock = threading.Lock()
-# Spurts live list also held until Refresh / Clear cache (not a short TTL).
-SPURT_TTL = 10**9
-
-
 def clear_runtime_caches() -> dict:
-    """Drop all in-process board / spurts / probe caches (global Clear cache)."""
+    """Drop all in-process board / probe caches (global Clear cache)."""
     global _probe_cache
     board_n = 0
-    spurt_n = 0
     with _cache_lock:
         board_n = len(_cache)
         _cache.clear()
-    with _spurt_lock:
-        spurt_n = len(_spurt_cache)
-        _spurt_cache.clear()
     _probe_cache = None
     with _yahoo_hist_lock:
         _yahoo_hist.clear()
     return {
         "ok": True,
         "as_of": _ist_stamp(),
-        "cleared": {"boards": board_n, "spurts": spurt_n, "probe": True},
+        "cleared": {"boards": board_n, "probe": True},
     }
-
-
-def _spurts_today() -> str:
-    return _now().astimezone(IST).strftime("%Y-%m-%d")
-
-
-def _spurts_history_ensure() -> Path:
-    SPURTS_HISTORY_DIR.mkdir(parents=True, exist_ok=True)
-    return SPURTS_HISTORY_DIR
-
-
-def _spurts_archive_path(date_str: str) -> Path:
-    return _spurts_history_ensure() / f"{date_str}.json"
-
-
-def _spurts_row_slim(row: dict) -> dict:
-    keys = (
-        "exchange",
-        "id",
-        "nse",
-        "scrip",
-        "name",
-        "volume",
-        "avg_volume",
-        "avg_volume_2w",
-        "vol_x",
-        "vol_x_2w",
-        "ltp",
-        "change_pct",
-        "turnover",
-        "turnover_unit",
-        "score",
-        "bias",
-        "strength",
-        "up",
-        "rank",
-        "percentile",
-    )
-    return {k: row[k] for k in keys if k in row and row[k] is not None}
-
-
-def _spurts_prune_archives(keep_days: int = SPURTS_HISTORY_DAYS) -> int:
-    """Delete flat files older than keep_days. Returns removed count."""
-    root = _spurts_history_ensure()
-    cutoff = (_now().astimezone(IST).date() - timedelta(days=max(1, keep_days))).isoformat()
-    removed = 0
-    for path in root.glob("????-??-??.json"):
-        if path.stem < cutoff:
-            try:
-                path.unlink()
-                removed += 1
-            except OSError:
-                pass
-    return removed
-
-
-def list_spurts_archives(limit: int = SPURTS_HISTORY_DAYS) -> list[dict]:
-    root = _spurts_history_ensure()
-    out: list[dict] = []
-    for path in sorted(root.glob("????-??-??.json"), reverse=True):
-        try:
-            with path.open(encoding="utf-8") as fh:
-                payload = json.load(fh)
-        except (OSError, ValueError, json.JSONDecodeError):
-            continue
-        rows = payload.get("rows") or []
-        out.append(
-            {
-                "date": path.stem,
-                "as_of": payload.get("as_of"),
-                "count": len(rows),
-                "nse": sum(1 for r in rows if r.get("exchange") == "NSE"),
-                "bse": sum(1 for r in rows if r.get("exchange") == "BSE"),
-                "path": str(path.relative_to(ROOT)),
-            }
-        )
-        if len(out) >= limit:
-            break
-    return out
-
-
-def load_spurts_archive(date_str: str) -> dict | None:
-    """Load one day's flat-file snapshot as a board-shaped payload."""
-    raw = str(date_str or "").strip()
-    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", raw):
-        return None
-    path = _spurts_archive_path(raw)
-    if not path.is_file():
-        return None
-    try:
-        with path.open(encoding="utf-8") as fh:
-            payload = json.load(fh)
-    except (OSError, ValueError, json.JSONDecodeError):
-        return None
-    rows = list(payload.get("rows") or [])
-    rows = _rank_spurt_rows(rows)
-    session = session_status()
-    return {
-        "as_of": payload.get("as_of") or raw,
-        "cached": False,
-        "desk": "spurts",
-        "history": True,
-        "history_date": raw,
-        "history_path": str(path.relative_to(ROOT)),
-        "session": session,
-        "exchange": "all",
-        "universe": "live",
-        "universe_label": f"Archive · {raw}",
-        "universe_size": len(rows),
-        "universe_scanable": len(rows),
-        "formulas": SPURT_FORMULAS,
-        "feeds": payload.get("feeds") or [],
-        "errors": [],
-        "scanned": len(rows),
-        "raw_scanned": len(rows),
-        "live_quotes": 0,
-        "feed_as_of": payload.get("feed_as_of") or {},
-        "counts": {
-            "all": len(rows),
-            "nse": sum(1 for row in rows if row.get("exchange") == "NSE"),
-            "bse": sum(1 for row in rows if row.get("exchange") == "BSE"),
-            "bullish": sum(1 for row in rows if row.get("bias") == "bullish"),
-            "bearish": sum(1 for row in rows if row.get("bias") == "bearish"),
-            "neutral": sum(1 for row in rows if row.get("bias") == "neutral"),
-            "spike": sum(1 for row in rows if (row.get("vol_x") or 0) >= 3),
-            "up": sum(1 for row in rows if row.get("up")),
-            "down": sum(1 for row in rows if not row.get("up")),
-            "live": 0,
-        },
-        "source": {
-            "name": f"Spurts archive · {raw}",
-            "verified": True,
-            "note": f"Flat file {path.relative_to(ROOT)} · EOD snapshot (no live LTP overlay)",
-        },
-        "links": {
-            "nse": "https://www.nseindia.com/market-data/volume-gainers-spurts",
-            "bse": "https://www.bseindia.com/markets/equity/eqreports/missprtvol",
-        },
-        "archives": list_spurts_archives(),
-        "rows": rows,
-    }
-
-
-def save_spurts_archive(
-    rows: list[dict],
-    *,
-    feeds: list[dict] | None = None,
-    feed_as_of: dict | None = None,
-    force: bool = False,
-) -> dict:
-    """Persist today's spurts list after session close. Keeps ≤30 days of flat files."""
-    session = session_status()
-    today = _spurts_today()
-    path = _spurts_archive_path(today)
-    if session.get("state") == "open" and not force:
-        return {
-            "ok": False,
-            "saved": False,
-            "reason": "market_open",
-            "date": today,
-            "detail": "Archive waits until after 15:30 IST cash close",
-        }
-    if not rows:
-        return {"ok": False, "saved": False, "reason": "empty", "date": today}
-    if path.is_file() and not force:
-        try:
-            with path.open(encoding="utf-8") as fh:
-                existing = json.load(fh)
-            if len(existing.get("rows") or []) >= len(rows):
-                _spurts_prune_archives()
-                return {
-                    "ok": True,
-                    "saved": False,
-                    "reason": "already_archived",
-                    "date": today,
-                    "path": str(path.relative_to(ROOT)),
-                    "count": len(existing.get("rows") or []),
-                }
-        except (OSError, ValueError, json.JSONDecodeError):
-            pass
-
-    slim = [_spurts_row_slim(r) for r in rows]
-    payload = {
-        "date": today,
-        "as_of": _ist_stamp(),
-        "session_state": session.get("state"),
-        "feeds": feeds or [],
-        "feed_as_of": feed_as_of or {},
-        "count": len(slim),
-        "rows": slim,
-    }
-    tmp = path.with_suffix(".tmp")
-    with tmp.open("w", encoding="utf-8") as fh:
-        json.dump(payload, fh, ensure_ascii=False, indent=0)
-    tmp.replace(path)
-    removed = _spurts_prune_archives()
-    return {
-        "ok": True,
-        "saved": True,
-        "date": today,
-        "path": str(path.relative_to(ROOT)),
-        "count": len(slim),
-        "pruned": removed,
-    }
-
-
-def build_spurts_dashboard(days: int = SPURTS_HISTORY_DAYS) -> dict:
-    """30-day analytics: reappearances, day counts, cited research purpose."""
-    days = max(1, min(int(days or SPURTS_HISTORY_DAYS), SPURTS_HISTORY_DAYS))
-    archives = list_spurts_archives(limit=days)
-    # Load oldest→newest for series
-    by_date: list[tuple[str, list[dict]]] = []
-    for item in reversed(archives):
-        path = _spurts_archive_path(item["date"])
-        try:
-            with path.open(encoding="utf-8") as fh:
-                payload = json.load(fh)
-            by_date.append((item["date"], list(payload.get("rows") or [])))
-        except (OSError, ValueError, json.JSONDecodeError):
-            continue
-
-    # symbol key → appearances
-    appearances: dict[str, dict] = {}
-    daily_series: list[dict] = []
-    for date_str, rows in by_date:
-        daily_series.append(
-            {
-                "date": date_str,
-                "count": len(rows),
-                "nse": sum(1 for r in rows if r.get("exchange") == "NSE"),
-                "bse": sum(1 for r in rows if r.get("exchange") == "BSE"),
-                "spike": sum(1 for r in rows if (r.get("vol_x") or 0) >= 3),
-                "up": sum(1 for r in rows if (r.get("change_pct") or 0) > 0),
-                "down": sum(1 for r in rows if (r.get("change_pct") or 0) < 0),
-            }
-        )
-        seen_today: set[str] = set()
-        for row in rows:
-            sym = str(row.get("nse") or row.get("id") or "").strip().upper()
-            if not sym or sym in seen_today:
-                continue
-            seen_today.add(sym)
-            slot = appearances.setdefault(
-                sym,
-                {
-                    "id": sym,
-                    "nse": sym,
-                    "name": row.get("name") or sym,
-                    "exchange": row.get("exchange") or "",
-                    "days": 0,
-                    "dates": [],
-                    "vol_x_max": None,
-                    "vol_x_sum": 0.0,
-                    "vol_x_n": 0,
-                    "last_change_pct": None,
-                    "last_vol_x": None,
-                    "last_date": None,
-                },
-            )
-            slot["days"] += 1
-            slot["dates"].append(date_str)
-            slot["name"] = row.get("name") or slot["name"]
-            slot["exchange"] = row.get("exchange") or slot["exchange"]
-            vx = _num(row.get("vol_x"))
-            if vx is not None:
-                slot["vol_x_max"] = vx if slot["vol_x_max"] is None else max(slot["vol_x_max"], vx)
-                slot["vol_x_sum"] += vx
-                slot["vol_x_n"] += 1
-                slot["last_vol_x"] = vx
-            slot["last_change_pct"] = row.get("change_pct")
-            slot["last_date"] = date_str
-
-    reappear = []
-    for slot in appearances.values():
-        if slot["days"] < 2:
-            continue
-        avg = (slot["vol_x_sum"] / slot["vol_x_n"]) if slot["vol_x_n"] else None
-        reappear.append(
-            {
-                "id": slot["id"],
-                "nse": slot["nse"],
-                "name": slot["name"],
-                "exchange": slot["exchange"],
-                "days": slot["days"],
-                "dates": slot["dates"],
-                "vol_x_max": round(slot["vol_x_max"], 2) if slot["vol_x_max"] is not None else None,
-                "vol_x_avg": round(avg, 2) if avg is not None else None,
-                "last_vol_x": slot["last_vol_x"],
-                "last_change_pct": slot["last_change_pct"],
-                "last_date": slot["last_date"],
-            }
-        )
-    reappear.sort(key=lambda r: (-r["days"], -(r.get("vol_x_max") or 0), r["id"]))
-
-    unique_n = len(appearances)
-    once_n = sum(1 for s in appearances.values() if s["days"] == 1)
-    return {
-        "as_of": _ist_stamp(),
-        "desk": "spurts",
-        "window_days": days,
-        "history_dir": str(SPURTS_HISTORY_DIR.relative_to(ROOT)),
-        "archives": archives,
-        "days_covered": len(by_date),
-        "daily": daily_series,
-        "dashboard": {
-            "days_covered": len(by_date),
-            "unique_names": unique_n,
-            "once_only": once_n,
-            "reappeared": len(reappear),
-            "reappear_pct": round(100.0 * len(reappear) / unique_n, 1) if unique_n else 0.0,
-            "avg_names_per_day": (
-                round(sum(d["count"] for d in daily_series) / len(daily_series), 1)
-                if daily_series
-                else 0.0
-            ),
-            "total_listings": sum(d["count"] for d in daily_series),
-        },
-        "reappeared": reappear[:120],
-        "purpose": SPURT_HISTORY_PURPOSE,
-        "formulas": {
-            k: SPURT_FORMULAS[k] for k in ("history", "reappear", "vol_x", "nse", "bse") if k in SPURT_FORMULAS
-        },
-        "note": (
-            "Archives write automatically after 15:30 IST when the Spurts desk refreshes. "
-            f"Flat files live under {SPURTS_HISTORY_DIR.relative_to(ROOT)}/ (≤{SPURTS_HISTORY_DAYS} days)."
-        ),
-    }
-
-
-def _curl_session():
-    """Browser-like HTTPS session (required for BSE Akamai)."""
-    try:
-        from curl_cffi import requests as creq  # type: ignore
-    except ImportError as exc:
-        raise RuntimeError(
-            "Install curl_cffi for live NSE/BSE spurts: pip3 install curl_cffi"
-        ) from exc
-    return creq.Session()
-
-
-def _spurt_get_json(session, url: str, headers: dict, timeout: float = 30) -> dict | list:
-    response = session.get(url, headers=headers, impersonate="chrome131", timeout=timeout)
-    if response.status_code >= 400:
-        raise RuntimeError(f"HTTP {response.status_code} for {url}")
-    return response.json()
-
-
-def _fetch_nse_spurts() -> tuple[list[dict], dict]:
-    session = _curl_session()
-    home = "https://www.nseindia.com/"
-    page = "https://www.nseindia.com/market-data/volume-gainers-spurts"
-    api = "https://www.nseindia.com/api/live-analysis-volume-gainers"
-    base_headers = {
-        "User-Agent": UA,
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-    }
-    session.get(home, headers=base_headers, impersonate="chrome131", timeout=30)
-    session.get(
-        page,
-        headers={**base_headers, "Referer": home},
-        impersonate="chrome131",
-        timeout=30,
-    )
-    payload = _spurt_get_json(
-        session,
-        api,
-        {
-            "User-Agent": UA,
-            "Accept": "application/json, text/plain, */*",
-            "Accept-Language": "en-US,en;q=0.9",
-            "Referer": page,
-        },
-    )
-    rows_in = payload.get("data") if isinstance(payload, dict) else payload
-    rows: list[dict] = []
-    for item in rows_in or []:
-        if not isinstance(item, dict):
-            continue
-        symbol = str(item.get("symbol") or "").strip().upper()
-        if not symbol:
-            continue
-        volume = _num(item.get("volume"))
-        avg1 = _num(item.get("week1AvgVolume"))
-        avg2 = _num(item.get("week2AvgVolume"))
-        vol_x = _num(item.get("week1volChange"))
-        if vol_x is None and volume and avg1:
-            vol_x = volume / avg1
-        ltp = _num(item.get("ltp"))
-        change_pct = _num(item.get("pChange"))
-        turnover = _num(item.get("turnover"))
-        score = _spurt_score(vol_x, change_pct)
-        rows.append(
-            {
-                "exchange": "NSE",
-                "id": symbol,
-                "nse": symbol,
-                "scrip": None,
-                "name": item.get("companyName") or symbol,
-                "volume": int(volume) if volume is not None else None,
-                "avg_volume": int(avg1) if avg1 is not None else None,
-                "avg_volume_2w": int(avg2) if avg2 is not None else None,
-                "vol_x": round(vol_x, 2) if vol_x is not None else None,
-                "vol_x_2w": round(_num(item.get("week2volChange")) or 0, 2)
-                if item.get("week2volChange") is not None
-                else None,
-                "ltp": ltp,
-                "change_pct": change_pct,
-                "turnover": turnover,
-                "turnover_unit": "₹ Lakh",
-                "score": score,
-                "bias": _bias_from_score(score),
-                "strength": (
-                    "strong"
-                    if abs(score) >= 60
-                    else "moderate"
-                    if abs(score) >= 30
-                    else "weak"
-                ),
-                "source_url": page,
-                "up": bool(change_pct is not None and change_pct >= 0),
-            }
-        )
-    meta = {
-        "ok": True,
-        "name": "NSE",
-        "count": len(rows),
-        "url": page,
-        "api": api,
-        "as_of": (payload.get("timestamp") if isinstance(payload, dict) else None),
-    }
-    return rows, meta
-
-
-def _parse_bse_spurt_item(item: dict, page: str, settlement: str) -> dict | None:
-    scrip = str(item.get("scrip_cd") or item.get("SCRIP_CD") or "").strip()
-    symbol = str(item.get("scripname") or item.get("ScripName") or "").strip().upper()
-    if not scrip and not symbol:
-        return None
-    # BSE publishes volume in Lacs on this report.
-    vol_lacs = _num(item.get("Trd_vol") or item.get("trd_vol"))
-    avg_lacs = _num(item.get("wkavgqty") or item.get("WkAvgQty"))
-    volume = int(round(vol_lacs * 100000)) if vol_lacs is not None else None
-    avg_volume = int(round(avg_lacs * 100000)) if avg_lacs is not None else None
-    vol_x = _num(item.get("volumechangetimes") or item.get("VolumeChangeTimes"))
-    if vol_x is None and vol_lacs and avg_lacs:
-        vol_x = vol_lacs / avg_lacs
-    ltp = _num(item.get("Ltradert") or item.get("ltradert"))
-    change_pct = _num(item.get("change_percent") or item.get("CHANGE_PERCENT"))
-    turnover_cr = _num(item.get("TurnOver") or item.get("turnover"))
-    score = _spurt_score(vol_x, change_pct)
-    return {
-        "exchange": "BSE",
-        "id": symbol or scrip,
-        "nse": symbol or None,
-        "scrip": scrip or None,
-        "name": item.get("long_name") or symbol or scrip,
-        "volume": volume,
-        "avg_volume": avg_volume,
-        "avg_volume_2w": avg_volume,
-        "vol_x": round(vol_x, 2) if vol_x is not None else None,
-        "vol_x_2w": None,
-        "ltp": ltp,
-        "change_pct": change_pct,
-        "turnover": turnover_cr,
-        "turnover_unit": "₹ Cr",
-        "score": score,
-        "bias": _bias_from_score(score),
-        "strength": (
-            "strong"
-            if abs(score) >= 60
-            else "moderate"
-            if abs(score) >= 30
-            else "weak"
-        ),
-        "source_url": item.get("NSURL") or page,
-        "up": bool(change_pct is not None and change_pct >= 0),
-        "settlement": settlement,
-    }
-
-
-def _fetch_bse_spurts() -> tuple[list[dict], dict]:
-    session = _curl_session()
-    page = "https://www.bseindia.com/markets/equity/eqreports/missprtvol"
-    # flag 1 = Equity T+1 (default on site), flag 0 = Equity T+0 when published
-    api_base = "https://api.bseindia.com/BseIndiaAPI/api/SpurtvolumeNew/w?flag="
-    base_headers = {
-        "User-Agent": UA,
-        "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
-        "Accept-Language": "en-US,en;q=0.9",
-    }
-    session.get(
-        "https://www.bseindia.com/",
-        headers=base_headers,
-        impersonate="chrome131",
-        timeout=30,
-    )
-    session.get(
-        page,
-        headers={**base_headers, "Referer": "https://www.bseindia.com/"},
-        impersonate="chrome131",
-        timeout=30,
-    )
-    api_headers = {
-        "User-Agent": UA,
-        "Accept": "application/json, text/plain, */*",
-        "Accept-Language": "en-US,en;q=0.9",
-        "Origin": "https://www.bseindia.com",
-        "Referer": page,
-    }
-    by_key: dict[str, dict] = {}
-    fetched_flags: list[str] = []
-    for flag, settlement in (("1", "T+1"), ("0", "T+0")):
-        try:
-            payload = _spurt_get_json(session, api_base + flag, api_headers)
-        except Exception:
-            continue
-        rows_in = (
-            payload
-            if isinstance(payload, list)
-            else payload.get("Table") or payload.get("data") or []
-        )
-        if not rows_in:
-            continue
-        fetched_flags.append(f"{flag}:{settlement}:{len(rows_in)}")
-        for item in rows_in:
-            if not isinstance(item, dict):
-                continue
-            row = _parse_bse_spurt_item(item, page, settlement)
-            if not row:
-                continue
-            key = row.get("scrip") or row.get("nse") or row["id"]
-            prev = by_key.get(key)
-            # Keep the stronger volume multiple if the same scrip appears in both.
-            if prev is None or (row.get("vol_x") or 0) > (prev.get("vol_x") or 0):
-                by_key[key] = row
-    rows = list(by_key.values())
-    if not rows and not fetched_flags:
-        raise RuntimeError("BSE SpurtvolumeNew returned no rows")
-    meta = {
-        "ok": True,
-        "name": "BSE",
-        "count": len(rows),
-        "url": page,
-        "api": api_base + "0|1",
-        "as_of": None,
-        "detail": "flags " + (", ".join(fetched_flags) if fetched_flags else "empty"),
-    }
-    return rows, meta
-
-
-def _spurt_score(vol_x: float | None, change_pct: float | None) -> float:
-    """Map volume multiple + price move into −100…+100.
-
-    The volume term reaches 100 only near 200×, so a 30× name and a 120× name
-    do not both pin at the cap. Rank order is still Vol×, not this score.
-    """
-    if vol_x is None or vol_x <= 0:
-        base = 0.0
-    else:
-        base = max(0.0, min(100.0, (math.log10(vol_x) / math.log10(200.0)) * 100.0))
-    if change_pct is None:
-        signed = base * 0.9
-    elif change_pct >= 0:
-        signed = base * 0.9 + min(10.0, change_pct * 0.5)
-    else:
-        signed = base * 0.55 + max(-20.0, change_pct)
-    return round(max(-100.0, min(100.0, signed)), 1)
-
-
-def _rank_spurt_rows(rows: list[dict]) -> list[dict]:
-    rows.sort(
-        key=lambda item: (
-            -(item.get("vol_x") or 0),
-            -(item.get("score") or 0),
-            item.get("nse") or item.get("id") or "",
-        )
-    )
-    total = len(rows) or 1
-    for idx, row in enumerate(rows):
-        row["rank"] = idx + 1
-        row["percentile"] = round(100.0 * (total - idx) / total, 1)
-    return rows
-
-
-def _enrich_one_spurt_live(row: dict) -> dict:
-    """Overlay live LTP / %chg / session volume from Yahoo on exchange spurt row."""
-    sym = str(row.get("nse") or row.get("id") or "").strip().upper()
-    if not sym:
-        return row
-    exchange = row.get("exchange") or "NSE"
-    quote = _quote_yahoo(sym, exchange=exchange)
-    if not quote:
-        row["live"] = False
-        return row
-    live_ltp = _num(quote.get("pricecurrent"))
-    live_chg = _num(quote.get("pricepercentchange"))
-    live_vol = _num(quote.get("VOL"))
-    row["exchange_ltp"] = row.get("ltp")
-    row["exchange_change_pct"] = row.get("change_pct")
-    row["exchange_volume"] = row.get("volume")
-    if live_ltp is not None:
-        row["ltp"] = live_ltp
-    if live_chg is not None:
-        row["change_pct"] = live_chg
-        row["up"] = live_chg >= 0
-        if row.get("vol_x") is not None:
-            row["score"] = _spurt_score(row["vol_x"], live_chg)
-            row["bias"] = _bias_from_score(row["score"])
-            row["strength"] = (
-                "strong"
-                if abs(row["score"]) >= 60
-                else "moderate"
-                if abs(row["score"]) >= 30
-                else "weak"
-            )
-    if live_vol is not None and live_vol > 0:
-        row["live_volume"] = int(live_vol)
-        # Vol× stays the exchange multiple (NSE 1-week / BSE 2-week).
-        # A Yahoo session print is a different stamp and must not replace it.
-    row["live"] = True
-    row["quote_source"] = "yahoo"
-    return row
-
-
-def _enrich_spurts_live(rows: list[dict]) -> tuple[list[dict], dict]:
-    """Refresh LTP/volume for spurts list so the desk stays live after exchange EOD stamp."""
-    if not rows:
-        return rows, {"ok": False, "enriched": 0}
-    out: list[dict] = []
-    ok_n = 0
-    with ThreadPoolExecutor(max_workers=10) as pool:
-        futures = {pool.submit(_enrich_one_spurt_live, dict(row)): row for row in rows}
-        for future in as_completed(futures):
-            try:
-                row = future.result()
-            except Exception:  # noqa: BLE001
-                row = dict(futures[future])
-                row["live"] = False
-            if row.get("live"):
-                ok_n += 1
-            out.append(row)
-    meta = {
-        "ok": ok_n > 0,
-        "name": "Live quotes",
-        "count": ok_n,
-        "detail": f"Yahoo LTP/volume on {ok_n}/{len(rows)} spurts",
-        "as_of": _ist_stamp(),
-    }
-    return out, meta
-
-
-def _filter_spurts_by_universe(rows: list[dict], universe_id: str) -> tuple[list[dict], dict]:
-    """Keep spurts that belong to the shared NSE/BSE universe dimension.
-
-    `live` = full official NSE Volume Gainers + BSE Spurt-in-Volume (no index cut).
-    """
-    meta = _universe_meta(universe_id)
-    uid = meta["id"]
-    if uid == "live":
-        meta = {
-            **meta,
-            "count": len(rows),
-            "label": "Live Spurts (NSE+BSE)",
-        }
-        return list(rows), meta
-    if uid in {"nse_all", "all"}:
-        return [row for row in rows if row.get("exchange") == "NSE"], meta
-    if uid == "bse_all":
-        return [row for row in rows if row.get("exchange") == "BSE"], meta
-
-    # Membership uses full exchange list (not only sc_id-mapped names).
-    if get_universe_rows is not None:
-        try:
-            presets = get_universe_rows(uid, require_sc_id=False)
-        except (OSError, ValueError, RuntimeError, TypeError):
-            presets = _load_universe(uid)
-    else:
-        presets = _load_universe(uid)
-    nse_syms = {
-        str(item.get("nse") or item.get("id") or "").strip().upper()
-        for item in presets
-        if item.get("nse") or item.get("id")
-    }
-    bse_codes = {
-        str(item.get("bse") or "").strip()
-        for item in presets
-        if item.get("bse")
-    }
-    filtered: list[dict] = []
-    for row in rows:
-        sym = str(row.get("nse") or row.get("id") or "").strip().upper()
-        scrip = str(row.get("scrip") or "").strip()
-        if sym and sym in nse_syms:
-            filtered.append(row)
-        elif scrip and scrip in bse_codes:
-            filtered.append(row)
-    return filtered, meta
-
-
-def build_spurts_board(
-    fresh: bool = False,
-    exchange: str = "all",
-    universe_id: str = "live",
-    date: str | None = None,
-) -> dict:
-    _ensure_universe_ready()
-    # Historical flat-file view (any past day, or today once archived).
-    hist_date = str(date or "").strip().lower()
-    if hist_date and hist_date not in {"live", "today", ""}:
-        if hist_date == "today":
-            hist_date = _spurts_today()
-        archived = load_spurts_archive(hist_date)
-        if archived:
-            return archived
-        # Fall through to live only when requesting today's missing archive.
-        if hist_date != _spurts_today():
-            raise ValueError(f"No spurts archive for {hist_date}")
-
-    exchange = (exchange or "all").strip().lower()
-    if exchange not in {"all", "nse", "bse"}:
-        exchange = "all"
-    meta = _universe_meta(universe_id)
-    universe_id = meta["id"]
-    # Align exchange shortcut with large books when caller didn't specify.
-    if universe_id == "live":
-        exchange = "all"
-    elif universe_id in {"nse_all", "all"} and exchange == "all":
-        exchange = "nse"
-    elif universe_id == "bse_all" and exchange == "all":
-        exchange = "bse"
-
-    cache_key = f"spurts:{exchange}:{universe_id}"
-    now = time.time()
-    if not fresh:
-        with _spurt_lock:
-            cached = _spurt_cache.get(cache_key)
-            if cached and now - cached[0] < SPURT_TTL:
-                payload = dict(cached[1])
-                payload["cached"] = True
-                payload["session"] = session_status()
-                payload["archives"] = list_spurts_archives()
-                # Still try EOD archive on cache hits after close.
-                if payload.get("rows") and session_status().get("state") != "open":
-                    payload["archive"] = save_spurts_archive(
-                        payload["rows"],
-                        feeds=payload.get("feeds"),
-                        feed_as_of=payload.get("feed_as_of"),
-                    )
-                return payload
-
-    feeds: list[dict] = []
-    rows: list[dict] = []
-    errors: list[str] = []
-
-    want_nse = exchange in {"all", "nse"}
-    want_bse = exchange in {"all", "bse"}
-
-    if want_nse:
-        try:
-            nse_rows, nse_meta = _fetch_nse_spurts()
-            rows.extend(nse_rows)
-            feeds.append(nse_meta)
-        except Exception as exc:  # noqa: BLE001 — surface feed errors in UI
-            errors.append(f"NSE: {exc}")
-            feeds.append(
-                {
-                    "ok": False,
-                    "name": "NSE",
-                    "count": 0,
-                    "url": "https://www.nseindia.com/market-data/volume-gainers-spurts",
-                    "error": str(exc),
-                }
-            )
-
-    if want_bse:
-        try:
-            bse_rows, bse_meta = _fetch_bse_spurts()
-            rows.extend(bse_rows)
-            feeds.append(bse_meta)
-        except Exception as exc:  # noqa: BLE001
-            errors.append(f"BSE: {exc}")
-            feeds.append(
-                {
-                    "ok": False,
-                    "name": "BSE",
-                    "count": 0,
-                    "url": "https://www.bseindia.com/markets/equity/eqreports/missprtvol",
-                    "error": str(exc),
-                }
-            )
-
-    raw_count = len(rows)
-    rows, meta = _filter_spurts_by_universe(rows, universe_id)
-    # Exchange spurts lists often stamp at session close; overlay live quotes.
-    rows, live_meta = _enrich_spurts_live(rows)
-    feeds.append(live_meta)
-    rows = _rank_spurt_rows(rows)
-    nse_asof = next((f.get("as_of") for f in feeds if f.get("name") == "NSE" and f.get("as_of")), None)
-    bse_asof = next((f.get("as_of") for f in feeds if f.get("name") == "BSE" and f.get("as_of")), None)
-    live_asof = live_meta.get("as_of")
-    session = session_status()
-    list_note = "exchange spurts list"
-    if session.get("state") != "open" and nse_asof:
-        list_note = f"exchange spurts list frozen at {nse_asof} (session closed)"
-    payload = {
-        "as_of": _ist_stamp(),
-        "cached": False,
-        "desk": "spurts",
-        "session": session,
-        "exchange": exchange,
-        "universe": universe_id,
-        "universe_label": meta.get("label") or universe_id,
-        "universe_size": _universe_full_size(universe_id),
-        # Never call _load_universe("live") — that remaps to nse_all.
-        "universe_scanable": (
-            len(rows)
-            if universe_id == "live"
-            else (meta.get("scanable") or meta.get("count") or len(_load_universe(universe_id)))
-        ),
-        "formulas": SPURT_FORMULAS,
-        "feeds": feeds,
-        "errors": errors,
-        "scanned": len(rows),
-        "raw_scanned": raw_count,
-        "live_quotes": live_meta.get("count") or 0,
-        "feed_as_of": {
-            "nse": nse_asof,
-            "bse": bse_asof,
-            "quotes": live_asof,
-        },
-        "counts": {
-            "all": len(rows),
-            "nse": sum(1 for row in rows if row.get("exchange") == "NSE"),
-            "bse": sum(1 for row in rows if row.get("exchange") == "BSE"),
-            "bullish": sum(1 for row in rows if row.get("bias") == "bullish"),
-            "bearish": sum(1 for row in rows if row.get("bias") == "bearish"),
-            "neutral": sum(1 for row in rows if row.get("bias") == "neutral"),
-            "spike": sum(1 for row in rows if (row.get("vol_x") or 0) >= 3),
-            "up": sum(1 for row in rows if row.get("up")),
-            "down": sum(1 for row in rows if not row.get("up")),
-            "live": sum(1 for row in rows if row.get("live")),
-        },
-        "source": {
-            "name": "NSE + BSE spurts · live Yahoo LTP",
-            "verified": any(feed.get("ok") for feed in feeds),
-            "note": (
-                f"{list_note} · live LTP/volume on {live_meta.get('count') or 0}/{len(rows)}"
-                f" · {meta.get('label') or universe_id}"
-            ),
-        },
-        "links": {
-            "nse": "https://www.nseindia.com/market-data/volume-gainers-spurts",
-            "bse": "https://www.bseindia.com/markets/equity/eqreports/missprtvol",
-        },
-        "history": False,
-        "history_date": None,
-        "archives": list_spurts_archives(),
-        "rows": rows,
-    }
-    # After cash close, persist today's list to data/spurts_history/ (≤30 days).
-    if rows and session.get("state") != "open" and universe_id == "live":
-        payload["archive"] = save_spurts_archive(
-            rows,
-            feeds=feeds,
-            feed_as_of=payload.get("feed_as_of"),
-        )
-        payload["archives"] = list_spurts_archives()
-    with _spurt_lock:
-        _spurt_cache[cache_key] = (now, payload)
-    return payload
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -7302,6 +6877,18 @@ class Handler(BaseHTTPRequestHandler):
             except (URLError, HTTPError, TimeoutError, OSError, ValueError) as exc:
                 self._json({"error": f"Upstream failed: {exc}"}, code=502)
             return
+        if parsed.path == "/api/candle-board":
+            try:
+                self._json(
+                    build_candle_board(
+                        universe_id=(params.get("universe") or ["nifty50"])[0],
+                        fresh=(params.get("fresh") or ["0"])[0] == "1",
+                        progress_job=(params.get("job") or [None])[0],
+                    )
+                )
+            except (URLError, HTTPError, TimeoutError, OSError, ValueError) as exc:
+                self._json({"error": f"Upstream failed: {exc}"}, code=502)
+            return
         if parsed.path == "/api/chart-board":
             try:
                 self._json(
@@ -7313,62 +6900,6 @@ class Handler(BaseHTTPRequestHandler):
                     )
                 )
             except (URLError, HTTPError, TimeoutError, OSError, ValueError) as exc:
-                self._json({"error": f"Upstream failed: {exc}"}, code=502)
-            return
-        if parsed.path == "/api/spurts/history":
-            self._json(
-                {
-                    "as_of": _ist_stamp(),
-                    "history_dir": str(SPURTS_HISTORY_DIR.relative_to(ROOT)),
-                    "keep_days": SPURTS_HISTORY_DAYS,
-                    "archives": list_spurts_archives(),
-                    "today": _spurts_today(),
-                    "session": session_status(),
-                }
-            )
-            return
-        if parsed.path == "/api/spurts/dashboard":
-            try:
-                days_raw = (params.get("days") or [str(SPURTS_HISTORY_DAYS)])[0]
-                self._json(build_spurts_dashboard(days=int(days_raw)))
-            except (TypeError, ValueError) as exc:
-                self._json({"error": str(exc)}, code=400)
-            return
-        if parsed.path == "/api/spurts/archive":
-            # Force-write today's snapshot (also used for testing before close).
-            try:
-                board = build_spurts_board(
-                    fresh=True,
-                    exchange="all",
-                    universe_id="live",
-                )
-                result = save_spurts_archive(
-                    board.get("rows") or [],
-                    feeds=board.get("feeds"),
-                    feed_as_of=board.get("feed_as_of"),
-                    force=(params.get("force") or ["0"])[0] == "1",
-                )
-                self._json({**result, "archives": list_spurts_archives()})
-            except RuntimeError as exc:
-                self._json({"error": str(exc)}, code=503)
-            except (URLError, HTTPError, TimeoutError, OSError, ValueError) as exc:
-                self._json({"error": f"Upstream failed: {exc}"}, code=502)
-            return
-        if parsed.path == "/api/spurts":
-            try:
-                self._json(
-                    build_spurts_board(
-                        fresh=(params.get("fresh") or ["0"])[0] == "1",
-                        exchange=(params.get("exchange") or ["all"])[0],
-                        universe_id=(params.get("universe") or ["live"])[0],
-                        date=(params.get("date") or [None])[0],
-                    )
-                )
-            except RuntimeError as exc:
-                self._json({"error": str(exc)}, code=503)
-            except ValueError as exc:
-                self._json({"error": str(exc)}, code=404)
-            except (URLError, HTTPError, TimeoutError, OSError) as exc:
                 self._json({"error": f"Upstream failed: {exc}"}, code=502)
             return
         if parsed.path == "/api/universe":
@@ -7385,8 +6916,8 @@ class Handler(BaseHTTPRequestHandler):
                             "label": item["label"],
                             "enrich_limit": item.get("enrich_limit"),
                             "count": item.get("count"),
-                            "scanable": item.get("scanable"),
-                            "size": len(_load_universe(item["id"])),
+                            "size": _universe_full_size(item["id"]),
+                            "scanable": len(_load_universe(item["id"])),
                         }
                         for item in metas
                         if item.get("id") != "all"
@@ -7484,7 +7015,6 @@ class Handler(BaseHTTPRequestHandler):
 def main() -> None:
     STATIC.mkdir(exist_ok=True)
     DATA_DIR.mkdir(exist_ok=True)
-    SPURTS_HISTORY_DIR.mkdir(parents=True, exist_ok=True)
     if start_monday_refresh_scheduler is not None:
         start_monday_refresh_scheduler()
     if ensure_fresh_dimension is not None:
@@ -7512,7 +7042,7 @@ def main() -> None:
         raise SystemExit("Could not bind a local port between 8797 and 8806.")
     ui = "React (web/dist)" if (WEB_DIST / "index.html").is_file() else "legacy static/"
     print(f"Signal Desk is running at http://127.0.0.1:{port}")
-    print(f"UI: {ui} · Volume · Technical · Lab · Chart · Spurts. Press Ctrl+C to stop.")
+    print(f"UI: {ui} · Volume · Technical · Lab · Chart · Candles. Press Ctrl+C to stop.")
     print("Universe: NSE/BSE dimension · refresh every Monday 07:00 IST")
     try:
         server.serve_forever()

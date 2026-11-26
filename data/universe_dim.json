@@ -1,8 +1,8 @@
 {
-"as_of": "2026-11-02T10:13:06+05:30",
-"as_of_ist": "Mon 2 Nov 2026 \u00b7 10:13 am IST",
-"refreshed_for": "2026-11-02T07:00:00+05:30",
-"next_refresh": "2026-11-09T07:00:00+05:30",
+"as_of": "2026-11-23T09:54:38+05:30",
+"as_of_ist": "Mon 23 Nov 2026 \u00b7 9:54 am IST",
+"refreshed_for": "2026-11-23T07:00:00+05:30",
+"next_refresh": "2026-11-30T07:00:00+05:30",
 "schedule": "Every Monday 07:00 Asia/Kolkata",
 "sources": {
 "nse_indices": {
@@ -54,7 +54,7 @@
 "microcap": {
 "url": "https://nsearchives.nseindia.com/content/indices/ind_niftymicrocap250_list.csv",
 "label": "Nifty Microcap 250",
-"count": 253
+"count": 251
 },
 "largemidcap": {
 "url": "https://nsearchives.nseindia.com/content/indices/ind_niftylargemidcap250list.csv",
@@ -68,11 +68,11 @@
 "BE",
 "EQ"
 ],
-"nse_equity_count": 2593,
-"bse_equity_count": 5252,
-"sc_id_backfill_nse": 8,
-"sc_id_backfill_bse": 9,
-"sc_id_cache_size": 2872
+"nse_equity_count": 2603,
+"bse_equity_count": 5266,
+"sc_id_backfill_nse": 2,
+"sc_id_backfill_bse": 0,
+"sc_id_cache_size": 2891
 },
 "meta": [
 {
@@ -162,7 +162,7 @@
 "group": "Cap",
 "enrich_limit": 250,
 "exchange": "NSE",
-"count": 253,
+"count": 251,
 "scanable": 250
 },
 {
@@ -181,8 +181,8 @@
 "enrich_limit": 700,
 "exchange": "BSE",
 "large": true,
-"count": 702,
-"scanable": 702
+"count": 705,
+"scanable": 705
 },
 {
 "id": "bse_mid",
@@ -191,8 +191,8 @@
 "enrich_limit": 1200,
 "exchange": "BSE",
 "large": true,
-"count": 1915,
-"scanable": 1820
+"count": 1963,
+"scanable": 1867
 },
 {
 "id": "nse_all",
@@ -201,8 +201,8 @@
 "enrich_limit": 1200,
 "exchange": "NSE",
 "large": true,
-"count": 2593,
-"scanable": 2573
+"count": 2603,
+"scanable": 2585
 },
 {
 "id": "bse_all",
@@ -211,8 +211,8 @@
 "enrich_limit": 1200,
 "exchange": "BSE",
 "large": true,
-"count": 5252,
-"scanable": 2738
+"count": 5266,
+"scanable": 2751
 },
 {
 "id": "all",
@@ -222,8 +222,8 @@
 "exchange": "NSE",
 "large": true,
 "alias_of": "nse_all",
-"count": 2593,
-"scanable": 2573
+"count": 2603,
+"scanable": 2585
 }
 ],
 "universes": {
@@ -17605,7 +17605,7 @@
 "bse": "",
 "isin": "INE989C01038",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "Capital Goods",
 "group": "",
 "sc_id": "DC05"
@@ -17621,30 +17621,6 @@
 "industry": "Construction",
 "group": "",
 "sc_id": "DB03"
-},
-{
-"id": "DUMMYINGL1",
-"label": "Dummy India Glycols ltd. 1",
-"nse": "DUMMYINGL1",
-"bse": "",
-"isin": "DU1560A01023",
-"exchange": "NSE",
-"series": "EQ",
-"industry": "Healthcare",
-"group": "",
-"sc_id": ""
-},
-{
-"id": "DUMMYINGL2",
-"label": "Dummy India Glycols ltd. 2",
-"nse": "DUMMYINGL2",
-"bse": "",
-"isin": "DU2560A01023",
-"exchange": "NSE",
-"series": "EQ",
-"industry": "Fast Moving Consumer Goods",
-"group": "",
-"sc_id": ""
 },
 {
 "id": "DUMMYINXGN",
@@ -17677,7 +17653,7 @@
 "bse": "",
 "isin": "INE255Z01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "Information Technology",
 "group": "",
 "sc_id": "EN"
@@ -18419,7 +18395,7 @@
 "label": "Knowledge Marine & Engineering Works Ltd.",
 "nse": "KMEW",
 "bse": "",
-"isin": "INE0CJD01029",
+"isin": "INE0CJD01037",
 "exchange": "NSE",
 "series": "EQ",
 "industry": "Services",
@@ -18757,7 +18733,7 @@
 "bse": "",
 "isin": "INE0UH301010",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "Capital Goods",
 "group": "",
 "sc_id": "OEL"
@@ -19273,7 +19249,7 @@
 "bse": "",
 "isin": "INE0V9Q01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "Realty",
 "group": "",
 "sc_id": "SLDRL"
@@ -23129,7 +23105,7 @@
 "bse": "",
 "isin": "INE253B01015",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "TCM"
@@ -23165,7 +23141,7 @@
 "bse": "",
 "isin": "INE748C01038",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "I11"
@@ -23285,7 +23261,7 @@
 "bse": "",
 "isin": "INE750R01016",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "KS20"
@@ -23357,7 +23333,7 @@
 "bse": "",
 "isin": "INE09EO01013",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ASL09"
@@ -23501,7 +23477,7 @@
 "bse": "",
 "isin": "INE00YB01025",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "I12"
@@ -24065,7 +24041,7 @@
 "bse": "",
 "isin": "INE692Z01013",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "ARA"
@@ -24653,7 +24629,7 @@
 "bse": "",
 "isin": "INE137C01018",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "AI10"
@@ -24737,7 +24713,7 @@
 "bse": "",
 "isin": "INE432A01017",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ASE"
@@ -25193,7 +25169,7 @@
 "bse": "",
 "isin": "INE217S01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ALF04"
@@ -25505,7 +25481,7 @@
 "bse": "",
 "isin": "INE006Z01016",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "AL18"
@@ -25577,7 +25553,7 @@
 "bse": "",
 "isin": "INE228I01012",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ASC01"
@@ -25637,7 +25613,7 @@
 "bse": "",
 "isin": "INE094B01013",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ACC06"
@@ -25937,7 +25913,7 @@
 "bse": "",
 "isin": "INE285H01022",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "A9"
@@ -26387,6 +26363,18 @@
 "sc_id": "BAG"
 },
 {
+"id": "BAHETI",
+"label": "Baheti Recycling Industries Limited",
+"nse": "BAHETI",
+"bse": "",
+"isin": "INE029Q01017",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BRI01"
+},
+{
 "id": "BAIDFIN",
 "label": "Baid Finserv Limited",
 "nse": "BAIDFIN",
@@ -26729,7 +26717,7 @@
 "bse": "",
 "isin": "INE862Y01015",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "BB08"
@@ -26937,6 +26925,18 @@
 "industry": "",
 "group": "",
 "sc_id": "BRI"
+},
+{
+"id": "BCSSL",
+"label": "Bombay Coated and Special Steels Limited",
+"nse": "BCSSL",
+"bse": "",
+"isin": "INE0XFY01011",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BCSSL"
 },
 {
 "id": "BDL",
@@ -27329,7 +27329,7 @@
 "bse": "",
 "isin": "INE986A01012",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "BFI01"
@@ -27599,6 +27599,18 @@
 "sc_id": "BEL"
 },
 {
+"id": "BLSPOLY",
+"label": "BLS Polymers Limited",
+"nse": "BLSPOLY",
+"bse": "",
+"isin": "INE0ZCQ01019",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BPL13"
+},
+{
 "id": "BLUECHIP",
 "label": "Blue Chip India Limited",
 "nse": "BLUECHIP",
@@ -27711,7 +27723,7 @@
 "label": "BN Agrochem Limited",
 "nse": "BNAGROCHEM",
 "bse": "",
-"isin": "INE00HZ01011",
+"isin": "INE00HZ01029",
 "exchange": "NSE",
 "series": "EQ",
 "industry": "",
@@ -27725,7 +27737,7 @@
 "bse": "",
 "isin": "INE489D01011",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -27923,6 +27935,18 @@
 "sc_id": "BI27"
 },
 {
+"id": "BRAHMVIRAT",
+"label": "BRAHM VIRAT INDUSTRIES CORPORATION LIMITED",
+"nse": "BRAHMVIRAT",
+"bse": "",
+"isin": "INE467D01017",
+"exchange": "NSE",
+"series": "BE",
+"industry": "",
+"group": "",
+"sc_id": "VI10"
+},
+{
 "id": "BRIGADE",
 "label": "Brigade Enterprises Limited",
 "nse": "BRIGADE",
@@ -27957,6 +27981,18 @@
 "industry": "",
 "group": "",
 "sc_id": "BB06"
+},
+{
+"id": "BRIGHTOUTD",
+"label": "Bright Outdoor Media Limited",
+"nse": "BRIGHTOUTD",
+"bse": "",
+"isin": "INE0OMI01019",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BOM"
 },
 {
 "id": "BRITANNIA",
@@ -29165,7 +29201,7 @@
 "bse": "",
 "isin": "INE025A01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "JPF"
@@ -29261,7 +29297,7 @@
 "bse": "",
 "isin": "INE695B01025",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "NT"
@@ -29393,7 +29429,7 @@
 "bse": "",
 "isin": "INE203Y01012",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SME03"
@@ -29549,7 +29585,7 @@
 "bse": "",
 "isin": "INE117B01020",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SS48"
@@ -29897,7 +29933,7 @@
 "bse": "",
 "isin": "INE843D01027",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "DCM03"
@@ -30053,7 +30089,7 @@
 "bse": "",
 "isin": "INE726L01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "WF02"
@@ -30173,7 +30209,7 @@
 "bse": "",
 "isin": "INE260R01016",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DP09"
@@ -30281,7 +30317,7 @@
 "bse": "",
 "isin": "INE989C01038",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DC05"
@@ -30605,7 +30641,7 @@
 "bse": "",
 "isin": "INE266Y01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "DPA01"
@@ -30633,18 +30669,6 @@
 "industry": "",
 "group": "",
 "sc_id": "W06"
-},
-{
-"id": "DRAGARWQ",
-"label": "Dr Agarwals Eye Hospital Limited",
-"nse": "DRAGARWQ",
-"bse": "",
-"isin": "INE934C01018",
-"exchange": "NSE",
-"series": "EQ",
-"industry": "",
-"group": "",
-"sc_id": ""
 },
 {
 "id": "DRCSYSTEMS",
@@ -30701,7 +30725,7 @@
 "bse": "",
 "isin": "INE0OFM01015",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DSF"
@@ -30737,7 +30761,7 @@
 "bse": "",
 "isin": "INE341R01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DTI03"
@@ -30821,7 +30845,7 @@
 "bse": "",
 "isin": "INE255Z01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "EN"
@@ -30881,7 +30905,7 @@
 "bse": "",
 "isin": "INE432F01032",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TE03"
@@ -31061,7 +31085,7 @@
 "bse": "",
 "isin": "INE0CPR01018",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "EES"
@@ -31209,18 +31233,6 @@
 "industry": "",
 "group": "",
 "sc_id": "EIGL"
-},
-{
-"id": "ELPROINTL",
-"label": "Elpro International Limited",
-"nse": "ELPROINTL",
-"bse": "",
-"isin": "INE579B01039",
-"exchange": "NSE",
-"series": "EQ",
-"industry": "",
-"group": "",
-"sc_id": "EI03"
 },
 {
 "id": "EMAMILTD",
@@ -31439,6 +31451,18 @@
 "sc_id": "EWI"
 },
 {
+"id": "ENNATURE",
+"label": "Ennature Bio Pharma Limited",
+"nse": "ENNATURE",
+"bse": "",
+"isin": "INE2WCT01016",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "EBP"
+},
+{
 "id": "ENRIN",
 "label": "Siemens Energy India Limited",
 "nse": "ENRIN",
@@ -31565,7 +31589,7 @@
 "bse": "",
 "isin": "INE818W01011",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ESF02"
@@ -31593,6 +31617,18 @@
 "industry": "",
 "group": "",
 "sc_id": "ESSL"
+},
+{
+"id": "ESFL",
+"label": "Essen Speciality Films Limited",
+"nse": "ESFL",
+"bse": "",
+"isin": "INE0ITO01014",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "ESF01"
 },
 {
 "id": "ESSARSHPNG",
@@ -31725,6 +31761,18 @@
 "industry": "",
 "group": "",
 "sc_id": "EE02"
+},
+{
+"id": "EVONILE",
+"label": "Evonile Pharma Limited",
+"nse": "EVONILE",
+"bse": "",
+"isin": "INE234A01025",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "HCG"
 },
 {
 "id": "EXCELINDUS",
@@ -32477,7 +32525,7 @@
 "bse": "",
 "isin": "INE224E01028",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GTR03"
@@ -32489,7 +32537,7 @@
 "bse": "",
 "isin": "INE224E01036",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SCD01"
@@ -32681,7 +32729,7 @@
 "bse": "",
 "isin": "INE538A01037",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GF07"
@@ -32909,7 +32957,7 @@
 "bse": "",
 "isin": "INE291W01037",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "GE07"
@@ -33087,7 +33135,7 @@
 "label": "Gujarat Natural Resources Limited",
 "nse": "GNRL",
 "bse": "",
-"isin": "INE207H01018",
+"isin": "INE207H01026",
 "exchange": "NSE",
 "series": "EQ",
 "industry": "",
@@ -33269,7 +33317,7 @@
 "bse": "",
 "isin": "INE805A01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GE02"
@@ -33869,7 +33917,7 @@
 "bse": "",
 "isin": "INE382T01030",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "FDS01"
@@ -34745,7 +34793,7 @@
 "bse": "",
 "isin": "INE871K01015",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "HMV"
@@ -35229,6 +35277,18 @@
 "industry": "",
 "group": "",
 "sc_id": "IG04"
+},
+{
+"id": "IGLSPIRITS",
+"label": "IGL Spirits Limited",
+"nse": "IGLSPIRITS",
+"bse": "",
+"isin": "INE2W6901017",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "IS10"
 },
 {
 "id": "IGPL",
@@ -36767,6 +36827,18 @@
 "sc_id": "CPM01"
 },
 {
+"id": "JKSHAH",
+"label": "J.K.Shah Commerce Education Limited",
+"nse": "JKSHAH",
+"bse": "",
+"isin": "INE2OD001016",
+"exchange": "NSE",
+"series": "BE",
+"industry": "",
+"group": "",
+"sc_id": "SCE"
+},
+{
 "id": "JKTYRE",
 "label": "JK Tyre & Industries Limited",
 "nse": "JKTYRE",
@@ -37265,7 +37337,7 @@
 "bse": "",
 "isin": "INE411F01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -37517,7 +37589,7 @@
 "bse": "",
 "isin": "INE790B01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "KCP01"
@@ -37947,7 +38019,7 @@
 "label": "Knowledge Marine & Engineering Works Limited",
 "nse": "KMEW",
 "bse": "",
-"isin": "INE0CJD01029",
+"isin": "INE0CJD01037",
 "exchange": "NSE",
 "series": "EQ",
 "industry": "",
@@ -38573,7 +38645,7 @@
 "bse": "",
 "isin": "INE740X01023",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "LAL"
@@ -38777,7 +38849,7 @@
 "bse": "",
 "isin": "INE938A01021",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "LCC"
@@ -38825,7 +38897,7 @@
 "bse": "",
 "isin": "INE791B01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "LNS"
@@ -38837,7 +38909,7 @@
 "bse": "",
 "isin": "INE0G1L01025",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "LME01"
@@ -38921,7 +38993,7 @@
 "bse": "",
 "isin": "INE258Y01016",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "LGHL18475"
@@ -39137,7 +39209,7 @@
 "bse": "",
 "isin": "INE0V9Q01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SLDRL"
@@ -39557,7 +39629,7 @@
 "bse": "",
 "isin": "INE288A01013",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MS01"
@@ -39593,7 +39665,7 @@
 "bse": "",
 "isin": "INE201B01022",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MA01"
@@ -39605,7 +39677,7 @@
 "bse": "",
 "isin": "INE987A01010",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "ML"
@@ -40289,7 +40361,7 @@
 "bse": "",
 "isin": "INE442D01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MC09"
@@ -40353,6 +40425,18 @@
 "industry": "",
 "group": "",
 "sc_id": "MEI05"
+},
+{
+"id": "MELSTAR",
+"label": "Melstar Information Technologies Limited",
+"nse": "MELSTAR",
+"bse": "",
+"isin": "INE817A01050",
+"exchange": "NSE",
+"series": "BE",
+"industry": "",
+"group": "",
+"sc_id": "MI34"
 },
 {
 "id": "MENNPIS",
@@ -40493,7 +40577,7 @@
 "bse": "",
 "isin": "INE112D01035",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MR02"
@@ -40541,7 +40625,7 @@
 "bse": "",
 "isin": "INE0XAD01024",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "ML14"
@@ -40565,7 +40649,7 @@
 "bse": "",
 "isin": "INE00IT01020",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MMD"
@@ -40631,6 +40715,18 @@
 "sc_id": "MCE01"
 },
 {
+"id": "MITSU",
+"label": "Mitsu Chem Plast Limited",
+"nse": "MITSU",
+"bse": "",
+"isin": "INE317V01016",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "MCP01"
+},
+{
 "id": "MITTAL",
 "label": "Mittal Life Style Limited",
 "nse": "MITTAL",
@@ -40653,6 +40749,18 @@
 "industry": "",
 "group": "",
 "sc_id": "MKE"
+},
+{
+"id": "MKJEWELS",
+"label": "M. K. Sons Fine Jewels Limited",
+"nse": "MKJEWELS",
+"bse": "",
+"isin": "INE2IXO01012",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "SFJ"
 },
 {
 "id": "MKPL",
@@ -40721,7 +40829,7 @@
 "bse": "",
 "isin": "INE200D01020",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "MM06"
@@ -40877,7 +40985,7 @@
 "bse": "",
 "isin": "INE835B01035",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MTP01"
@@ -40925,7 +41033,7 @@
 "bse": "",
 "isin": "INE296Q01012",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DC11"
@@ -42335,18 +42443,6 @@
 "sc_id": "NAL"
 },
 {
-"id": "NOVARTIND",
-"label": "Novartis India Limited",
-"nse": "NOVARTIND",
-"bse": "",
-"isin": "INE234A01025",
-"exchange": "NSE",
-"series": "EQ",
-"industry": "",
-"group": "",
-"sc_id": "HCG"
-},
-{
 "id": "NPST",
 "label": "Network People Services Technologies Limited",
 "nse": "NPST",
@@ -42389,7 +42485,7 @@
 "bse": "",
 "isin": "INE0JM501013",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "NR03"
@@ -42401,7 +42497,7 @@
 "bse": "",
 "isin": "INE023A01030",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "JS02"
@@ -42617,7 +42713,7 @@
 "bse": "",
 "isin": "INE591A01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "OCT"
@@ -42677,7 +42773,7 @@
 "bse": "",
 "isin": "INE1BZC01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "OFFL"
@@ -42701,7 +42797,7 @@
 "bse": "",
 "isin": "INE0UH301010",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "OEL"
@@ -42845,7 +42941,7 @@
 "bse": "",
 "isin": "INE031G01022",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "TF04"
@@ -43829,7 +43925,7 @@
 "bse": "",
 "isin": "INE417C01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "PII03"
@@ -44561,7 +44657,7 @@
 "bse": "",
 "isin": "INE15EH01014",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "PJL01"
@@ -44645,7 +44741,7 @@
 "bse": "",
 "isin": "INE195N01013",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "PCS03"
@@ -45113,7 +45209,7 @@
 "bse": "",
 "isin": "INE952H01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "RTN"
@@ -45161,7 +45257,7 @@
 "bse": "",
 "isin": "INE230R01035",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "RST"
@@ -45173,7 +45269,7 @@
 "bse": "",
 "isin": "INE1SJO01012",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "AJL"
@@ -45605,7 +45701,7 @@
 "bse": "",
 "isin": "INE364Z01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "REP"
@@ -45785,7 +45881,7 @@
 "bse": "",
 "isin": "INE786W01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "RP22"
@@ -46025,7 +46121,7 @@
 "bse": "",
 "isin": "INE760W01023",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "RP26"
@@ -46097,7 +46193,7 @@
 "bse": "",
 "isin": "INE616F01022",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -46289,7 +46385,7 @@
 "bse": "",
 "isin": "INE573K01025",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "RD02"
@@ -47069,7 +47165,7 @@
 "bse": "",
 "isin": "INE099G01011",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MSF"
@@ -47153,7 +47249,7 @@
 "bse": "",
 "isin": "INE501Y01019",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SCP02"
@@ -47375,6 +47471,18 @@
 "sc_id": "SOC01"
 },
 {
+"id": "SFCTECH",
+"label": "SFC Environmental Technologies Limited",
+"nse": "SFCTECH",
+"bse": "",
+"isin": "INE0PKN01028",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "SETL"
+},
+{
 "id": "SFL",
 "label": "Sheela Foam Limited",
 "nse": "SFL",
@@ -47549,7 +47657,7 @@
 "bse": "",
 "isin": "INE849C01026",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SP13"
@@ -47645,7 +47753,7 @@
 "bse": "",
 "isin": "INE037B01020",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SS13"
@@ -47805,18 +47913,6 @@
 "industry": "",
 "group": "",
 "sc_id": "SR07"
-},
-{
-"id": "SHIVAM-RE1",
-"label": "Shivam Autotech Ltd-RE",
-"nse": "SHIVAM-RE1",
-"bse": "",
-"isin": "INE637H20024",
-"exchange": "NSE",
-"series": "BE",
-"industry": "",
-"group": "",
-"sc_id": "SAR03"
 },
 {
 "id": "SHIVAMAUTO",
@@ -48059,16 +48155,16 @@
 "sc_id": "JP01"
 },
 {
-"id": "SHUKRAPHAR",
-"label": "Shukra Pharmaceuticals Limited",
-"nse": "SHUKRAPHAR",
+"id": "SHUKRAMED",
+"label": "Shukra Medtech Limited",
+"nse": "SHUKRAMED",
 "bse": "",
 "isin": "INE551C01044",
 "exchange": "NSE",
 "series": "EQ",
 "industry": "",
 "group": "",
-"sc_id": ""
+"sc_id": "RP13"
 },
 {
 "id": "SHYAMCENT",
@@ -48281,7 +48377,7 @@
 "bse": "",
 "isin": "INE923A01015",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SI51"
@@ -48557,7 +48653,7 @@
 "bse": "",
 "isin": "INE017W01010",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SM16"
@@ -48749,7 +48845,7 @@
 "bse": "",
 "isin": "INE00LM01029",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SC54"
@@ -48857,7 +48953,7 @@
 "bse": "",
 "isin": "INE247M01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "HKA"
@@ -48869,7 +48965,7 @@
 "bse": "",
 "isin": "INE01EO01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SEI06"
@@ -48881,7 +48977,7 @@
 "bse": "",
 "isin": "INE252A01019",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SPI01"
@@ -49109,7 +49205,7 @@
 "bse": "",
 "isin": "INE0RYC01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SIFL"
@@ -49721,7 +49817,7 @@
 "bse": "",
 "isin": "INE662A01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SSM07"
@@ -50105,7 +50201,7 @@
 "bse": "",
 "isin": "INE010C01025",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "N03"
@@ -51077,7 +51173,7 @@
 "bse": "",
 "isin": "INE806C01018",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TI09"
@@ -51173,7 +51269,7 @@
 "bse": "",
 "isin": "INE319Y01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TF14"
@@ -51377,7 +51473,7 @@
 "bse": "",
 "isin": "INE065J01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GIE01"
@@ -51425,7 +51521,7 @@
 "bse": "",
 "isin": "INE687A01016",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TI15"
@@ -51449,7 +51545,7 @@
 "bse": "",
 "isin": "INE757B01015",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SS12"
@@ -51725,7 +51821,7 @@
 "bse": "",
 "isin": "INE105A01035",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SC"
@@ -51869,7 +51965,7 @@
 "bse": "",
 "isin": "INE382M01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "BNH"
@@ -52553,7 +52649,7 @@
 "bse": "",
 "isin": "INE098201036",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "VC14"
@@ -52605,6 +52701,18 @@
 "industry": "",
 "group": "",
 "sc_id": "TWO"
+},
+{
+"id": "VEEFIN",
+"label": "Veefin Solutions Limited",
+"nse": "VEEFIN",
+"bse": "",
+"isin": "INE0Q0M01015",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "VS16"
 },
 {
 "id": "VEEGALAND",
@@ -53015,18 +53123,6 @@
 "sc_id": "AF08"
 },
 {
-"id": "VIRAT",
-"label": "Virat Industries Limited",
-"nse": "VIRAT",
-"bse": "",
-"isin": "INE467D01017",
-"exchange": "NSE",
-"series": "EQ",
-"industry": "",
-"group": "",
-"sc_id": "VI10"
-},
-{
 "id": "VIRINCHI",
 "label": "Virinchi Limited",
 "nse": "VIRINCHI",
@@ -53045,7 +53141,7 @@
 "bse": "",
 "isin": "INE247C01023",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "VGE"
@@ -54029,7 +54125,7 @@
 "bse": "",
 "isin": "INE966H01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "ZN"
@@ -54247,7 +54343,7 @@
 "bse": "",
 "isin": "INE253B01015",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "TCM"
@@ -54283,7 +54379,7 @@
 "bse": "",
 "isin": "INE748C01038",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "I11"
@@ -54403,7 +54499,7 @@
 "bse": "",
 "isin": "INE750R01016",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "KS20"
@@ -54475,7 +54571,7 @@
 "bse": "",
 "isin": "INE09EO01013",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ASL09"
@@ -54619,7 +54715,7 @@
 "bse": "",
 "isin": "INE00YB01025",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "I12"
@@ -55183,7 +55279,7 @@
 "bse": "",
 "isin": "INE692Z01013",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "ARA"
@@ -55771,7 +55867,7 @@
 "bse": "",
 "isin": "INE137C01018",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "AI10"
@@ -55855,7 +55951,7 @@
 "bse": "",
 "isin": "INE432A01017",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ASE"
@@ -56311,7 +56407,7 @@
 "bse": "",
 "isin": "INE217S01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ALF04"
@@ -56623,7 +56719,7 @@
 "bse": "",
 "isin": "INE006Z01016",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "AL18"
@@ -56695,7 +56791,7 @@
 "bse": "",
 "isin": "INE228I01012",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ASC01"
@@ -56755,7 +56851,7 @@
 "bse": "",
 "isin": "INE094B01013",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ACC06"
@@ -57055,7 +57151,7 @@
 "bse": "",
 "isin": "INE285H01022",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "A9"
@@ -57505,6 +57601,18 @@
 "sc_id": "BAG"
 },
 {
+"id": "BAHETI",
+"label": "Baheti Recycling Industries Limited",
+"nse": "BAHETI",
+"bse": "",
+"isin": "INE029Q01017",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BRI01"
+},
+{
 "id": "BAIDFIN",
 "label": "Baid Finserv Limited",
 "nse": "BAIDFIN",
@@ -57847,7 +57955,7 @@
 "bse": "",
 "isin": "INE862Y01015",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "BB08"
@@ -58055,6 +58163,18 @@
 "industry": "",
 "group": "",
 "sc_id": "BRI"
+},
+{
+"id": "BCSSL",
+"label": "Bombay Coated and Special Steels Limited",
+"nse": "BCSSL",
+"bse": "",
+"isin": "INE0XFY01011",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BCSSL"
 },
 {
 "id": "BDL",
@@ -58447,7 +58567,7 @@
 "bse": "",
 "isin": "INE986A01012",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "BFI01"
@@ -58717,6 +58837,18 @@
 "sc_id": "BEL"
 },
 {
+"id": "BLSPOLY",
+"label": "BLS Polymers Limited",
+"nse": "BLSPOLY",
+"bse": "",
+"isin": "INE0ZCQ01019",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BPL13"
+},
+{
 "id": "BLUECHIP",
 "label": "Blue Chip India Limited",
 "nse": "BLUECHIP",
@@ -58829,7 +58961,7 @@
 "label": "BN Agrochem Limited",
 "nse": "BNAGROCHEM",
 "bse": "",
-"isin": "INE00HZ01011",
+"isin": "INE00HZ01029",
 "exchange": "NSE",
 "series": "EQ",
 "industry": "",
@@ -58843,7 +58975,7 @@
 "bse": "",
 "isin": "INE489D01011",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -59041,6 +59173,18 @@
 "sc_id": "BI27"
 },
 {
+"id": "BRAHMVIRAT",
+"label": "BRAHM VIRAT INDUSTRIES CORPORATION LIMITED",
+"nse": "BRAHMVIRAT",
+"bse": "",
+"isin": "INE467D01017",
+"exchange": "NSE",
+"series": "BE",
+"industry": "",
+"group": "",
+"sc_id": "VI10"
+},
+{
 "id": "BRIGADE",
 "label": "Brigade Enterprises Limited",
 "nse": "BRIGADE",
@@ -59075,6 +59219,18 @@
 "industry": "",
 "group": "",
 "sc_id": "BB06"
+},
+{
+"id": "BRIGHTOUTD",
+"label": "Bright Outdoor Media Limited",
+"nse": "BRIGHTOUTD",
+"bse": "",
+"isin": "INE0OMI01019",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "BOM"
 },
 {
 "id": "BRITANNIA",
@@ -60283,7 +60439,7 @@
 "bse": "",
 "isin": "INE025A01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "JPF"
@@ -60379,7 +60535,7 @@
 "bse": "",
 "isin": "INE695B01025",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "NT"
@@ -60511,7 +60667,7 @@
 "bse": "",
 "isin": "INE203Y01012",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SME03"
@@ -60667,7 +60823,7 @@
 "bse": "",
 "isin": "INE117B01020",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SS48"
@@ -61015,7 +61171,7 @@
 "bse": "",
 "isin": "INE843D01027",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "DCM03"
@@ -61171,7 +61327,7 @@
 "bse": "",
 "isin": "INE726L01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "WF02"
@@ -61291,7 +61447,7 @@
 "bse": "",
 "isin": "INE260R01016",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DP09"
@@ -61399,7 +61555,7 @@
 "bse": "",
 "isin": "INE989C01038",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DC05"
@@ -61723,7 +61879,7 @@
 "bse": "",
 "isin": "INE266Y01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "DPA01"
@@ -61751,18 +61907,6 @@
 "industry": "",
 "group": "",
 "sc_id": "W06"
-},
-{
-"id": "DRAGARWQ",
-"label": "Dr Agarwals Eye Hospital Limited",
-"nse": "DRAGARWQ",
-"bse": "",
-"isin": "INE934C01018",
-"exchange": "NSE",
-"series": "EQ",
-"industry": "",
-"group": "",
-"sc_id": ""
 },
 {
 "id": "DRCSYSTEMS",
@@ -61819,7 +61963,7 @@
 "bse": "",
 "isin": "INE0OFM01015",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DSF"
@@ -61855,7 +61999,7 @@
 "bse": "",
 "isin": "INE341R01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DTI03"
@@ -61939,7 +62083,7 @@
 "bse": "",
 "isin": "INE255Z01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "EN"
@@ -61999,7 +62143,7 @@
 "bse": "",
 "isin": "INE432F01032",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TE03"
@@ -62179,7 +62323,7 @@
 "bse": "",
 "isin": "INE0CPR01018",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "EES"
@@ -62327,18 +62471,6 @@
 "industry": "",
 "group": "",
 "sc_id": "EIGL"
-},
-{
-"id": "ELPROINTL",
-"label": "Elpro International Limited",
-"nse": "ELPROINTL",
-"bse": "",
-"isin": "INE579B01039",
-"exchange": "NSE",
-"series": "EQ",
-"industry": "",
-"group": "",
-"sc_id": "EI03"
 },
 {
 "id": "EMAMILTD",
@@ -62557,6 +62689,18 @@
 "sc_id": "EWI"
 },
 {
+"id": "ENNATURE",
+"label": "Ennature Bio Pharma Limited",
+"nse": "ENNATURE",
+"bse": "",
+"isin": "INE2WCT01016",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "EBP"
+},
+{
 "id": "ENRIN",
 "label": "Siemens Energy India Limited",
 "nse": "ENRIN",
@@ -62683,7 +62827,7 @@
 "bse": "",
 "isin": "INE818W01011",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "ESF02"
@@ -62711,6 +62855,18 @@
 "industry": "",
 "group": "",
 "sc_id": "ESSL"
+},
+{
+"id": "ESFL",
+"label": "Essen Speciality Films Limited",
+"nse": "ESFL",
+"bse": "",
+"isin": "INE0ITO01014",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "ESF01"
 },
 {
 "id": "ESSARSHPNG",
@@ -62843,6 +62999,18 @@
 "industry": "",
 "group": "",
 "sc_id": "EE02"
+},
+{
+"id": "EVONILE",
+"label": "Evonile Pharma Limited",
+"nse": "EVONILE",
+"bse": "",
+"isin": "INE234A01025",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "HCG"
 },
 {
 "id": "EXCELINDUS",
@@ -63595,7 +63763,7 @@
 "bse": "",
 "isin": "INE224E01028",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GTR03"
@@ -63607,7 +63775,7 @@
 "bse": "",
 "isin": "INE224E01036",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SCD01"
@@ -63799,7 +63967,7 @@
 "bse": "",
 "isin": "INE538A01037",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GF07"
@@ -64027,7 +64195,7 @@
 "bse": "",
 "isin": "INE291W01037",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "GE07"
@@ -64205,7 +64373,7 @@
 "label": "Gujarat Natural Resources Limited",
 "nse": "GNRL",
 "bse": "",
-"isin": "INE207H01018",
+"isin": "INE207H01026",
 "exchange": "NSE",
 "series": "EQ",
 "industry": "",
@@ -64387,7 +64555,7 @@
 "bse": "",
 "isin": "INE805A01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GE02"
@@ -64987,7 +65155,7 @@
 "bse": "",
 "isin": "INE382T01030",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "FDS01"
@@ -65863,7 +66031,7 @@
 "bse": "",
 "isin": "INE871K01015",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "HMV"
@@ -66347,6 +66515,18 @@
 "industry": "",
 "group": "",
 "sc_id": "IG04"
+},
+{
+"id": "IGLSPIRITS",
+"label": "IGL Spirits Limited",
+"nse": "IGLSPIRITS",
+"bse": "",
+"isin": "INE2W6901017",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "IS10"
 },
 {
 "id": "IGPL",
@@ -67885,6 +68065,18 @@
 "sc_id": "CPM01"
 },
 {
+"id": "JKSHAH",
+"label": "J.K.Shah Commerce Education Limited",
+"nse": "JKSHAH",
+"bse": "",
+"isin": "INE2OD001016",
+"exchange": "NSE",
+"series": "BE",
+"industry": "",
+"group": "",
+"sc_id": "SCE"
+},
+{
 "id": "JKTYRE",
 "label": "JK Tyre & Industries Limited",
 "nse": "JKTYRE",
@@ -68383,7 +68575,7 @@
 "bse": "",
 "isin": "INE411F01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -68635,7 +68827,7 @@
 "bse": "",
 "isin": "INE790B01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "KCP01"
@@ -69065,7 +69257,7 @@
 "label": "Knowledge Marine & Engineering Works Limited",
 "nse": "KMEW",
 "bse": "",
-"isin": "INE0CJD01029",
+"isin": "INE0CJD01037",
 "exchange": "NSE",
 "series": "EQ",
 "industry": "",
@@ -69691,7 +69883,7 @@
 "bse": "",
 "isin": "INE740X01023",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "LAL"
@@ -69895,7 +70087,7 @@
 "bse": "",
 "isin": "INE938A01021",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "LCC"
@@ -69943,7 +70135,7 @@
 "bse": "",
 "isin": "INE791B01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "LNS"
@@ -69955,7 +70147,7 @@
 "bse": "",
 "isin": "INE0G1L01025",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "LME01"
@@ -70039,7 +70231,7 @@
 "bse": "",
 "isin": "INE258Y01016",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "LGHL18475"
@@ -70255,7 +70447,7 @@
 "bse": "",
 "isin": "INE0V9Q01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SLDRL"
@@ -70675,7 +70867,7 @@
 "bse": "",
 "isin": "INE288A01013",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MS01"
@@ -70711,7 +70903,7 @@
 "bse": "",
 "isin": "INE201B01022",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MA01"
@@ -70723,7 +70915,7 @@
 "bse": "",
 "isin": "INE987A01010",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "ML"
@@ -71407,7 +71599,7 @@
 "bse": "",
 "isin": "INE442D01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MC09"
@@ -71471,6 +71663,18 @@
 "industry": "",
 "group": "",
 "sc_id": "MEI05"
+},
+{
+"id": "MELSTAR",
+"label": "Melstar Information Technologies Limited",
+"nse": "MELSTAR",
+"bse": "",
+"isin": "INE817A01050",
+"exchange": "NSE",
+"series": "BE",
+"industry": "",
+"group": "",
+"sc_id": "MI34"
 },
 {
 "id": "MENNPIS",
@@ -71611,7 +71815,7 @@
 "bse": "",
 "isin": "INE112D01035",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MR02"
@@ -71659,7 +71863,7 @@
 "bse": "",
 "isin": "INE0XAD01024",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "ML14"
@@ -71683,7 +71887,7 @@
 "bse": "",
 "isin": "INE00IT01020",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MMD"
@@ -71749,6 +71953,18 @@
 "sc_id": "MCE01"
 },
 {
+"id": "MITSU",
+"label": "Mitsu Chem Plast Limited",
+"nse": "MITSU",
+"bse": "",
+"isin": "INE317V01016",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "MCP01"
+},
+{
 "id": "MITTAL",
 "label": "Mittal Life Style Limited",
 "nse": "MITTAL",
@@ -71771,6 +71987,18 @@
 "industry": "",
 "group": "",
 "sc_id": "MKE"
+},
+{
+"id": "MKJEWELS",
+"label": "M. K. Sons Fine Jewels Limited",
+"nse": "MKJEWELS",
+"bse": "",
+"isin": "INE2IXO01012",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "SFJ"
 },
 {
 "id": "MKPL",
@@ -71839,7 +72067,7 @@
 "bse": "",
 "isin": "INE200D01020",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "MM06"
@@ -71995,7 +72223,7 @@
 "bse": "",
 "isin": "INE835B01035",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MTP01"
@@ -72043,7 +72271,7 @@
 "bse": "",
 "isin": "INE296Q01012",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "DC11"
@@ -73453,18 +73681,6 @@
 "sc_id": "NAL"
 },
 {
-"id": "NOVARTIND",
-"label": "Novartis India Limited",
-"nse": "NOVARTIND",
-"bse": "",
-"isin": "INE234A01025",
-"exchange": "NSE",
-"series": "EQ",
-"industry": "",
-"group": "",
-"sc_id": "HCG"
-},
-{
 "id": "NPST",
 "label": "Network People Services Technologies Limited",
 "nse": "NPST",
@@ -73507,7 +73723,7 @@
 "bse": "",
 "isin": "INE0JM501013",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "NR03"
@@ -73519,7 +73735,7 @@
 "bse": "",
 "isin": "INE023A01030",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "JS02"
@@ -73735,7 +73951,7 @@
 "bse": "",
 "isin": "INE591A01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "OCT"
@@ -73795,7 +74011,7 @@
 "bse": "",
 "isin": "INE1BZC01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "OFFL"
@@ -73819,7 +74035,7 @@
 "bse": "",
 "isin": "INE0UH301010",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "OEL"
@@ -73963,7 +74179,7 @@
 "bse": "",
 "isin": "INE031G01022",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "TF04"
@@ -74947,7 +75163,7 @@
 "bse": "",
 "isin": "INE417C01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "PII03"
@@ -75679,7 +75895,7 @@
 "bse": "",
 "isin": "INE15EH01014",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "PJL01"
@@ -75763,7 +75979,7 @@
 "bse": "",
 "isin": "INE195N01013",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "PCS03"
@@ -76231,7 +76447,7 @@
 "bse": "",
 "isin": "INE952H01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "RTN"
@@ -76279,7 +76495,7 @@
 "bse": "",
 "isin": "INE230R01035",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "RST"
@@ -76291,7 +76507,7 @@
 "bse": "",
 "isin": "INE1SJO01012",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "AJL"
@@ -76723,7 +76939,7 @@
 "bse": "",
 "isin": "INE364Z01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "REP"
@@ -76903,7 +77119,7 @@
 "bse": "",
 "isin": "INE786W01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "RP22"
@@ -77143,7 +77359,7 @@
 "bse": "",
 "isin": "INE760W01023",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "RP26"
@@ -77215,7 +77431,7 @@
 "bse": "",
 "isin": "INE616F01022",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": ""
@@ -77407,7 +77623,7 @@
 "bse": "",
 "isin": "INE573K01025",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "RD02"
@@ -78187,7 +78403,7 @@
 "bse": "",
 "isin": "INE099G01011",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "MSF"
@@ -78271,7 +78487,7 @@
 "bse": "",
 "isin": "INE501Y01019",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SCP02"
@@ -78493,6 +78709,18 @@
 "sc_id": "SOC01"
 },
 {
+"id": "SFCTECH",
+"label": "SFC Environmental Technologies Limited",
+"nse": "SFCTECH",
+"bse": "",
+"isin": "INE0PKN01028",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "SETL"
+},
+{
 "id": "SFL",
 "label": "Sheela Foam Limited",
 "nse": "SFL",
@@ -78667,7 +78895,7 @@
 "bse": "",
 "isin": "INE849C01026",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SP13"
@@ -78763,7 +78991,7 @@
 "bse": "",
 "isin": "INE037B01020",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SS13"
@@ -78923,18 +79151,6 @@
 "industry": "",
 "group": "",
 "sc_id": "SR07"
-},
-{
-"id": "SHIVAM-RE1",
-"label": "Shivam Autotech Ltd-RE",
-"nse": "SHIVAM-RE1",
-"bse": "",
-"isin": "INE637H20024",
-"exchange": "NSE",
-"series": "BE",
-"industry": "",
-"group": "",
-"sc_id": "SAR03"
 },
 {
 "id": "SHIVAMAUTO",
@@ -79177,16 +79393,16 @@
 "sc_id": "JP01"
 },
 {
-"id": "SHUKRAPHAR",
-"label": "Shukra Pharmaceuticals Limited",
-"nse": "SHUKRAPHAR",
+"id": "SHUKRAMED",
+"label": "Shukra Medtech Limited",
+"nse": "SHUKRAMED",
 "bse": "",
 "isin": "INE551C01044",
 "exchange": "NSE",
 "series": "EQ",
 "industry": "",
 "group": "",
-"sc_id": ""
+"sc_id": "RP13"
 },
 {
 "id": "SHYAMCENT",
@@ -79399,7 +79615,7 @@
 "bse": "",
 "isin": "INE923A01015",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SI51"
@@ -79675,7 +79891,7 @@
 "bse": "",
 "isin": "INE017W01010",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SM16"
@@ -79867,7 +80083,7 @@
 "bse": "",
 "isin": "INE00LM01029",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SC54"
@@ -79975,7 +80191,7 @@
 "bse": "",
 "isin": "INE247M01014",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "HKA"
@@ -79987,7 +80203,7 @@
 "bse": "",
 "isin": "INE01EO01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SEI06"
@@ -79999,7 +80215,7 @@
 "bse": "",
 "isin": "INE252A01019",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SPI01"
@@ -80227,7 +80443,7 @@
 "bse": "",
 "isin": "INE0RYC01010",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SIFL"
@@ -80839,7 +81055,7 @@
 "bse": "",
 "isin": "INE662A01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SSM07"
@@ -81223,7 +81439,7 @@
 "bse": "",
 "isin": "INE010C01025",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "N03"
@@ -82195,7 +82411,7 @@
 "bse": "",
 "isin": "INE806C01018",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TI09"
@@ -82291,7 +82507,7 @@
 "bse": "",
 "isin": "INE319Y01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TF14"
@@ -82495,7 +82711,7 @@
 "bse": "",
 "isin": "INE065J01024",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "GIE01"
@@ -82543,7 +82759,7 @@
 "bse": "",
 "isin": "INE687A01016",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "TI15"
@@ -82567,7 +82783,7 @@
 "bse": "",
 "isin": "INE757B01015",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "SS12"
@@ -82843,7 +83059,7 @@
 "bse": "",
 "isin": "INE105A01035",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "SC"
@@ -82987,7 +83203,7 @@
 "bse": "",
 "isin": "INE382M01027",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "BNH"
@@ -83671,7 +83887,7 @@
 "bse": "",
 "isin": "INE098201036",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "VC14"
@@ -83723,6 +83939,18 @@
 "industry": "",
 "group": "",
 "sc_id": "TWO"
+},
+{
+"id": "VEEFIN",
+"label": "Veefin Solutions Limited",
+"nse": "VEEFIN",
+"bse": "",
+"isin": "INE0Q0M01015",
+"exchange": "NSE",
+"series": "EQ",
+"industry": "",
+"group": "",
+"sc_id": "VS16"
 },
 {
 "id": "VEEGALAND",
@@ -84133,18 +84361,6 @@
 "sc_id": "AF08"
 },
 {
-"id": "VIRAT",
-"label": "Virat Industries Limited",
-"nse": "VIRAT",
-"bse": "",
-"isin": "INE467D01017",
-"exchange": "NSE",
-"series": "EQ",
-"industry": "",
-"group": "",
-"sc_id": "VI10"
-},
-{
 "id": "VIRINCHI",
 "label": "Virinchi Limited",
 "nse": "VIRINCHI",
@@ -84163,7 +84379,7 @@
 "bse": "",
 "isin": "INE247C01023",
 "exchange": "NSE",
-"series": "BE",
+"series": "EQ",
 "industry": "",
 "group": "",
 "sc_id": "VGE"
@@ -85147,7 +85363,7 @@
 "bse": "",
 "isin": "INE966H01019",
 "exchange": "NSE",
-"series": "EQ",
+"series": "BE",
 "industry": "",
 "group": "",
 "sc_id": "ZN"
@@ -85391,7 +85607,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "ASE"
 },
 {
@@ -86147,7 +86363,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -86351,7 +86567,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "GF07"
 },
 {
@@ -86999,7 +87215,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "A",
 "sc_id": "MS01"
 },
 {
@@ -87011,7 +87227,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "MA01"
 },
 {
@@ -87275,7 +87491,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "OCT"
 },
 {
@@ -87887,7 +88103,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -88371,9 +88587,9 @@
 "sc_id": "GNV"
 },
 {
-"id": "NOVARTIND",
-"label": "Novartis India Ltd",
-"nse": "NOVARTIND",
+"id": "EVONILE",
+"label": "Evonile Pharma Ltd",
+"nse": "EVONILE",
 "bse": "500672",
 "isin": "INE234A01025",
 "exchange": "BSE",
@@ -88671,18 +88887,6 @@
 "sc_id": ""
 },
 {
-"id": "PEOPLIN",
-"label": "Peoples Investments Ltd",
-"nse": "PEOPLIN",
-"bse": "501144",
-"isin": "INE644U01015",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "XT",
-"sc_id": ""
-},
-{
 "id": "DSINVEST",
 "label": "Dalal Street Investments Ltd",
 "nse": "DSINVEST",
@@ -88967,7 +89171,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -89183,7 +89387,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -89847,18 +90051,6 @@
 "sc_id": "BB"
 },
 {
-"id": "ELPROINTL",
-"label": "Elpro International Ltd",
-"nse": "ELPROINTL",
-"bse": "504000",
-"isin": "INE579B01039",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "EI03"
-},
-{
 "id": "GEE",
 "label": "GEE Ltd",
 "nse": "GEE",
@@ -90239,7 +90431,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -90287,7 +90479,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -90431,7 +90623,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -90611,7 +90803,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "TI09"
 },
 {
@@ -90743,7 +90935,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -90863,7 +91055,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": ""
 },
 {
@@ -91103,7 +91295,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -91859,7 +92051,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -91895,7 +92087,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -92039,7 +92231,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "TI15"
 },
 {
@@ -92183,7 +92375,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "ML"
 },
 {
@@ -92939,7 +93131,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -92955,9 +93147,9 @@
 "sc_id": ""
 },
 {
-"id": "JOLYPLS",
-"label": "Jolly Plastic Industries Ltd",
-"nse": "JOLYPLS",
+"id": "SAHAJDIGI",
+"label": "Sahaj digital Ltd",
+"nse": "SAHAJDIGI",
 "bse": "507968",
 "isin": "INE289M01016",
 "exchange": "BSE",
@@ -93035,7 +93227,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": ""
 },
 {
@@ -93083,7 +93275,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -93899,7 +94091,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -93983,7 +94175,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SP13"
 },
 {
@@ -94247,7 +94439,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -94355,7 +94547,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -94751,7 +94943,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -95051,7 +95243,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -95123,7 +95315,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "MSF"
 },
 {
@@ -95147,7 +95339,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -95699,7 +95891,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -95855,7 +96047,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -96047,7 +96239,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "MM06"
 },
 {
@@ -96275,7 +96467,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SS13"
 },
 {
@@ -96539,7 +96731,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -96563,7 +96755,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -96623,7 +96815,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -97223,7 +97415,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -97247,7 +97439,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -97343,7 +97535,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -97483,7 +97675,7 @@
 "label": "Gujarat Natural Resources Ltd",
 "nse": "GNRL",
 "bse": "513536",
-"isin": "INE207H01018",
+"isin": "INE207H01026",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
@@ -97547,7 +97739,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -97705,18 +97897,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "AGI01"
-},
-{
-"id": "RUDRAECO",
-"label": "Rudra Ecovation Ltd",
-"nse": "RUDRAECO",
-"bse": "514010",
-"isin": "INE723D01021",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "XT",
-"sc_id": ""
 },
 {
 "id": "RAJKSYN",
@@ -97919,7 +98099,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -98051,7 +98231,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -98171,7 +98351,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -98255,7 +98435,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -98399,7 +98579,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "AW01"
 },
 {
@@ -98435,7 +98615,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "MR02"
 },
 {
@@ -98567,7 +98747,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -98723,7 +98903,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -98939,7 +99119,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SPI01"
 },
 {
@@ -99083,7 +99263,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -99359,7 +99539,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "LNS"
 },
 {
@@ -99371,7 +99551,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -99419,7 +99599,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -99599,7 +99779,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -99743,7 +99923,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -99851,7 +100031,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -99947,7 +100127,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -100223,7 +100403,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -100475,7 +100655,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "A",
 "sc_id": "SC"
 },
 {
@@ -100667,7 +100847,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "SS12"
 },
 {
@@ -100787,7 +100967,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -101039,7 +101219,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SSM07"
 },
 {
@@ -101063,7 +101243,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SI51"
 },
 {
@@ -101135,7 +101315,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -101195,7 +101375,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "NCI01"
 },
 {
@@ -101411,7 +101591,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -101519,7 +101699,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "DC05"
 },
 {
@@ -101979,18 +102159,6 @@
 "sc_id": ""
 },
 {
-"id": "JJFINCOR",
-"label": "JJ Finance Corporation Ltd",
-"nse": "JJFINCOR",
-"bse": "523062",
-"isin": "INE584C01011",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "XT",
-"sc_id": ""
-},
-{
 "id": "COSMOFE",
 "label": "Cosmo Ferrites Ltd",
 "nse": "COSMOFE",
@@ -102047,7 +102215,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -102071,20 +102239,8 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "MC09"
-},
-{
-"id": "OTCO",
-"label": "OTCO International Ltd",
-"nse": "OTCO",
-"bse": "523151",
-"isin": "INE910B01028",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "XT",
-"sc_id": ""
 },
 {
 "id": "FOSECOC",
@@ -102383,7 +102539,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "DCM03"
 },
 {
@@ -102527,7 +102683,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -102683,7 +102839,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "N03"
 },
 {
@@ -102995,7 +103151,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -103295,7 +103451,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -103547,7 +103703,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -103583,7 +103739,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -103931,7 +104087,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -104271,16 +104427,16 @@
 "sc_id": ""
 },
 {
-"id": "SHUKRAPHAR",
-"label": "Shukra Pharmaceuticals Ltd",
-"nse": "SHUKRAPHAR",
+"id": "SHUKRAMED",
+"label": "Shukra Medtech Ltd",
+"nse": "SHUKRAMED",
 "bse": "524632",
 "isin": "INE551C01044",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
 "group": "B",
-"sc_id": ""
+"sc_id": "RP13"
 },
 {
 "id": "ALUFLUOR",
@@ -104303,7 +104459,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -104483,7 +104639,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -104747,7 +104903,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -104807,7 +104963,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -104839,7 +104995,7 @@
 "label": "BN Agrochem Ltd",
 "nse": "BNAGROCHEM",
 "bse": "526125",
-"isin": "INE00HZ01011",
+"isin": "INE00HZ01029",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
@@ -104915,7 +105071,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -105083,7 +105239,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "MTP01"
 },
 {
@@ -105263,7 +105419,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "AI10"
 },
 {
@@ -105395,7 +105551,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -105575,7 +105731,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -105707,7 +105863,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -105911,7 +106067,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -106115,7 +106271,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -106141,18 +106297,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "VC01"
-},
-{
-"id": "DRAGARWQ",
-"label": "Dr Agarwals Eye Hospital Ltd",
-"nse": "DRAGARWQ",
-"bse": "526783",
-"isin": "INE934C01018",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": ""
 },
 {
 "id": "MHSGRMS",
@@ -106271,7 +106415,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -106331,7 +106475,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "BFI01"
 },
 {
@@ -106415,7 +106559,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -106463,7 +106607,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -106523,7 +106667,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "TCM"
 },
 {
@@ -106667,7 +106811,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -106835,7 +106979,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -106847,7 +106991,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -107075,7 +107219,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -107087,7 +107231,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -107195,7 +107339,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -107387,7 +107531,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -107855,7 +107999,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -108087,15 +108231,15 @@
 "sc_id": "RF07"
 },
 {
-"id": "VIRAT",
+"id": "BRAHMVIRAT",
 "label": "Brahm Virat Industries Corporation Ltd",
-"nse": "VIRAT",
+"nse": "BRAHMVIRAT",
 "bse": "530521",
 "isin": "INE467D01017",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "VI10"
 },
 {
@@ -108107,7 +108251,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -108191,7 +108335,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -108215,7 +108359,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -108263,7 +108407,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -108359,7 +108503,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -108431,7 +108575,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -108517,6 +108661,18 @@
 "industry": "",
 "group": "T",
 "sc_id": "RR01"
+},
+{
+"id": "AVENIQUE",
+"label": "Avenique Ltd",
+"nse": "AVENIQUE",
+"bse": "530701",
+"isin": "INE089E01033",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "XT",
+"sc_id": ""
 },
 {
 "id": "ANIRIT",
@@ -108695,7 +108851,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -108851,7 +109007,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -108887,7 +109043,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -108947,7 +109103,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -108995,7 +109151,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -109355,7 +109511,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "TE03"
 },
 {
@@ -109487,7 +109643,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -109523,7 +109679,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -109571,7 +109727,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -109871,7 +110027,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -109919,7 +110075,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -110087,7 +110243,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -110135,7 +110291,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -110195,7 +110351,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "TF04"
 },
 {
@@ -110219,7 +110375,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -110231,7 +110387,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -110327,7 +110483,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -110351,7 +110507,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -110580,18 +110736,6 @@
 "series": "EQ",
 "industry": "",
 "group": "X",
-"sc_id": ""
-},
-{
-"id": "VIKALPS",
-"label": "Vikalp Securities Ltd",
-"nse": "VIKALPS",
-"bse": "531334",
-"isin": "INE186E01011",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "Z",
 "sc_id": ""
 },
 {
@@ -110831,7 +110975,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -110879,7 +111023,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -111083,7 +111227,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "GE02"
 },
 {
@@ -111191,7 +111335,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -111347,7 +111491,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -111443,7 +111587,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -111455,7 +111599,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -111491,7 +111635,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -111503,7 +111647,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -111515,7 +111659,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -111875,7 +112019,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "NT"
 },
 {
@@ -111899,7 +112043,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -112067,7 +112211,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -112079,7 +112223,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -112163,7 +112307,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -112283,7 +112427,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "GTR03"
 },
 {
@@ -112332,18 +112476,6 @@
 "series": "EQ",
 "industry": "",
 "group": "X",
-"sc_id": ""
-},
-{
-"id": "SILICON",
-"label": "Silicon Valley Infotech Ltd",
-"nse": "SILICON",
-"bse": "531738",
-"isin": "INE913A01024",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "XT",
 "sc_id": ""
 },
 {
@@ -112607,7 +112739,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -112931,7 +113063,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -112943,7 +113075,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -112991,7 +113123,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -113051,7 +113183,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -113207,7 +113339,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -113399,7 +113531,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "LCC"
 },
 {
@@ -113459,7 +113591,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -113531,7 +113663,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -113903,7 +114035,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -113915,7 +114047,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -114191,7 +114323,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "JS02"
 },
 {
@@ -114251,7 +114383,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -114373,6 +114505,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "ISL"
+},
+{
+"id": "MELSTAR",
+"label": "Melstar Information Technologies Ltd",
+"nse": "MELSTAR",
+"bse": "532307",
+"isin": "INE817A01050",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "T",
+"sc_id": "MI34"
 },
 {
 "id": "GVPIL",
@@ -114515,7 +114659,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SS48"
 },
 {
@@ -115271,7 +115415,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -115297,18 +115441,6 @@
 "industry": "",
 "group": "X",
 "sc_id": ""
-},
-{
-"id": "COMPINFO",
-"label": "Compuage Infocom Ltd",
-"nse": "COMPINFO",
-"bse": "532456",
-"isin": "INE070C01037",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "Z",
-"sc_id": "CI28"
 },
 {
 "id": "GULPOLY",
@@ -115379,7 +115511,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": ""
 },
 {
@@ -115991,7 +116123,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "I11"
 },
 {
@@ -116927,7 +117059,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "A9"
 },
 {
@@ -117167,7 +117299,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "ZN"
 },
 {
@@ -117431,7 +117563,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "RTN"
 },
 {
@@ -117635,7 +117767,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "ASC01"
 },
 {
@@ -118487,7 +118619,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -118703,7 +118835,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -118787,7 +118919,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "GIE01"
 },
 {
@@ -118967,7 +119099,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -119279,7 +119411,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "KCP01"
 },
 {
@@ -119375,7 +119507,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "HMV"
 },
 {
@@ -120011,7 +120143,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "WF02"
 },
 {
@@ -120023,7 +120155,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "RD02"
 },
 {
@@ -120539,7 +120671,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -120551,7 +120683,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "HKA"
 },
 {
@@ -120707,7 +120839,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "PCS03"
 },
 {
@@ -120779,7 +120911,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "VGE"
 },
 {
@@ -120815,7 +120947,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -121211,7 +121343,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": ""
 },
 {
@@ -121707,18 +121839,6 @@
 "sc_id": "AI43"
 },
 {
-"id": "MANGIND",
-"label": "Mangalam Industrial Finance Ltd",
-"nse": "MANGIND",
-"bse": "537800",
-"isin": "INE717C01025",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "Z",
-"sc_id": ""
-},
-{
 "id": "VIJIFIN",
 "label": "Viji Finance Ltd",
 "nse": "VIJIFIN",
@@ -121823,7 +121943,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -121907,7 +122027,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -121943,7 +122063,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "DC11"
 },
 {
@@ -121971,6 +122091,18 @@
 "sc_id": ""
 },
 {
+"id": "AMARSEC",
+"label": "Amarnath Securities Ltd",
+"nse": "AMARSEC",
+"bse": "538465",
+"isin": "INE745P01010",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "XT",
+"sc_id": ""
+},
+{
 "id": "CTL",
 "label": "Capital Trade Links Ltd",
 "nse": "CTL",
@@ -121979,7 +122111,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -122495,7 +122627,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "DP09"
 },
 {
@@ -122567,7 +122699,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -122579,7 +122711,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -122807,7 +122939,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -122831,7 +122963,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -122939,7 +123071,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -122975,7 +123107,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "DTI03"
 },
 {
@@ -123171,18 +123303,6 @@
 "sc_id": ""
 },
 {
-"id": "WARDINMOBI",
-"label": "Wardwizard Innovations & Mobility Ltd",
-"nse": "WARDINMOBI",
-"bse": "538970",
-"isin": "INE945P01024",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "Z",
-"sc_id": ""
-},
-{
 "id": "SHREESEC",
 "label": "Shree Securities Ltd",
 "nse": "SHREESEC",
@@ -123227,7 +123347,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -123623,7 +123743,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -123647,7 +123767,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -123779,7 +123899,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -123863,7 +123983,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -123947,7 +124067,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -123961,6 +124081,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "MS26"
+},
+{
+"id": "NOBPOL",
+"label": "Noble Polymers Ltd",
+"nse": "NOBPOL",
+"bse": "539200",
+"isin": "INE203Q01034",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "XT",
+"sc_id": ""
 },
 {
 "id": "SATIA",
@@ -123983,7 +124115,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -124079,7 +124211,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -124379,7 +124511,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "RST"
 },
 {
@@ -124571,7 +124703,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -125099,7 +125231,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -125219,7 +125351,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "ALF04"
 },
 {
@@ -125303,7 +125435,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "KS20"
 },
 {
@@ -125627,7 +125759,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -125687,7 +125819,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -125819,7 +125951,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -125843,7 +125975,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -125999,7 +126131,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": ""
 },
 {
@@ -126023,7 +126155,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "PII03"
 },
 {
@@ -126191,7 +126323,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -126203,7 +126335,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -126564,7 +126696,7 @@
 "series": "EQ",
 "industry": "",
 "group": "X",
-"sc_id": ""
+"sc_id": "MCP01"
 },
 {
 "id": "SPRAYKING",
@@ -126851,7 +126983,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -126899,7 +127031,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -126971,7 +127103,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -127079,7 +127211,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -127103,7 +127235,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -127343,7 +127475,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "SM16"
 },
 {
@@ -127535,7 +127667,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -127583,7 +127715,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -127811,7 +127943,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -127895,7 +128027,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -128147,7 +128279,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -128291,7 +128423,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -128303,7 +128435,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SCP02"
 },
 {
@@ -128447,7 +128579,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -128735,7 +128867,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "LAL"
 },
 {
@@ -128891,7 +129023,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -129059,7 +129191,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "VL08"
 },
 {
@@ -129215,7 +129347,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -129275,7 +129407,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "ARA"
 },
 {
@@ -129479,7 +129611,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -129791,7 +129923,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -129887,7 +130019,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -130259,7 +130391,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -130331,7 +130463,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -130487,7 +130619,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -131111,7 +131243,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -131603,7 +131735,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "TS",
+"group": "MS",
 "sc_id": ""
 },
 {
@@ -131651,7 +131783,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "ASL09"
 },
 {
@@ -132131,7 +132263,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "X",
+"group": "XT",
 "sc_id": ""
 },
 {
@@ -132319,7 +132451,7 @@
 "label": "Knowledge Marine & Engineering Works Ltd",
 "nse": "KMEW",
 "bse": "543273",
-"isin": "INE0CJD01029",
+"isin": "INE0CJD01037",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
@@ -132431,7 +132563,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "BNH"
 },
 {
@@ -132443,7 +132575,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "EES"
 },
 {
@@ -133103,7 +133235,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -133691,7 +133823,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -133871,7 +134003,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -134015,7 +134147,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -134027,7 +134159,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -134759,7 +134891,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -135419,7 +135551,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "ACC06"
 },
 {
@@ -135455,7 +135587,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -135551,7 +135683,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -135663,16 +135795,16 @@
 "sc_id": ""
 },
 {
-"id": "BRIGHT",
+"id": "BRIGHTOUTD",
 "label": "Bright Outdoor Media Ltd",
-"nse": "BRIGHT",
+"nse": "BRIGHTOUTD",
 "bse": "543831",
 "isin": "INE0OMI01019",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
-"sc_id": ""
+"group": "B",
+"sc_id": "BOM"
 },
 {
 "id": "COMMAND",
@@ -135899,7 +136031,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -136079,8 +136211,8 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
-"sc_id": ""
+"group": "B",
+"sc_id": "VS16"
 },
 {
 "id": "IDEAFORGE",
@@ -136115,7 +136247,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "XT",
+"group": "X",
 "sc_id": ""
 },
 {
@@ -136463,7 +136595,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -136559,7 +136691,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -136811,7 +136943,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -136967,7 +137099,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "ESF02"
 },
 {
@@ -137579,7 +137711,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -137975,7 +138107,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -137987,7 +138119,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "DPA01"
 },
 {
@@ -138023,7 +138155,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -138107,7 +138239,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -138299,7 +138431,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -138659,7 +138791,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -139355,7 +139487,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "I12"
 },
 {
@@ -139835,7 +139967,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -139919,7 +140051,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -139931,7 +140063,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -140003,7 +140135,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SIFL"
 },
 {
@@ -140267,7 +140399,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -140423,7 +140555,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SEI06"
 },
 {
@@ -140483,7 +140615,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -140495,7 +140627,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -141107,7 +141239,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -141395,7 +141527,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SLDRL"
 },
 {
@@ -141947,7 +142079,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -142487,7 +142619,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -142499,7 +142631,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "OFFL"
 },
 {
@@ -142751,7 +142883,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "ML14"
 },
 {
@@ -143207,7 +143339,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -143255,7 +143387,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -143699,7 +143831,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -144095,7 +144227,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "DSF"
 },
 {
@@ -144191,7 +144323,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -144251,7 +144383,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "OEL"
 },
 {
@@ -144683,7 +144815,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -144899,7 +145031,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "EN"
 },
 {
@@ -145139,7 +145271,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "AJL"
 },
 {
@@ -145487,7 +145619,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -145871,7 +146003,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "MMD"
 },
 {
@@ -146219,7 +146351,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "B",
+"group": "T",
 "sc_id": "PJL01"
 },
 {
@@ -146459,7 +146591,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -146699,7 +146831,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -146895,6 +147027,18 @@
 "sc_id": ""
 },
 {
+"id": "JKSHAH",
+"label": "J.K. Shah Commerce Education Ltd",
+"nse": "JKSHAH",
+"bse": "544956",
+"isin": "INE2OD001016",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "T",
+"sc_id": "SCE"
+},
+{
 "id": "GERMAN",
 "label": "German Green Steel and Power Ltd",
 "nse": "GERMAN",
@@ -146915,7 +147059,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "M",
+"group": "MT",
 "sc_id": ""
 },
 {
@@ -147371,7 +147515,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -147479,7 +147623,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "MT",
+"group": "M",
 "sc_id": ""
 },
 {
@@ -147493,6 +147637,186 @@
 "industry": "",
 "group": "B",
 "sc_id": "EIA"
+},
+{
+"id": "SFCTECH",
+"label": "SFC Environmental Technologies Ltd",
+"nse": "SFCTECH",
+"bse": "545009",
+"isin": "INE0PKN01028",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SETL"
+},
+{
+"id": "WISCON",
+"label": "Wiscon Industries Ltd",
+"nse": "WISCON",
+"bse": "545010",
+"isin": "INE0NZ501012",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "M",
+"sc_id": ""
+},
+{
+"id": "BLSPOLY",
+"label": "BLS Polymers Ltd",
+"nse": "BLSPOLY",
+"bse": "545011",
+"isin": "INE0ZCQ01019",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "BPL13"
+},
+{
+"id": "ENNATURE",
+"label": "Ennature Bio Pharma Ltd",
+"nse": "ENNATURE",
+"bse": "545012",
+"isin": "INE2WCT01016",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "EBP"
+},
+{
+"id": "IGLSPIRITS",
+"label": "IGL Spirits Ltd",
+"nse": "IGLSPIRITS",
+"bse": "545013",
+"isin": "INE2W6901017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "IS10"
+},
+{
+"id": "BANKCASE",
+"label": "Zerodha BSE Top 10 Banks ETF",
+"nse": "BANKCASE",
+"bse": "545014",
+"isin": "INF0R8F01265",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ZBT"
+},
+{
+"id": "CRL",
+"label": "Carver Roboweld Ltd",
+"nse": "CRL",
+"bse": "545015",
+"isin": "INE1FY301017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "M",
+"sc_id": ""
+},
+{
+"id": "AJWA",
+"label": "Ajwa Projects Ltd",
+"nse": "AJWA",
+"bse": "545016",
+"isin": "INE1NMO01017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "M",
+"sc_id": ""
+},
+{
+"id": "MKJEWELS",
+"label": "M. K. Sons Fine Jewels Ltd",
+"nse": "MKJEWELS",
+"bse": "545017",
+"isin": "INE2IXO01012",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SFJ"
+},
+{
+"id": "BCSSL",
+"label": "Bombay Coated And Special Steels Ltd",
+"nse": "BCSSL",
+"bse": "545018",
+"isin": "INE0XFY01011",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "BCSSL"
+},
+{
+"id": "BAHETI",
+"label": "Baheti Recycling Industries Ltd",
+"nse": "BAHETI",
+"bse": "545019",
+"isin": "INE029Q01017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "BRI01"
+},
+{
+"id": "VECTRAS",
+"label": "Vectras Enprocon Ltd",
+"nse": "VECTRAS",
+"bse": "545020",
+"isin": "INE1FD201014",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "M",
+"sc_id": ""
+},
+{
+"id": "JOHNSONCAB",
+"label": "Johnsoncab Electricals Ltd",
+"nse": "JOHNSONCAB",
+"bse": "545021",
+"isin": "INE1ZSR01011",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "M",
+"sc_id": ""
+},
+{
+"id": "POWERIETF",
+"label": "ICICI Prudential BSE Power ETF",
+"nse": "POWERIETF",
+"bse": "545023",
+"isin": "INF109K1A724",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "IPB03"
+},
+{
+"id": "ANTALA",
+"label": "Antala Industries Ltd",
+"nse": "ANTALA",
+"bse": "545024",
+"isin": "INE15Z101013",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "MT",
+"sc_id": ""
 },
 {
 "id": "SENSEXIETF",
@@ -147539,7 +147863,7 @@
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
-"group": "T",
+"group": "B",
 "sc_id": "SCD01"
 },
 {
@@ -148191,16 +148515,76 @@
 "sc_id": ""
 },
 {
-"id": "SHIVAM-RE1",
-"label": "SHIVAM AUTOTECH Ltd",
-"nse": "SHIVAM-RE1",
-"bse": "751148",
-"isin": "INE637H20024",
+"id": "MAGNUS-RE1",
+"label": "MAGNUS STEEL AND INFRA Ltd",
+"nse": "MAGNUS-RE1",
+"bse": "751152",
+"isin": "INE898E20029",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
 "group": "R",
-"sc_id": "SAR03"
+"sc_id": ""
+},
+{
+"id": "JINDCAP-RE",
+"label": "Jindal Capital Ltd",
+"nse": "JINDCAP-RE",
+"bse": "751157",
+"isin": "INE356F20017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "R",
+"sc_id": ""
+},
+{
+"id": "EVONILE-RE",
+"label": "EVONILE PHARMA Ltd",
+"nse": "EVONILE-RE",
+"bse": "751158",
+"isin": "INE234A20017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "R",
+"sc_id": ""
+},
+{
+"id": "ZODJRD-RE1",
+"label": "Zodiac-JRD-MKJ Ltd",
+"nse": "ZODJRD-RE1",
+"bse": "751159",
+"isin": "INE077B20026",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "R",
+"sc_id": ""
+},
+{
+"id": "MIHIKA-RE",
+"label": "Mihika Industries Ltd",
+"nse": "MIHIKA-RE",
+"bse": "751160",
+"isin": "INE779Q20017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "R",
+"sc_id": ""
+},
+{
+"id": "KANE-RE",
+"label": "Kanel Industries Ltd",
+"nse": "KANE-RE",
+"bse": "751161",
+"isin": "INE252C20015",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "R",
+"sc_id": ""
 },
 {
 "id": "JDL",
@@ -148299,18 +148683,6 @@
 "sc_id": "ATP02"
 },
 {
-"id": "ACESEPP",
-"label": "Ace Software Exports ltd",
-"nse": "ACESEPP",
-"bse": "890230",
-"isin": "IN9849B01034",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "XT",
-"sc_id": ""
-},
-{
 "id": "ANIRITPP",
 "label": "ANIRIT VENTURES Ltd",
 "nse": "ANIRITPP",
@@ -148369,6 +148741,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "CEP"
+},
+{
+"id": "OLAPP",
+"label": "Ola Electric Mobility Ltd",
+"nse": "OLAPP",
+"bse": "890242",
+"isin": "IN90LXG01014",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "A",
+"sc_id": "OEM02"
 }
 ],
 "bse_large": [
@@ -149139,6 +149523,18 @@
 "industry": "",
 "group": "A",
 "sc_id": "MS02"
+},
+{
+"id": "MAHSCOOTER",
+"label": "Maharashtra Scooters Ltd",
+"nse": "MAHSCOOTER",
+"bse": "500266",
+"isin": "INE288A01013",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "A",
+"sc_id": "MS01"
 },
 {
 "id": "MFSL",
@@ -150807,6 +151203,18 @@
 "industry": "",
 "group": "A",
 "sc_id": "JAI"
+},
+{
+"id": "TVSHLTD",
+"label": "TVS Holdings Ltd",
+"nse": "TVSHLTD",
+"bse": "520056",
+"isin": "INE105A01035",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "A",
+"sc_id": "SC"
 },
 {
 "id": "RATNAMANI",
@@ -156795,9 +157203,33 @@
 "industry": "",
 "group": "A",
 "sc_id": "JPL"
+},
+{
+"id": "OLAPP",
+"label": "Ola Electric Mobility Ltd",
+"nse": "OLAPP",
+"bse": "890242",
+"isin": "IN90LXG01014",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "A",
+"sc_id": "OEM02"
 }
 ],
 "bse_mid": [
+{
+"id": "AMBALALSA",
+"label": "Ambalal Sarabhai Enterprises Ltd",
+"nse": "AMBALALSA",
+"bse": "500009",
+"isin": "INE432A01017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ASE"
+},
 {
 "id": "BOMDYEING",
 "label": "Bombay Dyeing & Manufacturing Company Ltd",
@@ -157111,6 +157543,18 @@
 "sc_id": "GI11"
 },
 {
+"id": "GFLLIMITED",
+"label": "GFL Ltd",
+"nse": "GFLLIMITED",
+"bse": "500173",
+"isin": "INE538A01037",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "GF07"
+},
+{
 "id": "GLFL",
 "label": "Gujarat Lease Financing Ltd",
 "nse": "GLFL",
@@ -157315,6 +157759,18 @@
 "sc_id": "MI02"
 },
 {
+"id": "MAJESAUT",
+"label": "Majestic Auto Ltd",
+"nse": "MAJESAUT",
+"bse": "500267",
+"isin": "INE201B01022",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "MA01"
+},
+{
 "id": "MANALIPETC",
 "label": "Manali Petrochemicals Ltd",
 "nse": "MANALIPETC",
@@ -157433,6 +157889,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "N02"
+},
+{
+"id": "OILCOUNTUB",
+"label": "Oil Country Tubular Ltd",
+"nse": "OILCOUNTUB",
+"bse": "500313",
+"isin": "INE591A01010",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "OCT"
 },
 {
 "id": "ORIENTHOT",
@@ -157771,9 +158239,9 @@
 "sc_id": "EI10"
 },
 {
-"id": "NOVARTIND",
-"label": "Novartis India Ltd",
-"nse": "NOVARTIND",
+"id": "EVONILE",
+"label": "Evonile Pharma Ltd",
+"nse": "EVONILE",
 "bse": "500672",
 "isin": "INE234A01025",
 "exchange": "BSE",
@@ -158155,18 +158623,6 @@
 "sc_id": "BB"
 },
 {
-"id": "ELPROINTL",
-"label": "Elpro International Ltd",
-"nse": "ELPROINTL",
-"bse": "504000",
-"isin": "INE579B01039",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "EI03"
-},
-{
 "id": "HIRECT",
 "label": "Hirect Ltd",
 "nse": "HIRECT",
@@ -158419,6 +158875,18 @@
 "sc_id": "ZFS"
 },
 {
+"id": "TIL",
+"label": "TIL Ltd",
+"nse": "TIL",
+"bse": "505196",
+"isin": "INE806C01018",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "TI09"
+},
+{
 "id": "ALFREDHE",
 "label": "Alfred Herbert India Ltd",
 "nse": "ALFREDHE",
@@ -158465,6 +158933,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "WI05"
+},
+{
+"id": "GHVINFRA",
+"label": "GHV Infra Projects Ltd",
+"nse": "GHVINFRA",
+"bse": "505504",
+"isin": "INE809Q01020",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": ""
 },
 {
 "id": "RESPONIND",
@@ -158911,6 +159391,18 @@
 "sc_id": "UP"
 },
 {
+"id": "TRANSPEK",
+"label": "Transpek Industry Ltd",
+"nse": "TRANSPEK",
+"bse": "506687",
+"isin": "INE687A01016",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "TI15"
+},
+{
 "id": "UNICHEMLAB",
 "label": "Unichem Laboratories Ltd",
 "nse": "UNICHEMLAB",
@@ -158969,18 +159461,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "GTB01"
-},
-{
-"id": "MAKERSL",
-"label": "Makers Laboratories Ltd",
-"nse": "MAKERSL",
-"bse": "506919",
-"isin": "INE987A01010",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "ML"
 },
 {
 "id": "SAKHTISUG",
@@ -159269,6 +159749,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "BSI01"
+},
+{
+"id": "BNALTD",
+"label": "B & A Ltd",
+"nse": "BNALTD",
+"bse": "508136",
+"isin": "INE489D01011",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": ""
 },
 {
 "id": "HAWKINCOOK",
@@ -159583,6 +160075,18 @@
 "sc_id": "PP"
 },
 {
+"id": "SHALPAINTS",
+"label": "Shalimar Paints Ltd",
+"nse": "SHALPAINTS",
+"bse": "509874",
+"isin": "INE849C01026",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SP13"
+},
+{
 "id": "THACKER",
 "label": "Thacker & Company Ltd",
 "nse": "THACKER",
@@ -159823,6 +160327,18 @@
 "sc_id": "PEI01"
 },
 {
+"id": "SCANSTL",
+"label": "Scan Steels Ltd",
+"nse": "SCANSTL",
+"bse": "511672",
+"isin": "INE099G01011",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "MSF"
+},
+{
 "id": "GICHSGFIN",
 "label": "GIC Housing Finance Ltd",
 "nse": "GICHSGFIN",
@@ -160039,18 +160555,6 @@
 "sc_id": "JC01"
 },
 {
-"id": "MMWL",
-"label": "Media Matrix Worldwide Ltd",
-"nse": "MMWL",
-"bse": "512267",
-"isin": "INE200D01020",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "MM06"
-},
-{
 "id": "SGMART",
 "label": "SG Mart Ltd",
 "nse": "SGMART",
@@ -160073,6 +160577,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "NMA"
+},
+{
+"id": "SHARDUL",
+"label": "Shardul Securities Ltd",
+"nse": "SHARDUL",
+"bse": "512393",
+"isin": "INE037B01020",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SS13"
 },
 {
 "id": "SHRJAGP",
@@ -160355,7 +160871,7 @@
 "label": "Gujarat Natural Resources Ltd",
 "nse": "GNRL",
 "bse": "513536",
-"isin": "INE207H01018",
+"isin": "INE207H01026",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
@@ -160603,18 +161119,6 @@
 "sc_id": "HA"
 },
 {
-"id": "BPAGRI",
-"label": "Blue Pearl Agriventures Ltd",
-"nse": "BPAGRI",
-"bse": "514440",
-"isin": "INE439N01031",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "AW01"
-},
-{
 "id": "JYOTIRES",
 "label": "Jyoti Resins & Adhesives Ltd",
 "nse": "JYOTIRES",
@@ -160625,6 +161129,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "JRA"
+},
+{
+"id": "MHLXMIRU",
+"label": "Mahalaxmi Rubtech Ltd",
+"nse": "MHLXMIRU",
+"bse": "514450",
+"isin": "INE112D01035",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "MR02"
 },
 {
 "id": "MODINSU",
@@ -160843,6 +161359,18 @@
 "sc_id": "SE01"
 },
 {
+"id": "SPELS",
+"label": "SPEL Semiconductor Ltd",
+"nse": "SPELS",
+"bse": "517166",
+"isin": "INE252A01019",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SPI01"
+},
+{
 "id": "SUBROS",
 "label": "Subros Ltd",
 "nse": "SUBROS",
@@ -160949,6 +161477,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "ST05"
+},
+{
+"id": "LEENEE",
+"label": "Lee & Nee Softwares Exports Ltd",
+"nse": "LEENEE",
+"bse": "517415",
+"isin": "INE791B01014",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "LNS"
 },
 {
 "id": "BUTTERFLY",
@@ -161407,18 +161947,6 @@
 "sc_id": "JBM01"
 },
 {
-"id": "TRANSWORLD",
-"label": "Transworld Shipping Lines Ltd",
-"nse": "TRANSWORLD",
-"bse": "520151",
-"isin": "INE757B01015",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "SS12"
-},
-{
 "id": "MARALOVER",
 "label": "Maral Overseas Ltd",
 "nse": "MARALOVER",
@@ -161479,6 +162007,30 @@
 "sc_id": "ZCC"
 },
 {
+"id": "SUPERSPIN",
+"label": "Super Spinning Mills Ltd",
+"nse": "SUPERSPIN",
+"bse": "521180",
+"isin": "INE662A01027",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SSM07"
+},
+{
+"id": "SILINV",
+"label": "SIL Investments Ltd",
+"nse": "SILINV",
+"bse": "521194",
+"isin": "INE923A01015",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SI51"
+},
+{
 "id": "SURYALAXMI",
 "label": "Suryalakshmi Cotton Mills Ltd",
 "nse": "SURYALAXMI",
@@ -161501,18 +162053,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "DT"
-},
-{
-"id": "BGDL",
-"label": "Bharat Global Developers Ltd",
-"nse": "BGDL",
-"bse": "521238",
-"isin": "INE893C01032",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "NCI01"
 },
 {
 "id": "SAMBANDAM",
@@ -161645,6 +162185,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "PSA01"
+},
+{
+"id": "DIACABS",
+"label": "Diamond Power Infrastructure Ltd",
+"nse": "DIACABS",
+"bse": "522163",
+"isin": "INE989C01038",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "DC05"
 },
 {
 "id": "ITL",
@@ -161827,6 +162379,18 @@
 "sc_id": "EIH01"
 },
 {
+"id": "MEDICAPQ",
+"label": "Medi Caps Ltd",
+"nse": "MEDICAPQ",
+"bse": "523144",
+"isin": "INE442D01010",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "MC09"
+},
+{
 "id": "KOKUYOCMLN",
 "label": "Kokuyo Camlin Ltd",
 "nse": "KOKUYOCMLN",
@@ -161947,18 +162511,6 @@
 "sc_id": "EH01"
 },
 {
-"id": "DCMSRIND",
-"label": "DCM Shriram Industries Ltd",
-"nse": "DCMSRIND",
-"bse": "523369",
-"isin": "INE843D01027",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "DCM03"
-},
-{
 "id": "MAHAPEXLTD",
 "label": "Maha Rashtra Apex Corporation Ltd",
 "nse": "MAHAPEXLTD",
@@ -162065,6 +162617,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "PWI"
+},
+{
+"id": "SWISSMLTRY",
+"label": "Swiss Military Consumer Goods Ltd",
+"nse": "SWISSMLTRY",
+"bse": "523558",
+"isin": "INE010C01025",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "N03"
 },
 {
 "id": "INDTONER",
@@ -162583,16 +163147,16 @@
 "sc_id": "PP15"
 },
 {
-"id": "SHUKRAPHAR",
-"label": "Shukra Pharmaceuticals Ltd",
-"nse": "SHUKRAPHAR",
+"id": "SHUKRAMED",
+"label": "Shukra Medtech Ltd",
+"nse": "SHUKRAMED",
 "bse": "524632",
 "isin": "INE551C01044",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
 "group": "B",
-"sc_id": ""
+"sc_id": "RP13"
 },
 {
 "id": "INDOAMIN",
@@ -162743,7 +163307,7 @@
 "label": "BN Agrochem Ltd",
 "nse": "BNAGROCHEM",
 "bse": "526125",
-"isin": "INE00HZ01011",
+"isin": "INE00HZ01029",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
@@ -162773,6 +163337,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "FI06"
+},
+{
+"id": "MOLDTECH",
+"label": "Mold-Tek Technologies Ltd",
+"nse": "MOLDTECH",
+"bse": "526263",
+"isin": "INE835B01035",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "MTP01"
 },
 {
 "id": "ORIENTLTD",
@@ -162809,6 +163385,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "PR"
+},
+{
+"id": "ALPHAGEO",
+"label": "Alphageo (India) Ltd",
+"nse": "ALPHAGEO",
+"bse": "526397",
+"isin": "INE137C01018",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "AI10"
 },
 {
 "id": "KRITI",
@@ -163063,18 +163651,6 @@
 "sc_id": "VC01"
 },
 {
-"id": "DRAGARWQ",
-"label": "Dr Agarwals Eye Hospital Ltd",
-"nse": "DRAGARWQ",
-"bse": "526783",
-"isin": "INE934C01018",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": ""
-},
-{
 "id": "GREENPLY",
 "label": "Greenply Industries Ltd",
 "nse": "GREENPLY",
@@ -163135,6 +163711,18 @@
 "sc_id": "BB03"
 },
 {
+"id": "BI",
+"label": "Bilcare Ltd",
+"nse": "BI",
+"bse": "526853",
+"isin": "INE986A01012",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "BFI01"
+},
+{
 "id": "SARLAPOLY",
 "label": "Sarla Performance Fibers Ltd",
 "nse": "SARLAPOLY",
@@ -163145,18 +163733,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "SP07"
-},
-{
-"id": "21STCENMGM",
-"label": "Twentyfirst Century Management Services Ltd",
-"nse": "21STCENMGM",
-"bse": "526921",
-"isin": "INE253B01015",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "TCM"
 },
 {
 "id": "HRYNSHP",
@@ -163567,18 +164143,6 @@
 "sc_id": "AKC01"
 },
 {
-"id": "VIRAT",
-"label": "Brahm Virat Industries Corporation Ltd",
-"nse": "VIRAT",
-"bse": "530521",
-"isin": "INE467D01017",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "VI10"
-},
-{
 "id": "TERAI",
 "label": "Terai Tea Company Ltd",
 "nse": "TERAI",
@@ -163747,6 +164311,18 @@
 "sc_id": "BA05"
 },
 {
+"id": "EBIX",
+"label": "EBIX Ltd",
+"nse": "EBIX",
+"bse": "531035",
+"isin": "INE432F01032",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "TE03"
+},
+{
 "id": "COMPEAU",
 "label": "Competent Automobiles Company Ltd",
 "nse": "COMPEAU",
@@ -163903,18 +164479,6 @@
 "sc_id": "LPP"
 },
 {
-"id": "OPTIFIN",
-"label": "Optimus Finance Ltd",
-"nse": "OPTIFIN",
-"bse": "531254",
-"isin": "INE031G01022",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "TF04"
-},
-{
 "id": "VSTTILLERS",
 "label": "VST Tillers Tractors Ltd",
 "nse": "VSTTILLERS",
@@ -164009,6 +164573,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "TNP"
+},
+{
+"id": "GOLDTECH",
+"label": "Aion-Tech Solutions Ltd",
+"nse": "GOLDTECH",
+"bse": "531439",
+"isin": "INE805A01014",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "GE02"
 },
 {
 "id": "GRMOVER",
@@ -164143,6 +164719,18 @@
 "sc_id": "FDC"
 },
 {
+"id": "COUNCODOS",
+"label": "Country Condos Ltd",
+"nse": "COUNCODOS",
+"bse": "531624",
+"isin": "INE695B01025",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "NT"
+},
+{
 "id": "LINCOLN",
 "label": "Lincoln Pharmaceuticals Ltd",
 "nse": "LINCOLN",
@@ -164201,6 +164789,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "BCI01"
+},
+{
+"id": "GATECH",
+"label": "GACM Technologies Ltd",
+"nse": "GATECH",
+"bse": "531723",
+"isin": "INE224E01028",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "GTR03"
 },
 {
 "id": "PRAENG",
@@ -164369,6 +164969,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "OFS"
+},
+{
+"id": "LCCINFOTEC",
+"label": "LCC Infotech Ltd",
+"nse": "LCCINFOTEC",
+"bse": "532019",
+"isin": "INE938A01021",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "LCC"
 },
 {
 "id": "FILATFASH",
@@ -164575,6 +165187,18 @@
 "sc_id": "INE"
 },
 {
+"id": "NSIL",
+"label": "Nalwa Sons Investments Ltd",
+"nse": "NSIL",
+"bse": "532256",
+"isin": "INE023A01030",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "JS02"
+},
+{
 "id": "ACCELYA",
 "label": "Accelya Solutions India Ltd",
 "nse": "ACCELYA",
@@ -164681,6 +165305,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "FI17"
+},
+{
+"id": "CURAA",
+"label": "Cura Technologies Ltd",
+"nse": "CURAA",
+"bse": "532332",
+"isin": "INE117B01020",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SS48"
 },
 {
 "id": "HBPOR",
@@ -165031,6 +165667,18 @@
 "sc_id": "HHP"
 },
 {
+"id": "KAMAHOLD",
+"label": "Kama Holdings Ltd",
+"nse": "KAMAHOLD",
+"bse": "532468",
+"isin": "INE411F01010",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": ""
+},
+{
 "id": "APTECHT",
 "label": "Aptech Ltd",
 "nse": "APTECHT",
@@ -165221,6 +165869,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "JP11"
+},
+{
+"id": "3IINFOLTD",
+"label": "3i Infotech Ltd",
+"nse": "3IINFOLTD",
+"bse": "532628",
+"isin": "INE748C01038",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "I11"
 },
 {
 "id": "ALLDIGI",
@@ -165739,18 +166399,6 @@
 "sc_id": "AGL02"
 },
 {
-"id": "ATLANTAA",
-"label": "Atlantaa Ltd",
-"nse": "ATLANTAA",
-"bse": "532759",
-"isin": "INE285H01022",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "A9"
-},
-{
 "id": "HGM",
 "label": "HandsOn Global Management (HGM)Ltd",
 "nse": "HGM",
@@ -165871,18 +166519,6 @@
 "sc_id": "RP25"
 },
 {
-"id": "ZEEMEDIA",
-"label": "Zee Media Corporation Ltd",
-"nse": "ZEEMEDIA",
-"bse": "532794",
-"isin": "INE966H01019",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "ZN"
-},
-{
 "id": "AUTOIND",
 "label": "Autoline Industries Ltd",
 "nse": "AUTOIND",
@@ -165953,6 +166589,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "OT6"
+},
+{
+"id": "RAJTV",
+"label": "Raj Television Network Ltd",
+"nse": "RAJTV",
+"bse": "532826",
+"isin": "INE952H01027",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "RTN"
 },
 {
 "id": "CAMLINFINE",
@@ -166073,6 +166721,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "II16"
+},
+{
+"id": "ASAHISONG",
+"label": "Asahi Songwon Colors Ltd",
+"nse": "ASAHISONG",
+"bse": "532853",
+"isin": "INE228I01012",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ASC01"
 },
 {
 "id": "HGS",
@@ -166603,6 +167263,18 @@
 "sc_id": "SIS06"
 },
 {
+"id": "TPHQ",
+"label": "Teamo Productions HQ Ltd",
+"nse": "TPHQ",
+"bse": "533048",
+"isin": "INE065J01024",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "GIE01"
+},
+{
 "id": "VEDAVAAG",
 "label": "VEDAVAAG Systems Ltd",
 "nse": "VEDAVAAG",
@@ -166855,6 +167527,18 @@
 "sc_id": "TC16"
 },
 {
+"id": "KCPSUGIND",
+"label": "KCP Sugar & Industries Corporation Ltd",
+"nse": "KCPSUGIND",
+"bse": "533192",
+"isin": "INE790B01024",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "KCP01"
+},
+{
 "id": "KECL",
 "label": "Kirloskar Electric Company Ltd",
 "nse": "KECL",
@@ -166901,6 +167585,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "GKB"
+},
+{
+"id": "HMVL",
+"label": "Hindustan Media Ventures Ltd",
+"nse": "HMVL",
+"bse": "533217",
+"isin": "INE871K01015",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "HMV"
 },
 {
 "id": "EMAMIREAL",
@@ -167251,16 +167947,16 @@
 "sc_id": "KE9"
 },
 {
-"id": "RUSHIL",
-"label": "Rushil Decor Ltd",
-"nse": "RUSHIL",
-"bse": "533470",
-"isin": "INE573K01025",
+"id": "DELPHIFX",
+"label": "Delphi World Money Ltd",
+"nse": "DELPHIFX",
+"bse": "533452",
+"isin": "INE726L01027",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
 "group": "B",
-"sc_id": "RD02"
+"sc_id": "WF02"
 },
 {
 "id": "ENKEIWHEL",
@@ -167455,6 +168151,18 @@
 "sc_id": "VSS01"
 },
 {
+"id": "SPECIALITY",
+"label": "Speciality Restaurants Ltd",
+"nse": "SPECIALITY",
+"bse": "534425",
+"isin": "INE247M01014",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "HKA"
+},
+{
 "id": "AURUS",
 "label": "Aurus Gem Corporation Ltd",
 "nse": "AURUS",
@@ -167527,18 +168235,6 @@
 "sc_id": "DT9"
 },
 {
-"id": "PROZONER",
-"label": "Prozone Realty Ltd",
-"nse": "PROZONER",
-"bse": "534675",
-"isin": "INE195N01013",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "PCS03"
-},
-{
 "id": "SRGHFL",
 "label": "SRG Housing Finance Ltd",
 "nse": "SRGHFL",
@@ -167549,6 +168245,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "SHF02"
+},
+{
+"id": "VIRTUALG",
+"label": "Virtual Global Education Ltd",
+"nse": "VIRTUALG",
+"bse": "534741",
+"isin": "INE247C01023",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "VGE"
 },
 {
 "id": "ZUARI",
@@ -167681,18 +168389,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "OC12"
-},
-{
-"id": "MMLF",
-"label": "Money Masters Leasing & Finance Ltd",
-"nse": "MMLF",
-"bse": "535910",
-"isin": "INE340O01021",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": ""
 },
 {
 "id": "ALSL",
@@ -167935,6 +168631,18 @@
 "sc_id": "AI61"
 },
 {
+"id": "MONEYBOXX",
+"label": "Moneyboxx Finance Ltd",
+"nse": "MONEYBOXX",
+"bse": "538446",
+"isin": "INE296Q01012",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "DC11"
+},
+{
 "id": "SKIPPER",
 "label": "Skipper Ltd",
 "nse": "SKIPPER",
@@ -168029,6 +168737,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "SE22"
+},
+{
+"id": "DHABRIYA",
+"label": "Dhabriya Polywood Ltd",
+"nse": "DHABRIYA",
+"bse": "538715",
+"isin": "INE260R01016",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "DP09"
 },
 {
 "id": "ARYACAPM",
@@ -168149,6 +168869,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "KK01"
+},
+{
+"id": "DTIL",
+"label": "Dhunseri Tea & Industries Ltd",
+"nse": "DTIL",
+"bse": "538902",
+"isin": "INE341R01014",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "DTI03"
 },
 {
 "id": "VINCOFE",
@@ -168523,6 +169255,18 @@
 "sc_id": "AI66"
 },
 {
+"id": "RAMASTEEL",
+"label": "Rama Steel Tubes Ltd",
+"nse": "RAMASTEEL",
+"bse": "539309",
+"isin": "INE230R01035",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "RST"
+},
+{
 "id": "SENSEXBETA",
 "label": "UTI BSE SENSEX ETF",
 "nse": "SENSEXBETA",
@@ -168799,6 +169543,30 @@
 "sc_id": "LHI"
 },
 {
+"id": "APOORVA",
+"label": "Apoorva Leasing Finance and Investment Company Ltd",
+"nse": "APOORVA",
+"bse": "539545",
+"isin": "INE217S01014",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ALF04"
+},
+{
+"id": "AARNAV",
+"label": "Aarnav Fashions Ltd",
+"nse": "AARNAV",
+"bse": "539562",
+"isin": "INE750R01016",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "KS20"
+},
+{
 "id": "BLUECLOUDS",
 "label": "Blue Cloud Softech Solutions Ltd",
 "nse": "BLUECLOUDS",
@@ -169025,6 +169793,30 @@
 "industry": "",
 "group": "B",
 "sc_id": "BHL02"
+},
+{
+"id": "RSDFIN",
+"label": "RSD Finance Ltd",
+"nse": "RSDFIN",
+"bse": "539875",
+"isin": "INE616F01022",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": ""
+},
+{
+"id": "PILANIINVS",
+"label": "Pilani Investment and Industries Corporation Ltd",
+"nse": "PILANIINVS",
+"bse": "539883",
+"isin": "INE417C01014",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "PII03"
 },
 {
 "id": "MADHAVIPL",
@@ -169385,18 +170177,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "II15"
-},
-{
-"id": "SMLT",
-"label": "Sarthak Metals Ltd",
-"nse": "SMLT",
-"bse": "540393",
-"isin": "INE017W01010",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "SM16"
 },
 {
 "id": "CHEMCRUX",
@@ -169831,6 +170611,18 @@
 "sc_id": "MFS09"
 },
 {
+"id": "SCPL",
+"label": "Sheetal Cool Products Ltd",
+"nse": "SCPL",
+"bse": "540757",
+"isin": "INE501Y01019",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SCP02"
+},
+{
 "id": "MAHLOG",
 "label": "Mahindra Logistics Ltd",
 "nse": "MAHLOG",
@@ -170011,18 +170803,6 @@
 "sc_id": "MR04"
 },
 {
-"id": "LAL",
-"label": "Lorenzini Apparels Ltd",
-"nse": "LAL",
-"bse": "540952",
-"isin": "INE740X01023",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "LAL"
-},
-{
 "id": "KENVI",
 "label": "Kenvi Jewels Ltd",
 "nse": "KENVI",
@@ -170155,6 +170935,18 @@
 "sc_id": "OBC01"
 },
 {
+"id": "TRL",
+"label": "Taylormade Renewables Ltd",
+"nse": "TRL",
+"bse": "541228",
+"isin": "INE459Z01017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "VL08"
+},
+{
 "id": "CHEMFAB",
 "label": "Chemfab Alkalis Ltd",
 "nse": "CHEMFAB",
@@ -170285,18 +171077,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "ZIMLA54140"
-},
-{
-"id": "AFFORDABLE",
-"label": "Affordable Robotic & Automation Ltd",
-"nse": "AFFORDABLE",
-"bse": "541402",
-"isin": "INE692Z01013",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "ARA"
 },
 {
 "id": "DOLLAR",
@@ -171391,6 +172171,18 @@
 "sc_id": "DML03"
 },
 {
+"id": "AARTISURF",
+"label": "Aarti Surfactants Ltd",
+"nse": "AARTISURF",
+"bse": "543210",
+"isin": "INE09EO01013",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ASL09"
+},
+{
 "id": "BONLON",
 "label": "Bonlon Industries Ltd",
 "nse": "BONLON",
@@ -171779,7 +172571,7 @@
 "label": "Knowledge Marine & Engineering Works Ltd",
 "nse": "KMEW",
 "bse": "543273",
-"isin": "INE0CJD01029",
+"isin": "INE0CJD01037",
 "exchange": "BSE",
 "series": "EQ",
 "industry": "",
@@ -171821,6 +172613,30 @@
 "industry": "",
 "group": "B",
 "sc_id": "SI78"
+},
+{
+"id": "UFBL",
+"label": "United Foodbrands Ltd",
+"nse": "UFBL",
+"bse": "543283",
+"isin": "INE382M01027",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "BNH"
+},
+{
+"id": "EKI",
+"label": "EKI Energy Services Ltd",
+"nse": "EKI",
+"bse": "543284",
+"isin": "INE0CPR01018",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "EES"
 },
 {
 "id": "DEEPINDS",
@@ -173179,6 +173995,18 @@
 "sc_id": "KV04"
 },
 {
+"id": "ASHIKAG",
+"label": "Ashika Global Securities Ltd",
+"nse": "ASHIKAG",
+"bse": "543766",
+"isin": "INE094B01013",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ACC06"
+},
+{
 "id": "BTML",
 "label": "Bodhi Tree Multimedia Ltd",
 "nse": "BTML",
@@ -173273,6 +174101,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "SCI05"
+},
+{
+"id": "BRIGHTOUTD",
+"label": "Bright Outdoor Media Ltd",
+"nse": "BRIGHTOUTD",
+"bse": "543831",
+"isin": "INE0OMI01019",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "BOM"
 },
 {
 "id": "SENSEXAXIS",
@@ -173465,6 +174305,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "UWL"
+},
+{
+"id": "VEEFIN",
+"label": "Veefin Solutions Ltd",
+"nse": "VEEFIN",
+"bse": "543931",
+"isin": "INE0Q0M01015",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "VS16"
 },
 {
 "id": "IDEAFORGE",
@@ -173909,6 +174761,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "MEL02"
+},
+{
+"id": "ESAFSFB",
+"label": "ESAF Small Finance Bank Ltd",
+"nse": "ESAFSFB",
+"bse": "544020",
+"isin": "INE818W01011",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ESF02"
 },
 {
 "id": "ASKAUTOLTD",
@@ -174389,18 +175253,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "SCL14"
-},
-{
-"id": "DPABHUSHAN",
-"label": "D.P. Abhushan Ltd",
-"nse": "DPABHUSHAN",
-"bse": "544161",
-"isin": "INE266Y01019",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "DPA01"
 },
 {
 "id": "JNKINDIA",
@@ -174991,6 +175843,18 @@
 "sc_id": "GBL02"
 },
 {
+"id": "ABINFRA",
+"label": "A B Infrabuild Ltd",
+"nse": "ABINFRA",
+"bse": "544281",
+"isin": "INE00YB01025",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "I12"
+},
+{
 "id": "EIEL",
 "label": "Enviro Infra Engineers Ltd",
 "nse": "EIEL",
@@ -175219,6 +176083,18 @@
 "sc_id": "LDL01"
 },
 {
+"id": "STALLION",
+"label": "Stallion India Fluorochemicals Ltd",
+"nse": "STALLION",
+"bse": "544342",
+"isin": "INE0RYC01010",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SIFL"
+},
+{
 "id": "DENTA",
 "label": "Denta Water and Infra Solutions Ltd",
 "nse": "DENTA",
@@ -175361,6 +176237,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "SBIBP30290"
+},
+{
+"id": "SPECTRUM",
+"label": "Spectrum Electrical Industries Ltd",
+"nse": "SPECTRUM",
+"bse": "544386",
+"isin": "INE01EO01010",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SEI06"
 },
 {
 "id": "EVIETF",
@@ -175781,6 +176669,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "LIF"
+},
+{
+"id": "LOTUSDEV",
+"label": "Sri Lotus Developers and Realty Ltd",
+"nse": "LOTUSDEV",
+"bse": "544469",
+"isin": "INE0V9Q01010",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SLDRL"
 },
 {
 "id": "MBEL",
@@ -176251,18 +177151,6 @@
 "sc_id": "AAL04"
 },
 {
-"id": "OMFREIGHT",
-"label": "Om Freight Forwarders Ltd",
-"nse": "OMFREIGHT",
-"bse": "544564",
-"isin": "INE1BZC01019",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "OFFL"
-},
-{
 "id": "TMCV",
 "label": "Tata Motors Ltd",
 "nse": "TMCV",
@@ -176381,18 +177269,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "ZN5"
-},
-{
-"id": "MIDWESTLTD",
-"label": "Midwest Ltd",
-"nse": "MIDWESTLTD",
-"bse": "544587",
-"isin": "INE0XAD01024",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "ML14"
 },
 {
 "id": "MHLSRG",
@@ -177103,6 +177979,18 @@
 "sc_id": "DSIL"
 },
 {
+"id": "DSFCL",
+"label": "DCM Shriram Fine Chemicals Ltd",
+"nse": "DSFCL",
+"bse": "544703",
+"isin": "INE0OFM01015",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "DSF"
+},
+{
 "id": "INFRA",
 "label": "Mirae Asset Nifty India Infrastructure & LogisticsETF",
 "nse": "INFRA",
@@ -177197,18 +178085,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "ABS06"
-},
-{
-"id": "OMNI",
-"label": "Omnitech Engineering Ltd",
-"nse": "OMNI",
-"bse": "544720",
-"isin": "INE0UH301010",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "OEL"
 },
 {
 "id": "GROWWHOSPI",
@@ -177595,6 +178471,18 @@
 "sc_id": "VOGL"
 },
 {
+"id": "E2E",
+"label": "E2E Networks Ltd",
+"nse": "E2E",
+"bse": "544783",
+"isin": "INE255Z01027",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "EN"
+},
+{
 "id": "VISL",
 "label": "Vedanta Iron And Steel Ltd",
 "nse": "VISL",
@@ -177749,18 +178637,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "WLTL"
-},
-{
-"id": "RAMBHAJO",
-"label": "Advit Jewels Ltd",
-"nse": "RAMBHAJO",
-"bse": "544803",
-"isin": "INE1SJO01012",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "AJL"
 },
 {
 "id": "CSM",
@@ -178171,6 +179047,18 @@
 "sc_id": "DTL03"
 },
 {
+"id": "MILKYMIST",
+"label": "Milky Mist Dairy Food Ltd",
+"nse": "MILKYMIST",
+"bse": "544868",
+"isin": "INE00IT01020",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "MMD"
+},
+{
 "id": "BLEL",
 "label": "Behari Lal Engineering Ltd",
 "nse": "BLEL",
@@ -178409,18 +179297,6 @@
 "industry": "",
 "group": "B",
 "sc_id": "ESSL"
-},
-{
-"id": "PRIORITY",
-"label": "Priority Jewels Ltd",
-"nse": "PRIORITY",
-"bse": "544899",
-"isin": "INE15EH01014",
-"exchange": "BSE",
-"series": "EQ",
-"industry": "",
-"group": "B",
-"sc_id": "PJL01"
 },
 {
 "id": "PERNIASPOP",
@@ -179119,6 +179995,114 @@
 "sc_id": "EIA"
 },
 {
+"id": "SFCTECH",
+"label": "SFC Environmental Technologies Ltd",
+"nse": "SFCTECH",
+"bse": "545009",
+"isin": "INE0PKN01028",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SETL"
+},
+{
+"id": "BLSPOLY",
+"label": "BLS Polymers Ltd",
+"nse": "BLSPOLY",
+"bse": "545011",
+"isin": "INE0ZCQ01019",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "BPL13"
+},
+{
+"id": "ENNATURE",
+"label": "Ennature Bio Pharma Ltd",
+"nse": "ENNATURE",
+"bse": "545012",
+"isin": "INE2WCT01016",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "EBP"
+},
+{
+"id": "IGLSPIRITS",
+"label": "IGL Spirits Ltd",
+"nse": "IGLSPIRITS",
+"bse": "545013",
+"isin": "INE2W6901017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "IS10"
+},
+{
+"id": "BANKCASE",
+"label": "Zerodha BSE Top 10 Banks ETF",
+"nse": "BANKCASE",
+"bse": "545014",
+"isin": "INF0R8F01265",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "ZBT"
+},
+{
+"id": "MKJEWELS",
+"label": "M. K. Sons Fine Jewels Ltd",
+"nse": "MKJEWELS",
+"bse": "545017",
+"isin": "INE2IXO01012",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SFJ"
+},
+{
+"id": "BCSSL",
+"label": "Bombay Coated And Special Steels Ltd",
+"nse": "BCSSL",
+"bse": "545018",
+"isin": "INE0XFY01011",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "BCSSL"
+},
+{
+"id": "BAHETI",
+"label": "Baheti Recycling Industries Ltd",
+"nse": "BAHETI",
+"bse": "545019",
+"isin": "INE029Q01017",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "BRI01"
+},
+{
+"id": "POWERIETF",
+"label": "ICICI Prudential BSE Power ETF",
+"nse": "POWERIETF",
+"bse": "545023",
+"isin": "INF109K1A724",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "IPB03"
+},
+{
 "id": "SENSEXIETF",
 "label": "ICICI Prudential BSE Sensex ETF",
 "nse": "SENSEXIETF",
@@ -179141,6 +180125,18 @@
 "industry": "",
 "group": "B",
 "sc_id": "JIS03"
+},
+{
+"id": "GATECHDVR",
+"label": "GACM Technologies Ltd",
+"nse": "GATECHDVR",
+"bse": "570005",
+"isin": "INE224E01036",
+"exchange": "BSE",
+"series": "EQ",
+"industry": "",
+"group": "B",
+"sc_id": "SCD01"
 },
 {
 "id": "KARURVYSYA",

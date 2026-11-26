@@ -12,7 +12,7 @@ This is a research tool. It is not a forecast and not investment advice.
 | **Technical** | RSI, MACD, SMA 20/50, EMA 20, plus optional oscillators |
 | **Lab** | Donchian breakouts, coils, and accumulation bases |
 | **Chart** | Support/resistance, trend, gaps, patterns, Fibonacci, and candles |
-| **Spurts** | Live NSE and BSE volume-spurt tables, with a daily archive |
+| **Candles** | Last 3, 5, and 7 daily, weekly, and monthly candles as bull, bear, or neutral |
 
 ### Tabs (naming)
 
@@ -22,9 +22,9 @@ This is a research tool. It is not a forecast and not investment advice.
 | Technical | Map · Bullish · Bearish |
 | Lab | Map · Bullish · Coil · Breakout |
 | Chart | Map · Bullish · Bearish · Breakout · S/R · Fib |
-| Spurts | All · NSE · BSE · ≥3× |
+| Candles | Map · Bullish · Bearish · Aligned |
 
-Convention: Title Case labels; overview is **Map** (scan desks) or **All** (Spurts); bias tabs are full **Bullish** / **Bearish**; Lab uses **Coil** (not Consolidating); Spurts archive panel is **Archive** (By date · Reappeared).
+Convention: Title Case labels; overview is **Map**; bias tabs are full **Bullish** / **Bearish**; Lab uses **Coil** (not Consolidating).
 
 **Book** (toolbar) picks the scan universe. Groups:
 
@@ -37,14 +37,13 @@ Convention: Title Case labels; overview is **Map** (scan desks) or **All** (Spur
 
 Volume, Technical, and Lab timeframes: **15m · 1H · 4H · 1D · 1W · 1M · 3M · 6M · 1Y · 5Y · Max**. Chart uses daily depth **6M–10Y**, swing **2Y·W / 5Y·W**, and long **5Y·M / 10Y·W**.
 
-**Common Search** opens a combined dossier (Volume · Technical · Lab · Chart · Spurts) with **Day** (1-day window) and **Long** (5-year daily). The **NSE · BSE volume** table shows the last 15 sessions (Total, Avg50, Δ Tot/NSE/BSE, RVOL, Mix, Spike, Delivery).
+**Common Search** opens a combined dossier (Volume · Technical · Lab · Chart) with **Day** (1-day window) and **Long** (5-year daily). The **NSE · BSE volume** table shows the last 15 sessions (Total, Avg50, Δ Tot/NSE/BSE, RVOL, Mix, Spike, Delivery).
 
 Each desk keeps its own board cache until you hit **Refresh** or **Clear all**.
 
 ## Data sources
 
 - Price / OHLCV: Moneycontrol (Yahoo fallback)
-- Spurts: live NSE and BSE exchange APIs
 - Books: official NSE constituent CSVs + BSE scrip list (`universe_dim.py`), refresh every Monday 07:00 IST while the server runs
 
 ## Run
@@ -61,7 +60,7 @@ pip install -r requirements.txt
 
 `launch.sh` builds `web/dist` if it is missing, then starts the server. Open the URL it prints (default [http://127.0.0.1:8797](http://127.0.0.1:8797)). If 8797 is taken it tries the next port up to 8806. Stop with Ctrl+C.
 
-`curl_cffi` is the only Python dependency (BSE spurts TLS fingerprint).
+`curl_cffi` is the only Python dependency (Yahoo TLS fingerprint).
 
 Manual single-port start:
 
@@ -104,7 +103,6 @@ launch.sh                 # venv + build web/dist + start server
 requirements.txt
 data/
   universe_dim.json       # cached books
-  spurts_history/         # daily Spurts archives (JSON gitignored)
 web/                      # React + Vite UI (source)
   src/components/         # desks, Book toolbar, CombinedDossier, …
 static/                   # legacy fallback UI
@@ -119,9 +117,7 @@ static/                   # legacy fallback UI
 | `GET /api/tech-board` | Technical board |
 | `GET /api/sci-board` | Lab board |
 | `GET /api/chart-board` | Chart board |
-| `GET /api/spurts` | Live Spurts |
-| `GET /api/spurts/history` | Archived Spurts day |
-| `GET /api/spurts/dashboard` | 30-day Spurts analytics |
+| `GET /api/candle-board` | Candles board |
 | `GET /api/volume` | Single-symbol volume study |
 | `GET /api/symbol-dossier` | Combined search dossier (incl. NSE/BSE volume KPIs) |
 | `GET /api/search?q=` | Symbol search |
@@ -133,5 +129,4 @@ Add `&fresh=1` on board/dossier calls to bypass cache.
 ## Notes
 
 - Needs network access for Moneycontrol, Yahoo, NSE, and BSE.
-- Spurts archive files under `data/spurts_history/*.json` are gitignored (folder keeps `.gitkeep`).
 - For personal research only.

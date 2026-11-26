@@ -3,7 +3,7 @@ export const DESKS = [
   { id: 'tech', label: 'Technical', title: 'Technical', blurb: '' },
   { id: 'sci', label: 'Lab', title: 'Lab', blurb: '' },
   { id: 'chart', label: 'Chart', title: 'Chart', blurb: '' },
-  { id: 'spurts', label: 'Spurts', title: 'Spurts', blurb: '' },
+  { id: 'candle', label: 'Candles', title: 'Candles', blurb: '' },
 ]
 
 export const TIMEFRAMES = [
@@ -152,7 +152,6 @@ export const CHART_TF_GROUPS = [
 /** TF chip groups visible on a desk (Chart hides Intraday; uses depth options). */
 export function tfGroupsForDesk(desk) {
   if (desk === 'chart') return CHART_TF_GROUPS
-  if (desk === 'spurts') return []
   return TF_GROUPS
 }
 
@@ -245,11 +244,17 @@ export const TABS = {
     ['breakout', 'Breakout'],
     ['support', 'S/R · Fib'],
   ],
-  spurts: [
-    ['trend', 'All'],
-    ['nse', 'NSE'],
-    ['bse', 'BSE'],
-    ['spike', '≥3×'],
+  candle: [
+    ['trend', 'Map'],
+    ['bullish', 'Bullish'],
+    ['bearish', 'Bearish'],
+    ['aligned', 'Aligned'],
+    ['turn_up', 'Turn↑'],
+    ['turn_dn', 'Turn↓'],
+    ['2d', '2D↑'],
+    ['day', 'Day↑'],
+    ['week', 'Week↑'],
+    ['month', 'Month↑'],
   ],
 }
 
@@ -284,11 +289,19 @@ export const LEGENDS = {
     ['Pattern · Gap · Fib · Candle · RVOL', 'ChartSchool patterns · Fib off until ≥24 bars · RVOL confirms'],
     ['Thin / Partial', 'Recent listings · all available bars · lookbacks shrink · score dampened · T/P'],
   ],
-  spurts: [
-    ['Vol× · 2W×', 'NSE today÷1-week and today÷2-week · BSE today÷2-week · live LTP'],
-    ['Archive', 'EOD flat files in data/spurts_history/ · kept 30 days'],
-    ['By date', 'Toolbar Date filter to open any archived day'],
-    ['Reappeared', 'Names on ≥2 days in the last 30'],
+  candle: [
+    ['Turn ↑N/↓N', 'Month weak + days recovering = ↑ · month strong + days rolling over = ↓ · strength 1…3 · not in Score'],
+    ['Turn↑ · Turn↓', 'Filter bull / bear turnaround rows'],
+    ['2D', 'Last 2 daily candles · filter 2D↑ · not counted in Score ±N/9'],
+    ['3/5/7', 'Last 3, 5, and 7 candles on each horizon'],
+    ['D · W · M', 'Lean chips · ≥2 of 3 windows Bull/Bear on that horizon · then daily/weekly/monthly columns'],
+    ['Map', 'Nine-window heat · Day · Week · Month · green Bull · red Bear · grey Flat'],
+    ['2D↑ · Day↑ · Week↑ · Month↑', '2D↑ = last 2 days Bull · Day/Week/Month↑ = that horizon lean is Bull'],
+    ['Bull (2/3)', 'Green cells · (green candles / window). Bull when closed up ≥0.35% with greens ≥ reds'],
+    ['Bear (1/3)', 'Red cells · same count form. Bear when closed down ≥0.35% with reds ≥ greens'],
+    ['Flat', 'Net move inside ±0.35%, or candle colors disagree with the close'],
+    ['Score', 'Bull windows − bear windows as ±N/9. Bias at ±3 · Aligned when |Score| ≥ 6'],
+    ['30D', 'Spark of the last 30 daily closes'],
   ],
 }
 
@@ -297,8 +310,5 @@ export const FOOT = {
   tech: 'Technical · RSI · MACD · SMA · EMA · research only',
   sci: 'Lab · Donchian(20) · RVOL(50 prior) · CMF/OBV(20) · BB+ATR squeeze · research only',
   chart: 'Chart · Daily 6M–10Y · Swing 2Y·W/5Y·W · Long 5Y·M/10Y·W · research only',
-  spurts: 'Spurts · live NSE + BSE · 30-day archive · research only',
+  candle: 'Candles · last 3/5/7 daily, weekly, and monthly · Bull (2/3) · Score ±N/9 · research only',
 }
-
-/** @deprecated Background polls removed — Refresh starts every scan. */
-export const SPURT_POLL_MS = 0

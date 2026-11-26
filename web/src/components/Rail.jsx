@@ -13,7 +13,7 @@ export default function Rail() {
       </div>
       <nav className="rail-nav">
         {DESKS.map((d) => {
-          const Icon = DESK_ICONS[d.id]
+          const Icon = DESK_ICONS[d.id] || MarkIcon
           return (
             <button
               key={d.id}
